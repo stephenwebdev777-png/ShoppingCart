@@ -1,0 +1,216 @@
+/* Global Styles */
+body {
+    background-color: #f5f5f5; /* Light grey background for professional look */
+    font-family: 'Arial', sans-serif; /* Clean, default font */
+}
+
+/* 1. Main Container */
+.checkout-page-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px 40px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Subtle, modern shadow */
+}
+
+.checkout-title {
+    text-align: center;
+    color: #1a1a1a;
+    margin-bottom: 30px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* 2. Section Headings */
+h2 {
+    font-size: 20px;
+    color: #333;
+    font-weight: 600;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eeeeee; /* Light separator */
+}
+
+/* 3. Delivery Section */
+.delivery-info {
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+    margin-bottom: 20px;
+}
+
+.delivery-info p {
+    font-size: 19px;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* User Name Display */
+.user-name-display {
+    font-weight: 700;
+    color: #007bff; /* Professional Blue Accent */
+    font-size: 19px;
+}
+
+/* Current Address Display */
+.current-address {
+   
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+/* Address Input */
+.address-input {
+    width: 98%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 19px;
+    box-sizing: border-box; 
+    transition: border-color 0.2s;
+}
+
+.address-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.address-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+.change-address-btn, .continue-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+/* Secondary Button: Change Address */
+.change-address-btn {
+    background-color: #6c757d; /* Grey/Muted */
+    color: white;
+}
+
+.change-address-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Primary Button: Continue */
+.continue-btn {
+    background-color: #dc3545; /* Red for emphasis, often used for primary e-commerce actions */
+    color: white;
+}
+
+.continue-btn:hover {
+    background-color: #c82333;
+    transform: translateY(-1px);
+}
+
+/* 4. Payment Section */
+.payment-section {
+    margin-top: 40px;
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Payment Option Cards (Radio Buttons) */
+.payment-option {
+    display: flex;
+    align-items: center;
+    padding: 18px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    background-color: #fff;
+    font-size: 17px;
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.payment-option:hover {
+    border-color: #007bff;
+}
+
+.payment-option.selected {
+    border-color: #007bff; /* Highlight selected method */
+    background-color: #eaf3ff; /* Very light blue background */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+}
+
+.payment-option input[type="radio"] {
+    /* Custom styling for the radio button visual */
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin-right: 15px;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.payment-option input[type="radio"]:checked {
+    border-color: #007bff;
+    background-color: #007bff;
+}
+
+.payment-option input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* Final Order Button */
+.place-order-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 30px;
+    background-color: #28a745; /* Green for final action */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    letter-spacing: 0.5px;
+}
+
+.place-order-btn:hover:not(:disabled) {
+    background-color: #218838;
+    transform: translateY(-1px);
+}
+
+.place-order-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
