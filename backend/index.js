@@ -183,7 +183,6 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
   try {
     const user = await Users.findOne({ email: req.user });
     const itemId = req.body.itemId;
-
     if (user.cartData[itemId] > 0) {
       user.cartData[itemId] -= 1;
       await Users.findOneAndUpdate({ email: req.user }, { cartData: user.cartData });
