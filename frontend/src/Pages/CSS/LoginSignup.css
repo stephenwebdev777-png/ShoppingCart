@@ -3,12 +3,13 @@
   height: 80vh;
   background: #fce3fe;
   padding-top: 100px;
+  overflow-y: hidden;
 }
 
 .loginsignup-container {
 
  width: 580px;
-  height: 600px;
+  height: 200px;
   background: #fff;
   margin: auto;
   padding: 40px 60px;

@@ -2,14 +2,19 @@ import React, { useContext } from "react";  //cart page
 import "./CartItem.css";
 import { ShopContext } from "../../Context/ShopContext";
 import remove_icon from "../Assets/cart_cross_icon.png";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 const CartItem = () => {
-  const { all_product, cartItems, removeFromCart, addToCart, getTotalCartAmount } = useContext(ShopContext);
+  const {
+    all_product,
+    cartItems,
+    removeFromCart,
+    addToCart,
+    getTotalCartAmount,
+  } = useContext(ShopContext);
   const navigate = useNavigate();
   const handleCheckout = () => {
-    navigate('/checkout');
+    navigate("/checkout");
   };
 
   return (
@@ -23,7 +28,7 @@ const CartItem = () => {
         <p>Remove</p>
       </div>
       <hr />
-      
+
       {all_product.map((e) => {
         return Object.keys(cartItems)
           .filter((k) => k.startsWith(e.id + "_") && cartItems[k] > 0)
@@ -33,20 +38,27 @@ const CartItem = () => {
             return (
               <div className="cartitems-format cartitems-format-main" key={key}>
                 <img src={e.image} alt="" className="carticon-product-icon" />
-                <p>{e.name} ({size})</p>
-                <p>Rs.{e.new_price}</p>                
-             
+                <p>
+                  {e.name} ({size})
+                </p>
+                <p>Rs.{e.new_price}</p>
                 <div className="cartitems-quantity-box">
-                    <span 
-                        className="quantity-btn" 
-                        onClick={() => removeFromCart(key)}
-                    > - </span>
-                    
-                    <button className="cartitems-quantity">{quantity}</button>                    
-                    <span 
-                        className="quantity-btn" 
-                        onClick={() => addToCart(e.id, size)}
-                    > + </span>
+                  <span
+                    className="quantity-btn"
+                    onClick={() => removeFromCart(key)}
+                  >
+                    {" "}
+                    -{" "}
+                  </span>
+
+                  <button className="cartitems-quantity">{quantity}</button>
+                  <span
+                    className="quantity-btn"
+                    onClick={() => addToCart(e.id, size)}
+                  >
+                    {" "}
+                    +{" "}
+                  </span>
                 </div>
 
                 <p>Rs.{e.new_price * quantity}</p>
@@ -80,7 +92,7 @@ const CartItem = () => {
               <h3>Rs.{getTotalCartAmount()}</h3>
             </div>
           </div>
-          
+
           <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
       </div>

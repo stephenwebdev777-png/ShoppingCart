@@ -43,6 +43,42 @@ const Product = mongoose.model("Product", {
   available: { type: Boolean, default: true },
 });
 
+
+// Middleware (for addtocart,removefromcart)
+const fetchUser = async (req, res, next) => {
+  const token = req.header("auth-token");
+  if (!token) return res.json({ success: false, errors: "Login first" });
+
+  try {
+    const data = jwt.verify(token, "secret");
+    req.user = data.email;
+    req.role = data.role;
+    next();
+  } catch {
+    res.status(401).json({ success: false, errors: "Invalid token" });
+  }
+};
+
+const isAdmin = (req, res, next) => {
+  const token = req.header("auth-token");
+
+  if (!token) {
+    return res.status(401).json({ success: false, errors: "Login first" });
+  }
+
+  try {
+    const data = jwt.verify(token, "secret");
+    if (data.role !== "admin") {
+      return res.status(403).json({ success: false, errors: "Admin access only" });
+    }
+    req.user = data.email;
+    req.role = data.role;
+    next();
+  } catch {
+    res.status(401).json({ success: false, errors: "Invalid token" });
+  }
+};
+
 // Storage for images
 const storage = multer.diskStorage({
   destination: uploadDir,
@@ -54,7 +90,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 app.use("/images", express.static("upload/images"));
-app.post('/upload', upload.single("product"), (req, res) => {
+app.post('/upload', isAdmin,upload.single("product"), (req, res) => {
   res.json
   ({
     success:1,
@@ -68,17 +104,14 @@ app.post("/signup", async (req, res) => {
   const check = await Users.findOne({ email: req.body.email });
   if (check) {
     return res.json({ success: false, errors: "User already exists" });
-  }
-
-  let cart = {};
-  for (let i = 0; i < 400; i++) cart[i] = 0;
+  }  
 
   const user = new Users({
     username: req.body.username,
     email: req.body.email,
     password: req.body.password,
     role: req.body.role, // Default role for new signups
-    cartData: cart,
+    cartData: {},
   });
 
   await user.save();
@@ -101,7 +134,6 @@ app.post("/login", async (req, res) => {
     { email: user.email, role: user.role },
     "secret"
   );
-
   res.json({
     success: true,
     token:token,
@@ -117,19 +149,6 @@ app.post("/logout", (req, res) => {
   });
 });
 
-// Middleware (for addtocart,removefromcart)
-const fetchUser = async (req, res, next) => {
-  const token = req.header("auth-token");
-  if (!token) return res.json({ success: false, errors: "Login first" });
-
-  try {
-    const data = jwt.verify(token, "secret");
-    req.user = data.email;
-    next();
-  } catch (e) {
-    res.json({ success: false, errors: "Invalid token" });
-  }
-};
 
 // Get All Products
 app.get("/allproduct", async (req, res) => {
@@ -176,11 +195,11 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
 });
 
 // Add Product
-app.post("/addproduct", async (req, res) => {  
+app.post("/addproduct", isAdmin,async (req, res) => {  
   try {
     let lastProduct = await Product.findOne().sort({ id: -1 });  //desc order
     let id = lastProduct ? lastProduct.id + 1 : 1;
-    if (id < 300) id = 300; 
+  
     
     const product = new Product({
       id:id,
@@ -192,24 +211,25 @@ app.post("/addproduct", async (req, res) => {
     });
 
     await product.save();
-    res.json({ success: true ,name:req.body.name,id:id});
+    res.json({ success: true ,name:req.body.name});
   } catch (err) {
     res.json({ success: false, error: err.message });
   }
 });
 
 // Remove Product
-app.post("/removeproduct", async (req, res) => {
-  try {
-    const product_mongo_id = req.body.id;   
-    await Product.deleteOne({ _id: product_mongo_id }); 
-    res.json({ success: true, message: "Product removed successfully" });
-  } catch (err) {
-    res.status(500).json({ success: false, error: "Deletion failed: " + err.message });
-  }
+app.post("/removeproduct", isAdmin, async (req, res) => {
+try {
+ const deletedProduct = await Product.findByIdAndDelete(req.body.id);
+ if (!deletedProduct) { 
+  return res.status(404).json({ success: false, message: "Product not found." });
+ }
+ res.json({ success: true, message: "Product removed successfully" });    
+} catch (err) {
+   res.status(500).json({ success: false, error: "Deletion failed: " + err.message });}
 });
 
-//getcart
+//getcart by user
 app.post("/getcart", fetchUser, async (req, res) => {
   try {
     const user = await Users.findOne({ email: req.user });
@@ -232,8 +252,7 @@ app.post("/updatecart", fetchUser, async (req, res) => {
 });
 
 //new collections
-app.get("/newcollections", async (req, res) => {
- 
+app.get("/newcollections", async (req, res) => { 
   let products = await Product.find({});
   let newcollection = products.slice(-8); 
   res.send(newcollection);

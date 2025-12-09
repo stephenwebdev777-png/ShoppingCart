@@ -10,10 +10,10 @@ const Proceed = () => {
   const [address, setAddress] = useState(
     "1/189, T.Nagar, Chennai-600017, Tamil Nadu, India"
   );
-  const [isEditing, setIsEditing] = useState(false); //address
+  const [isEditing, setIsEditing] = useState(false); 
   const [paymentMethod, setPaymentMethod] = useState(null); //UPI,COD
 
-  // State for the login pop-up
+ 
   const [showLoginPopup, setShowLoginPopup] = useState(false);
 
   const [showNotification, setShowNotification] = useState(false);

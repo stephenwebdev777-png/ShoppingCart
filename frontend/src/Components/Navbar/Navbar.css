@@ -7,10 +7,11 @@
 .nav-logo{
     display: flex;
 align-items: center;
-gap: 10px;}
+gap: 10px;
+}
 
 .nav-logo p{
-color: #171717;
+color: #f73131;
 font-size:38px ;
 font-weight:600 ;
 }

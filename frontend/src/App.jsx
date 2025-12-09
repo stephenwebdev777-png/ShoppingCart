@@ -36,7 +36,7 @@ function App() {
 
          
           <Route path="/admin" element={<Admin />}>
-            <Route index element={<Navigate to="addproduct" replace />} />
+            <Route index element={<Navigate to="addproduct" replace />} />  {/*replace to /admin/addproduct*/}
             <Route path="addproduct" element={<Addproduct />} />
             <Route path="listproduct" element={<Listproduct />} />
           </Route>

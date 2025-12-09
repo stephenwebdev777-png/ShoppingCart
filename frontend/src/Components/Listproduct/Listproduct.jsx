@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./Listproduct.css";
 import cross_icon from "../../assets/cross_icon.png";
 
-const Listproduct = () => {
+const Listproduct = ({refreshTrigger}) => {
   const [allproducts, setAllproducts] = useState([]);
 
   const fetchInfo = async () => {
@@ -14,18 +14,24 @@ const Listproduct = () => {
 
   useEffect(() => {
     fetchInfo();
-  }, []);
+  }, [refreshTrigger]);
 
   const remove_product = async (id) => {
+    const token = localStorage.getItem("auth-token");
+    if (!token) {
+        alert("Authentication token missing. Please log in as admin.");
+        return; 
+    }
     await fetch("http://localhost:3000/removeproduct", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        "auth-token": token,
       },
       body: JSON.stringify({ id }),
     });
-    fetchInfo();  // to reload data
+    fetchInfo(); 
   };
 
   return (

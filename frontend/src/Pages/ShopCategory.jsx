@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import React, { useContext, useState, useEffect } from "react"; //shop category pages
+import React, { useContext, useState, useEffect } from "react"; //shop category pages 
 import "./CSS/ShopCategory.css";
 import { ShopContext } from "../Context/ShopContext";
 import Item from "../Components/Item/Item";

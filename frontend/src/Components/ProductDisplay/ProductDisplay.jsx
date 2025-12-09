@@ -34,7 +34,7 @@ const ProductDisplay = ({ product }) => {
     "Secure Transaction", 
   ];
 
-  const optionalBadges = [];
+  const optionalBadges = [];  //if needed badges can add (without changing the base structure)
   const confidenceBadges = [...baseBadges, ...optionalBadges];
 
   const handleAddToCart = () => {
