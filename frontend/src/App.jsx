@@ -32,9 +32,7 @@ function App() {
           </Route>
 
           <Route path="/login" element={<LoginSignup mode="login" />} />
-          <Route path="/signup" element={<LoginSignup mode="signup" />} />
-
-         
+          <Route path="/signup" element={<LoginSignup mode="signup" />} />         
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Navigate to="addproduct" replace />} />  {/*replace to /admin/addproduct*/}
             <Route path="addproduct" element={<Addproduct />} />
