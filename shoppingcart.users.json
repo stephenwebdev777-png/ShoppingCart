@@ -1,0 +1,39 @@
+[{
+  "_id": {
+    "$oid": "6937c1a9e1a39fb774527349"
+  },
+  "username": "AB",
+  "email": "ab@gmail.com",
+  "password": "ab",
+  "role": "user",
+  "__v": 0,
+  "cartData": {
+    "114_M": 3,
+    "115_L": 3,
+    "114_L": 2
+  }
+},
+{
+  "_id": {
+    "$oid": "6937c260e1a39fb7745273af"
+  },
+  "username": "Kiru",
+  "email": "kiru@gmail.com",
+  "password": "123",
+  "role": "user",
+  "__v": 0,
+  "cartData": {
+    "102_M": 7,
+    "114_M": 1
+  }
+},
+{
+  "_id": {
+    "$oid": "6937c49843161d398bef296c"
+  },
+  "username": "admin",
+  "email": "admin@gmail.com",
+  "password": "admin123",
+  "role": "admin",
+  "__v": 0
+}]
