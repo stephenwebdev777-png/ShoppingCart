@@ -9,6 +9,7 @@ const AdminPanel = () => {
   };
   return (
     <div className="admin-panel-container">
+
       <h2>Admin Dashboard</h2>
       <Addproduct onProductAdded={handleProductAdded} />
       <hr />

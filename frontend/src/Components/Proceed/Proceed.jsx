@@ -5,20 +5,15 @@ import "./Proceed.css";
 
 const Proceed = () => {
   const navigate = useNavigate();
-
   const [userName, setUserName] = useState("");
   const [address, setAddress] = useState(
     "1/189, T.Nagar, Chennai-600017, Tamil Nadu, India"
   );
   const [isEditing, setIsEditing] = useState(false); 
-  const [paymentMethod, setPaymentMethod] = useState(null); //UPI,COD
-
- 
+  const [paymentMethod, setPaymentMethod] = useState(null); //UPI,COD 
   const [showLoginPopup, setShowLoginPopup] = useState(false);
-
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
-
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
 
   const displayNotification = (message) => {
@@ -26,24 +21,19 @@ const Proceed = () => {
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 3000);
   };
-
   const handleLoginRedirect = () => {
     navigate("/login");
   };
-
   const handleCancel = () => {
     setShowLoginPopup(false);
     navigate("/cart");
   };
-
   useEffect(() => {
     const token = localStorage.getItem("auth-token");
-
     if (!token) {
       setShowLoginPopup(true);
       return;
     }
-
     const fetchUserData = async () => {
       try {
         const response = await fetch("http://localhost:3000/getuserinfo", {

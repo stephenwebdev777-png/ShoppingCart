@@ -29,7 +29,7 @@ const Addproduct = ({ onProductAdded }) => {
     let responseData;
     let product = productDetails;
 
-    let formData = new FormData();
+    let formData = new FormData(); //send images
     formData.append("product", image);
 
     await fetch("http://localhost:3000/upload", {
@@ -95,7 +95,7 @@ const Addproduct = ({ onProductAdded }) => {
       </div>
       <div className="addproduct-price">
         <div className="addproduct-itemfield">
-          <p>Price</p>
+          <p>Old Price</p>
           <input
             value={productDetails.old_price}
             onChange={changeHandler}
@@ -105,7 +105,7 @@ const Addproduct = ({ onProductAdded }) => {
           />
         </div>
         <div className="addproduct-itemfield">
-          <p>Offer Price</p>
+          <p>New Price</p>
           <input
             value={productDetails.new_price}
             onChange={changeHandler}

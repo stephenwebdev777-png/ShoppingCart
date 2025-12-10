@@ -14,7 +14,7 @@ const Listproduct = ({refreshTrigger}) => {
 
   useEffect(() => {
     fetchInfo();
-  }, [refreshTrigger]);
+  }, [refreshTrigger]); //refresh the product list only when a new product is added
 
   const remove_product = async (id) => {
     const token = localStorage.getItem("auth-token");

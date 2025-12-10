@@ -47,8 +47,12 @@ const Product = mongoose.model("Product", {
 // Middleware (for addtocart,removefromcart)
 const fetchUser = async (req, res, next) => {
   const token = req.header("auth-token");
-  if (!token) return res.json({ success: false, errors: "Login first" });
-
+   if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: Please login first"
+    });
+  }
   try {
     const data = jwt.verify(token, "secret");
     req.user = data.email;
@@ -59,17 +63,19 @@ const fetchUser = async (req, res, next) => {
   }
 };
 
+//admin access
 const isAdmin = (req, res, next) => {
   const token = req.header("auth-token");
-
-  if (!token) {
-    return res.status(401).json({ success: false, errors: "Login first" });
+ if (!token) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized: Admin login required"
+    });
   }
-
   try {
     const data = jwt.verify(token, "secret");
     if (data.role !== "admin") {
-      return res.status(403).json({ success: false, errors: "Admin access only" });
+      return res.status(403).json({ success: false, message: "Access denied: Admins only" });
     }
     req.user = data.email;
     req.role = data.role;
@@ -175,7 +181,7 @@ app.post("/addtocart", fetchUser, async (req, res) => {
     { email: req.user }, 
     { cartData: user.cartData }
   );
-  res.json({ success: true, message: "Added" });
+  res.json({ success: true, message: "Added to Cart" });
 });
 
 // Remove from Cart
@@ -187,7 +193,7 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
       user.cartData[itemId] -= 1;
       await Users.findOneAndUpdate({ email: req.user }, { cartData: user.cartData });
     }
-    res.json({ success: true, cartData: user.cartData });
+    res.json({ success: true,message:'Removed from Cart',cartData: user.cartData });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -196,10 +202,8 @@ app.post("/removefromcart", fetchUser, async (req, res) => {
 // Add Product
 app.post("/addproduct", isAdmin,async (req, res) => {  
   try {
-    let lastProduct = await Product.findOne().sort({ id: -1 });  //desc order
-    let id = lastProduct ? lastProduct.id + 1 : 1;
-  
-    
+    let lastProduct = await Product.findOne().sort({ id: -1 });  //highest id (last id)
+    let id = lastProduct ? lastProduct.id + 1 : 1;   //id+1
     const product = new Product({
       id:id,
       name: req.body.name,
@@ -242,11 +246,42 @@ app.post("/getcart", fetchUser, async (req, res) => {
 app.post("/updatecart", fetchUser, async (req, res) => {
   try {
     const user = await Users.findOne({ email: req.user });
-    user.cartData = req.body.cartData;
+    user.cartData = req.body;
     await user.save();
-    res.json({ success: true });
+    res.json({ success: true ,message:'Cart Updated'});
   } catch (error) {
     res.status(500).json({ success: false });
+  }
+});
+
+//product id 
+app.get("/product/:id", async (req, res) => { 
+  try {
+    const productId = req.params.id;    //product/:id
+    const productIdNumber = Number(productId);    
+    if (isNaN(productIdNumber) || productIdNumber <= 0) {
+      return res.status(400).json({ success: false, message: "Invalid product ID format." });
+    }    
+    const product = await Product.findOne({ id: productIdNumber });    
+    if (!product) {    
+      return res.status(404).json({ success: false, message: "Product not found." });
+    }
+    const token = req.header("auth-token");
+    if (!token) {   
+      return res.status(401).json({ 
+        success: false, 
+        message: "Unauthorized: Please login to view this product." 
+      });
+    }
+    try {
+      jwt.verify(token, "secret");      
+      res.json({ success: true, product });
+    } catch { 
+      res.status(401).json({ success: false, message: "Invalid token. Please login again." });
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    res.status(500).json({ success: false, message: "Internal server error." });
   }
 });
 
