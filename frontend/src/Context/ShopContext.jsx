@@ -4,7 +4,9 @@ export const ShopContext = createContext(null);
 
 const ShopContextProvider = (props) => {
   const [all_product, setAll_product] = useState([]);
-  const [cartItems, setCartItems] = useState({});
+  const [cartItems, setCartItems] = useState({}); 
+
+
   useEffect(() => {
     fetch("http://localhost:3000/allproduct")
       .then((response) => response.json())

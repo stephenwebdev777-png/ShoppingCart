@@ -1,5 +1,5 @@
 import React from 'react'; //outlet -inside a parent route to show the child routes.
-import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom'; 
+import { BrowserRouter , Routes, Route, Outlet, Navigate } from 'react-router-dom'; 
 import Navbar from './Components/Navbar/Navbar'; 
 import Footer from './Components/Footer/Footer'; 
 
@@ -15,6 +15,7 @@ import Listproduct from './Components/Listproduct/Listproduct';
 import Proceed from './Components/Proceed/Proceed';
 import banner_women from "./Components/Assets/banner_women.png";
 import banner_mens from "./Components/Assets/banner_mens.png";
+import ResetPassword from "./Pages/ResetPassword";
 
 function App() {
   return (
@@ -32,7 +33,9 @@ function App() {
           </Route>
 
           <Route path="/login" element={<LoginSignup mode="login" />} />
-          <Route path="/signup" element={<LoginSignup mode="signup" />} />         
+          <Route path="/signup" element={<LoginSignup mode="signup" />} /> 
+          <Route path="/forgotpassword" element={<LoginSignup mode="forgot" />} />     
+          <Route path="/reset-password/:token" element={<ResetPassword />} />   
           <Route path="/admin" element={<Admin />}>
             <Route index element={<Navigate to="addproduct" replace />} />  {/*replace to /admin/addproduct*/}
             <Route path="addproduct" element={<Addproduct />} />

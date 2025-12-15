@@ -9,7 +9,7 @@ const Item = (props) => {
    //discount percent
   const discountPercentage = Math.round(((props.old_price - props.new_price) / props.old_price) * 100);
   
-   //delivery date to get within 7 and 10 days, use modulo 4  7+(0 to 4)
+   //delivery date to get within 7 and 10 days, use modulo 4  7+(0 to 3)
   const daysToAdd = 7 + (props.id % 4); 
   const deliveryDate = new Date();
   deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);

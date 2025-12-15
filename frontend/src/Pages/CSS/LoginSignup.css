@@ -9,10 +9,10 @@
 .loginsignup-container {
 
  width: 580px;
-  height: 200px;
+  height: 540px;
   background: #fff;
   margin: auto;
-  padding: 40px 60px;
+  padding: 50px 60px;
 }
 
 .loginsignup-container h1 {
@@ -59,8 +59,8 @@
 .loginsignup-agree {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 25px;
+  gap: 5px;
+  margin-top: 19px;
   font-size: 18px;
   font-weight: 500;
 }

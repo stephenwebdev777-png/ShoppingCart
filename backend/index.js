@@ -1,4 +1,4 @@
-const port=3000
+require("dotenv").config();    //load .env file to process.env
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -6,21 +6,38 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const bcrypt = require("bcryptjs");
+const nodemailer = require("nodemailer")
+
+const port = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/shoppingcart";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const JWT_SECRET = process.env.JWT_SECRET || "default_session_secret"; 
+const RESET_JWT_SECRET = process.env.RESET_JWT_SECRET || "default_reset_secret";
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin:FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
-
-app.use(express.json());
+ 
+app.use(express.json());    //Parses JSON request bodies
 
 // MongoDB Connection
-mongoose.connect("mongodb://127.0.0.1:27017/shoppingcart");
+mongoose.connect(MONGO_URI);
 
 const uploadDir = './upload/images';
 fs.mkdirSync(uploadDir, { recursive: true });
+
+const transporter = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port:587,
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS,
+  },
+});
 
 // User Schema
 const Users = mongoose.model("Users", {
@@ -29,6 +46,8 @@ const Users = mongoose.model("Users", {
   password: String,
   role: String, 
   cartData: Object,
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 // Product Schema
@@ -54,7 +73,7 @@ const fetchUser = async (req, res, next) => {
     });
   }
   try {
-    const data = jwt.verify(token, "secret");
+    const data = jwt.verify(token, JWT_SECRET);
     req.user = data.email;
     req.role = data.role;
     next();
@@ -62,6 +81,7 @@ const fetchUser = async (req, res, next) => {
     res.status(401).json({ success: false, errors: "Invalid token" });
   }
 };
+
 
 //admin access
 const isAdmin = (req, res, next) => {
@@ -73,7 +93,7 @@ const isAdmin = (req, res, next) => {
     });
   }
   try {
-    const data = jwt.verify(token, "secret");
+    const data = jwt.verify(token, JWT_SECRET);
     if (data.role !== "admin") {
       return res.status(403).json({ success: false, message: "Access denied: Admins only" });
     }
@@ -100,10 +120,68 @@ app.post('/upload', isAdmin,upload.single("product"), (req, res) => {
   res.json
   ({
     success:1,
-    image_url:`http://localhost:${port}/images/${req.file.filename}`
+    image_url:`${FRONTEND_URL}/images/${req.file.filename}`
   })  
 })
 
+// forgot password (mail generation)
+app.post("/forgotpassword", async (req, res) => {
+  const { email } = req.body;
+  const user = await Users.findOne({ email });
+  if (!user) {
+    return res.json({ success: false, errors: "User not found" });
+  }
+  const resetToken = jwt.sign(
+    { email: user.email },
+    RESET_JWT_SECRET,
+    { expiresIn: "1d" }
+  );
+  user.resetPasswordToken = resetToken;
+  user.resetPasswordExpires = Date.now() + 24 * 60 * 60 * 1000;  // 1 hour
+  await user.save();
+  const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+  await transporter.sendMail({
+    from: '"Shopper Support" <no-reply@shopper.com>',
+    to: user.email,
+    subject: "Reset your password",
+    html: `
+      <h2>Password Reset</h2>
+      <p>Click the link below to reset your password:</p>
+      <a href="${resetLink}">${resetLink}</a>
+      <p>This link expires in 1 day.</p>
+    `,
+  });
+  res.json({
+    success: true,
+    message: "Password reset link sent to your email",
+  });
+});
+
+// reset Password 
+app.post("/resetpassword", async (req, res) => {
+  const { token, newPassword } = req.body;
+  if (!token || !newPassword) {
+    return res.status(400).json({ success: false, errors: "Token and new password are required." });
+  }
+  try {
+    const user = await Users.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+    if (!user) {
+      return res.status(400).json({ success: false, errors: "Token is invalid or has expired." });
+    }
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.resetPasswordToken = undefined;  //Deletes the used reset token
+    user.resetPasswordExpires = undefined;
+    await user.save();
+    res.json({ success: true, message: "Your password has been successfully updated." });
+  } catch (error) {
+    console.error("Reset Password Error:", error);
+    res.status(500).json({ success: false, errors: "Internal server error." });
+  }
+});
 
 // Signup
 app.post("/signup", async (req, res) => {
@@ -111,18 +189,20 @@ app.post("/signup", async (req, res) => {
   if (check) {
     return res.json({ success: false, errors: "User already exists" });
   }  
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
   const user = new Users({
     username: req.body.username,
     email: req.body.email,
-    password: req.body.password,
-    role: req.body.role, // Default role for new signups
+    password: hashedPassword,
+    role:req.body.role, 
     cartData: {},
   });
 
   await user.save();
 
-  const token = jwt.sign({ email: req.body.email }, "secret");
+  const token = jwt.sign({ email: req.body.email,role: user.role }, JWT_SECRET);
   res.json({ success: true, token, role: user.role });
 });
 
@@ -130,16 +210,20 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
   const user = await Users.findOne({
     email: req.body.email,
-    password: req.body.password,
   });
 
   if (!user) {
     return res.json({ success: false, errors: "Invalid email or password" });
   }
+  const passwordCompare = await bcrypt.compare(req.body.password, user.password);
+  if (!passwordCompare) {
+    return res.status(401).json({ success: false, errors: "Invalid email or password" });
+   }
   const token = jwt.sign(
     { email: user.email, role: user.role },
-    "secret"
+    JWT_SECRET
   );
+  
   res.json({
     success: true,
     token:token,
@@ -185,7 +269,7 @@ app.post("/addtocart", fetchUser, async (req, res) => {
 });
 
 // Remove from Cart
-app.post("/removefromcart", fetchUser, async (req, res) => {
+app.post("/removefromcart", fetchUser, async (req, res) => { //fetchUser(only authenticated login users)
   try {
     const user = await Users.findOne({ email: req.user });
     const itemId = req.body.itemId;
@@ -274,7 +358,7 @@ app.get("/product/:id", async (req, res) => {
       });
     }
     try {
-      jwt.verify(token, "secret");      
+      jwt.verify(token, JWT_SECRET);      
       res.json({ success: true, product });
     } catch { 
       res.status(401).json({ success: false, message: "Invalid token. Please login again." });
