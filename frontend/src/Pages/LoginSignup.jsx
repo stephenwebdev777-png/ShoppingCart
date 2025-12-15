@@ -246,7 +246,7 @@ const LoginSignup = ({ mode }) => {
               fontSize: "18px",
               textDecoration: "underline",
             }}
-          >
+          > 
             Forgot Password?
           </p>
         )}
