@@ -116,6 +116,7 @@ const LoginSignup = ({ mode }) => {
   const handleForgotToggle = () => {
     setModeState("forgot");
     setResetMessage("");
+      navigate("/forgotpassword");
   };
 
   const handleBackToLogin = () => {
