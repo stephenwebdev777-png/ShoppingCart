@@ -1,0 +1,40 @@
+[{
+  "_id": {
+    "$oid": "693a6416d877ee0d1678ed74"
+  },
+  "username": "aa",
+  "email": "aa@gmail.com",
+  "password": "$2b$10$s6carL6tXr6vgzHg5rRnMOfRFV/PD//0vkglNDnEvvA9Isu1S2Siy",
+  "role": "user",
+  "__v": 0,
+  "cartData": {
+    "102_M": 4
+  }
+},
+{
+  "_id": {
+    "$oid": "693a99d81f34f137a7c92256"
+  },
+  "username": "Kiru",
+  "email": "kiru@gmail.com",
+  "password": "$2b$10$v/3NfslMigNLFfLncb504.4XjZMlKTyg6038Nb5H5fd3sUP/pR3j6",
+  "role": "user",
+  "__v": 0,
+  "cartData": {
+    "114_S": 3
+  },
+  "resetPasswordExpires": {
+    "$date": "2025-12-17T08:58:00.950Z"
+  },
+  "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcnVAZ21haWwuY29tIiwiaWF0IjoxNzY1ODc1NDgwLCJleHAiOjE3NjU5NjE4ODB9.j_fj6Oxa7zbWSmMWMNwbyhwGtQoog3GzCW-ELsNuW6Y"
+},
+{
+  "_id": {
+    "$oid": "693a9a101f34f137a7c92271"
+  },
+  "username": "Admin",
+  "email": "admin@gmail.com",
+  "password": "$2b$10$TKBbfAvTPLiYiE7/xaqFjOry8H5JLCvsbfoBFEDZ4GehPX/onyD3G",
+  "role": "admin",
+  "__v": 0
+}]
