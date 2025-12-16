@@ -11,7 +11,7 @@ const ShopCategory = (props) => {
 
   useEffect(() => {
     setSortType("default");
-  }, [props.category]);
+  }, [props.category]);  //reset sorting when the category changes
 
   let filtered = all_product.filter((item) => item.category === props.category);
 

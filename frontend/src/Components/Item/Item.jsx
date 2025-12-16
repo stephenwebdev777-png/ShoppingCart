@@ -53,7 +53,7 @@ const Item = (props) => {
           fontWeight: 'bold', 
           marginTop: '5px'
       }}>
-          Free Delivery <span style={{fontWeight: '900', color: '#070000ff'}}>{deliveryDateString}</span>
+          Free Delivery, <span style={{fontWeight: '900', color: '#070000ff'}}>{deliveryDateString}</span>
       </div>      
    
       {showModal && (

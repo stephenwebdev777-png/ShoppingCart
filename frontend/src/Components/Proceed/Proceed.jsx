@@ -58,7 +58,6 @@ const Proceed = () => {
         setUserName("Network Error User");
       }
     };
-
     fetchUserData();
   }, []);
 

@@ -103,7 +103,7 @@ const ProductDisplay = ({ product }) => {
         </p>
 
         <p style={{ marginTop: "10px", color: "#111", fontSize: "19px" }}>
-          <span style={{ fontWeight: "bold" }}>Free Delivery</span>{" "}
+          <span style={{ fontWeight: "bold" }}>Free Delivery,</span>{" "}
           <span style={{ color: "#ff4141" }}>{deliveryDateString}</span>
         </p>
 

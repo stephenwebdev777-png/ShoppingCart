@@ -38,6 +38,7 @@ const LoginSignup = ({ mode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const API_BASE_URL = "http://localhost:3000";
+  const [errorMsg, setErrorMsg] = useState("");
 
   const [modeState, setModeState] = useState(
     mode === "signup" || location.pathname === "/signup" ? "signup" : "login"
@@ -59,6 +60,12 @@ const LoginSignup = ({ mode }) => {
       : "Create Account";
 
   const login = async () => {
+    if (!formData.email.trim() || !formData.password.trim()) {
+      setErrorMsg("Enter email and password");
+      return;
+    }
+
+    setErrorMsg("");
     try {
       const response = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
@@ -74,10 +81,10 @@ const LoginSignup = ({ mode }) => {
         setTimeout(() => window.location.reload(), 100);
         navigate(data.role === "admin" ? "/admin" : "/");
       } else {
-        alert(data.errors || "Login failed");
+        setErrorMsg(data.errors || "Invalid email or password");
       }
     } catch {
-      alert("Login failed. Please try again.");
+      setErrorMsg("Something went wrong. Please try again.");
     }
   };
 
@@ -116,7 +123,7 @@ const LoginSignup = ({ mode }) => {
   const handleForgotToggle = () => {
     setModeState("forgot");
     setResetMessage("");
-      navigate("/forgotpassword");
+    navigate("/forgotpassword");
   };
 
   const handleBackToLogin = () => {
@@ -136,7 +143,7 @@ const LoginSignup = ({ mode }) => {
       const response = await fetch(`${API_BASE_URL}/forgotpassword`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: forgotEmail.trim()}),
+        body: JSON.stringify({ email: forgotEmail.trim() }),
       });
       const data = await response.json();
       setResetMessage(
@@ -162,7 +169,9 @@ const LoginSignup = ({ mode }) => {
       return (
         <div className="forgot-password-content">
           <h1>Reset Password</h1>
-          <p style={{ marginBottom: "20px", color: "#5c5c5c" }}>
+          <p
+            style={{ marginBottom: "20px", color: "#5c5c5c", fontSize: "19px" }}
+          >
             Enter the email address associated with your account to receive a
             reset link.
           </p>
@@ -199,7 +208,7 @@ const LoginSignup = ({ mode }) => {
               fontWeight: 500,
             }}
           >
-            ← Back to Login
+            &larr;Back to Login
           </p>
         </div>
       );
@@ -233,6 +242,11 @@ const LoginSignup = ({ mode }) => {
             placeholder="Password"
           />
         </div>
+        {errorMsg && (
+          <p style={{ color: "#ff4141",marginTop:"5px",marginBottom: "-10px", fontSize: "16px" }}>
+            {errorMsg}
+          </p>
+        )}
         <button onClick={() => (modeState === "login" ? login() : signup())}>
           Continue
         </button>
@@ -247,7 +261,7 @@ const LoginSignup = ({ mode }) => {
               fontSize: "18px",
               textDecoration: "underline",
             }}
-          > 
+          >
             Forgot Password?
           </p>
         )}
@@ -293,7 +307,6 @@ const LoginSignup = ({ mode }) => {
                 : modeState === "login"
                 ? "500px"
                 : "600px",
-            transition: "height 0.3s ease",
           }}
         >
           {renderFormContent()}
