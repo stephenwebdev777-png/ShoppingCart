@@ -4,26 +4,26 @@ export const ShopContext = createContext(null);
 
 const ShopContextProvider = (props) => {
   const [all_product, setAll_product] = useState([]);
-  const [cartItems, setCartItems] = useState({}); 
-
+  const [cartItems, setCartItems] = useState({});
 
   useEffect(() => {
-    fetch("http://localhost:3000/allproduct")
+    // FIX: Added /products/ prefix
+    fetch("http://localhost:3000/products/allproduct")
       .then((response) => response.json())
       .then((data) => setAll_product(data))
       .catch((err) => console.error("Failed to fetch products:", err));
+
     const token = localStorage.getItem("auth-token");
     if (token) {
       const handleResponse = (response) => {
         if (!response.ok) {
-          console.error(
-            `Failed to fetch cart: Status ${response.status}. Token may be invalid.`
-          );
+          console.error(`Failed to fetch cart: Status ${response.status}`);
           return {};
         }
         return response.json();
       };
-      fetch("http://localhost:3000/getcart", {
+      // FIX: Added /user/ prefix
+      fetch("http://localhost:3000/user/getcart", {
         method: "POST",
         headers: {
           "auth-token": token,
@@ -44,7 +44,7 @@ const ShopContextProvider = (props) => {
         });
     }
   }, []);
-  
+
   const addToCart = (itemId, size) => {
     if (!localStorage.getItem("auth-token")) {
       alert("Please Login to add items to cart");
@@ -53,16 +53,15 @@ const ShopContextProvider = (props) => {
     const key = `${itemId}_${size}`;
     setCartItems((prev) => ({ ...prev, [key]: (prev[key] || 0) + 1 }));
 
-    if (localStorage.getItem("auth-token")) {
-      fetch("http://localhost:3000/addtocart", {
-        method: "POST",
-        headers: {
-          "auth-token": localStorage.getItem("auth-token"),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ itemId: key }),
-      });
-    }
+    // FIX: Added /user/ prefix
+    fetch("http://localhost:3000/user/addtocart", {
+      method: "POST",
+      headers: {
+        "auth-token": localStorage.getItem("auth-token"),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ itemId: key }),
+    });
   };
 
   const removeFromCart = (key) => {
@@ -73,7 +72,8 @@ const ShopContextProvider = (props) => {
 
     const token = localStorage.getItem("auth-token");
     if (token) {
-      fetch("http://localhost:3000/removefromcart", {
+      // FIX: Added /user/ prefix
+      fetch("http://localhost:3000/user/removefromcart", {
         method: "POST",
         headers: {
           "auth-token": token,
@@ -84,6 +84,7 @@ const ShopContextProvider = (props) => {
     }
   };
 
+  // ... rest of your helper functions (getTotalCartAmount, etc.) stay the same
   const getTotalCartAmount = () => {
     let totalAmount = 0;
     for (const key in cartItems) {
@@ -91,7 +92,7 @@ const ShopContextProvider = (props) => {
         const [id] = key.split("_");
         const itemInfo = all_product.find(
           (product) => product.id === Number(id)
-        ); 
+        );
         if (itemInfo) {
           totalAmount += itemInfo.new_price * cartItems[key];
         }

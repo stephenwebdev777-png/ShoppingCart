@@ -62,7 +62,7 @@ const Listproduct = ({refreshTrigger}) => {
             <p>Rs.{product.new_price}</p>
             <p>{product.category}</p>
             <img
-              onClick={() => remove_product(product._id)}
+             onClick={() => remove_product(product.id)}
               src={cross_icon}
               alt=""
               className="listproduct-remove-icon"

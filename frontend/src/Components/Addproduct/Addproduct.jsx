@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/immutability */
 import React, { useState } from "react";
 import "./Addproduct.css";
 import upload_area from "../../assets/upload_area.svg";
@@ -16,6 +15,7 @@ const Addproduct = ({ onProductAdded }) => {
   const imagehandler = (e) => {
     setImage(e.target.files[0]);
   };
+
   const changeHandler = (e) => {
     setProductDetails({ ...productDetails, [e.target.name]: e.target.value });
   };
@@ -23,61 +23,73 @@ const Addproduct = ({ onProductAdded }) => {
   const Add_Product = async () => {
     const token = localStorage.getItem("auth-token");
     if (!token) {
-      alert("Authentication token missing. Please log in as admin.");
+      alert("Please log in as admin.");
       return;
     }
-    let responseData;
-    let product = productDetails;
 
-    let formData = new FormData(); //send images
+    if (!image) {
+      alert("Please upload a product image.");
+      return;
+    }
+
+    let responseData;
+    let formData = new FormData();
     formData.append("product", image);
 
-    await fetch("http://localhost:3000/upload", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "auth-token": token,
-      },
-      body: formData,
-    })
-      .then((resp) => resp.json())
-      .then((data) => {
-        responseData = data;
-      });
-
-    if (responseData.success) {
-      product.image = responseData.image_url;
-
-      await fetch("http://localhost:3000/addproduct", {
+   
+    try {
+      const uploadResp = await fetch("http://localhost:3000/upload", {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json",
           "auth-token": token,
         },
-        body: JSON.stringify(product),
-      })
-        .then((resp) => resp.json())
-        .then((data) => {
-          if (data.success) {
-            alert("Product Added");
-            if (onProductAdded) {
-              onProductAdded();
-            }
-            setProductDetails({
-              name: "",
-              image: "",
-              category: "men",
-              new_price: "",
-              old_price: "",
-            });
-            setImage(false);
-          } else {
-            alert("Failed to add product: " + data.error);
-          }
+        body: formData,
+      });
+      responseData = await uploadResp.json();
+
+      if (responseData.success) {
+    
+        const product = {
+          ...productDetails,
+          image: responseData.image_url,
+          new_price: Number(productDetails.new_price),
+          old_price: Number(productDetails.old_price),
+        };
+
+        const addResp = await fetch("http://localhost:3000/addproduct", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+          body: JSON.stringify(product),
         });
-    } else {
-      alert("Image upload failed. Product not added.");
+
+        const data = await addResp.json();
+
+        if (data.success) {
+          alert("Product Added Successfully");
+          if (onProductAdded) {
+            onProductAdded();
+          }
+
+          setProductDetails({
+            name: "",
+            image: "",
+            category: "men",
+            new_price: "",
+            old_price: "",
+          });
+          setImage(false);
+        } else {
+          alert("Failed to add product: " + (data.message || "Unknown error"));
+        }
+      }
+    } catch (err) {
+      console.error("Error adding product:", err);
+      alert("Server error. Please check if the backend is running.");
     }
   };
 
@@ -149,4 +161,5 @@ const Addproduct = ({ onProductAdded }) => {
     </div>
   );
 };
+
 export default Addproduct;

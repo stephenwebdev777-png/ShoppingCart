@@ -1,18 +1,21 @@
-const express = require("express");
+const express = require("express"); //
+const fetchUser = require("../middleware/fetchUser"); //
 const {
-  getCart,
-  updateCart,
   addToCart,
   removeFromCart,
+  getCart,
+  updateCart,
   getUserInfo,
-} = require("../controllers/cartController");
-const fetchUser = require("../middleware/fetchUser");
-const router = express.Router();
+  clearCart, //
+} = require("../controllers/cartController"); //
 
-router.post("/getcart", fetchUser, getCart); // Get user's cart
-router.post("/updatecart", fetchUser, updateCart); // Update user's cart
-router.post("/addtocart", fetchUser, addToCart); // Add product to cart
-router.post("/removefromcart", fetchUser, removeFromCart); // Remove product from cart
-router.post("/getuserinfo", fetchUser, getUserInfo); // Get user's info
+const router = express.Router(); //
 
-module.exports = router;
+router.post("/addtocart", fetchUser, addToCart); //
+router.post("/removefromcart", fetchUser, removeFromCart); //
+router.post("/getcart", fetchUser, getCart); //
+router.post("/updatecart", fetchUser, updateCart); //
+router.post("/getuserinfo", fetchUser, getUserInfo); //
+router.post("/clearcart", fetchUser, clearCart); //
+
+module.exports = router; //

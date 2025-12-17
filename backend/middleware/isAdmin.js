@@ -1,22 +1,22 @@
-const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET || "default_session_secret";
+const { verifyToken } = require("../utils/jwtUtils");
 
 const isAdmin = (req, res, next) => {
   const token = req.header("auth-token");
   if (!token) {
-    return res.status(401).json({ success: false, message: "Unauthorized: Admin login required" });
+    return res.status(401).json({ success: false, message: "Token missing" });
   }
 
   try {
-    const data = jwt.verify(token, JWT_SECRET);
+    const data = verifyToken(token);
     if (data.role !== "admin") {
-      return res.status(403).json({ success: false, message: "Access denied: Admins only" });
+      return res.status(403).json({ success: false, message: "Admins only" });
     }
+
     req.user = data.email;
     req.role = data.role;
     next();
   } catch {
-    res.status(401).json({ success: false, errors: "Invalid token" });
+    res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
 

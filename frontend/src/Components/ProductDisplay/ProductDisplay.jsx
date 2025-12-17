@@ -16,10 +16,11 @@ const ProductDisplay = ({ product }) => {
   );
 
   //delivery date to get within 7 and 10 days, use modulo 4  7+(0 to 3)
-  const daysToAdd = 7 + (product.id % 4); 
+  const daysToAdd = 7 + (product.id % 4);
   const deliveryDate = new Date();
   deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);
-  const deliveryDateString = deliveryDate.toLocaleDateString("en-US", {  //month day(us)
+  const deliveryDateString = deliveryDate.toLocaleDateString("en-US", {
+    //month day(us)
     day: "numeric",
     month: "short",
   });
@@ -30,11 +31,11 @@ const ProductDisplay = ({ product }) => {
     "Top Brand",
     "Free Delivery",
     `Return/Exchange within ${returnDays} Days`,
-    "Pay on Delivery", 
-    "Secure Transaction", 
+    "Pay on Delivery",
+    "Secure Transaction",
   ];
 
-  const optionalBadges = [];  //if needed badges can add (without changing the base structure)
+  const optionalBadges = []; //if needed badges can add (without changing the base structure)
   const confidenceBadges = [...baseBadges, ...optionalBadges];
 
   const handleAddToCart = () => {
@@ -80,7 +81,7 @@ const ProductDisplay = ({ product }) => {
             {discountPercentage}% Off
           </p>
         </div>
-      
+
         <div className="product_display-right-stars">
           <img src={star_icon} alt="" />
           <img src={star_icon} alt="" />
@@ -137,7 +138,7 @@ const ProductDisplay = ({ product }) => {
           className="product_display-right-category"
         >
           <span>Category: </span> {product.category}
-        </p>    
+        </p>
         <div
           className="product_display-right-confidence"
           style={{
@@ -167,14 +168,14 @@ const ProductDisplay = ({ product }) => {
                   cursor: "pointer",
                   fontSize: "17px",
                   color: "#333",
-                  fontWeight: "bold", 
-                  }}
+                  fontWeight: "bold",
+                }}
               >
                 {badge}
               </span>
             ))}
           </div>
-        </div>      
+        </div>
       </div>
     </div>
   );

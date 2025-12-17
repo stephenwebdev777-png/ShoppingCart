@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Breadcrum from "../Components/Breadcrums/Breadcrum";
 import ProductDisplay from "../Components/ProductDisplay/ProductDisplay";
 import "./CSS/Product.css";
@@ -8,26 +8,21 @@ import "./CSS/Product.css";
 const Product = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const token = localStorage.getItem("auth-token");
 
   useEffect(() => {
-    if (!productId) {
-      setLoading(false);
-      setError("Invalid URL format.");
-      return;
-    }
     const fetchProduct = async () => {
+      if (!productId) return;
       setLoading(true);
-      setError(null);
-      setProduct(null);
       try {
+        // FIX: Added /products prefix to match backend index.js mounting
         const response = await fetch(
-          `http://localhost:3000/product/${productId}`,
+          `http://localhost:3000/products/product/${productId}`,
           {
             method: "GET",
             headers: {
@@ -36,115 +31,74 @@ const Product = () => {
             },
           }
         );
-        if (response.status === 404 || response.status === 400) {
-          setError("Product not available or URL is incorrect.");
-          await response.json();
-        } else if (response.status === 401) {
-          if (token) {
-            localStorage.removeItem("auth-token");
-          }
-          setError("unauthorized");
-          await response.json();
-        } else if (response.ok) {
+
+        if (response.ok) {
           const data = await response.json();
-          if (data.success) {
-            setProduct(data.product);
-          } else {
-            setError(data.message || "An unexpected error occurred.");
-          }
+          setProduct(data);
+          setError(null);
+        } else if (response.status === 401) {
+          setError("unauthorized");
+        } else if (response.status === 404) {
+          setError("not_found"); // Handles IDs that don't exist in DB
         } else {
-          setError(`Server error: Status ${response.status}`);
+          setError("error");
         }
       } catch (err) {
-        setError("Could not connect to the server.");
-        console.error("Network or fetch error:", err);
+        setError("network_error");
       } finally {
         setLoading(false);
       }
     };
+
     fetchProduct();
   }, [productId, token]);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      alert("Enter email and password");
-      return;
-    }
-    try {
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        localStorage.setItem("auth-token", data.token);
-        window.location.reload();
-      } else {
-        alert(data.errors);
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
-      alert("Login failed due to a network error.");
-    }
-  };
-  if (loading) {
+  if (loading)
     return (
-      <h2 style={{ padding: "50px", textAlign: "center" }}>
-        Loading product details...
-      </h2>
+      <div
+        className="loading"
+        style={{ padding: "100px", textAlign: "center" }}
+      >
+        Loading...
+      </div>
     );
-  }
+
+  // Handle Unauthorized (User not logged in)
   if (error === "unauthorized") {
     return (
-      <div className="login-modal-overlay">
-        <div className="login-modal-content">
-          <h2>Access Restricted</h2>
-          <p>Login to view this product.</p>
-          <input
-            type="text"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="login-input"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="login-input"
-          />
-
-          <button className="login-modal-btn" onClick={handleLogin}>
-            Login
-          </button>
-
-          <p style={{ marginTop: "15px", color: "red" }}>
-            Please log in.
-          </p>
-        </div>
+      <div style={{ padding: "100px", textAlign: "center" }}>
+        <h2>Login Required</h2>
+        <p>Please login to view full product details.</p>
+        <button
+          onClick={() => navigate(`/login?redirect=${location.pathname}`)}
+        >
+          Go to Login
+        </button>
       </div>
     );
   }
 
-  if (error) {
-    return <h2 style={{ padding: "50px", textAlign: "center" }}>{error}</h2>;
-  }
-
-  if (product) {
+  // Handle Missing Products (e.g., /product/1000)
+  if (error === "not_found") {
     return (
-      <div>
-        <Breadcrum product={product} />
-        <ProductDisplay product={product} />
+      <div style={{ padding: "100px", textAlign: "center" }}>
+        <h1 style={{ fontSize: "80px", color: "#ccc" }}>404</h1>
+        <h2>Product Unavailable</h2>
+        <p>The product you are looking for does not exist in our catalog.</p>
+        <button onClick={() => navigate("/")}>Return to Shop</button>
       </div>
     );
   }
+
   return (
-    <h2 style={{ padding: "50px", textAlign: "center" }}>
-      Unable to load product.
-    </h2>
+    <div>
+      {product && (
+        <>
+          <Breadcrum product={product} />
+          <ProductDisplay product={product} />
+        </>
+      )}
+    </div>
   );
 };
 

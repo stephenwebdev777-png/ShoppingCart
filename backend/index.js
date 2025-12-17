@@ -1,52 +1,25 @@
-require("dotenv").config();  // Load environment variables from .env file
+require("dotenv").config();
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
+const connectDB = require("./config/db");
+
 const app = express();
 
-// Import routes
-const authRoutes = require("./routes/authRoutes");
-const productRoutes = require("./routes/productRoutes");
-const userRoutes = require("./routes/userRoutes");
-
 // Middleware
-const fetchUser = require("./middleware/fetchUser");  // Make sure this is properly handling authentication
-const { isAdmin } = require("./middleware/isAdmin");  // For admin-specific routes
+app.use(express.json());
+app.use(cors());
 
-// Environment Variables
-const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/shoppingcart";
+// Database Connection 
+connectDB();
 
-// Middleware Configuration
-app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173", // Adjust the frontend URL as needed
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
-
-app.use(express.json());  // Parse JSON request bodies
-
-// MongoDB Connection
-mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
+// Static Folder for Images 
+app.use("/images", express.static("upload/images"));
 
 // Routes
-app.use("/auth", authRoutes);  // Authentication routes
-app.use("/product", productRoutes);  // Product-related routes
-app.use("/cart", fetchUser, userRoutes);  // Cart routes (ensure user is fetched before proceeding)
+app.use("/auth", require("./routes/authRoutes"));
+app.use("/products", require("./routes/productRoutes"));
+app.use("/user", require("./routes/userRoutes"));
 
-// Error Handling (Basic error handler)
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ success: false, message: "Something went wrong!" });
-});
-
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

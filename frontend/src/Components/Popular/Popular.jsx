@@ -4,11 +4,13 @@ import Item from "../Item/Item";
 
 const Popular = () => {
   const [popularProducts, setPopularProducts] = useState([]);
+  const API_BASE_URL = "http://localhost:3000";
 
   useEffect(() => {
-    fetch("http://localhost:3000/popularinwomen")
+    fetch(`${API_BASE_URL}/products/popularinwomen`)
       .then((response) => response.json())
-      .then((data) => setPopularProducts(data));
+      .then((data) => setPopularProducts(data))
+      .catch((err) => console.error("Error fetching popular products:", err));
   }, []);
 
   return (
@@ -25,6 +27,7 @@ const Popular = () => {
               image={item.image}
               new_price={item.new_price}
               old_price={item.old_price}
+              category={item.category}
             />
           );
         })}

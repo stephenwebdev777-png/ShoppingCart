@@ -1,14 +1,33 @@
 const express = require("express");
-const { getAllProducts, addProduct, getNewCollections, getPopularInWomen } = require("../controllers/productController.js");
-const { isAdmin } = require("../middleware/isAdmin");
+const {
+  getAllProducts,
+  addProduct,
+  removeProduct,
+  getProductById,
+  getNewCollections,
+  getPopularInWomen,
+} = require("../controllers/productController");
+
+const upload = require("../config/multer");
+const isAdmin = require("../middleware/isAdmin");
+const fetchUser = require("../middleware/fetchUser"); 
+
 const router = express.Router();
 
-// Public routes
-router.get("/newcollections", getNewCollections); // No auth required for new collections
-router.get("/popularinwomen", getPopularInWomen); // No auth required for popular in women
+router.get("/newcollections", getNewCollections);
+router.get("/popularinwomen", getPopularInWomen);
+router.get("/allproduct", getAllProducts);
 
-// Admin-only routes
-router.get("/allproduct", isAdmin, getAllProducts); // Admin only
-router.post("/addproduct", isAdmin, addProduct); // Admin only
+router.get("/product/:id",getProductById);
+
+router.post("/addproduct", isAdmin, addProduct);
+router.post("/removeproduct", isAdmin, removeProduct);
+
+router.post("/upload", isAdmin,upload.single('product'), (req, res) => {
+  res.json({
+    success: 1,
+    image_url: `http://localhost:3000/images/${req.file.filename}`
+  });
+});
 
 module.exports = router;

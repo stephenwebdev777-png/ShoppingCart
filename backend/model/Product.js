@@ -11,6 +11,4 @@ const productSchema = new mongoose.Schema({
   available: { type: Boolean, default: true },
 });
 
-const Product = mongoose.model("Product", productSchema);
-
-module.exports = Product;
+module.exports = mongoose.model("Product", productSchema);

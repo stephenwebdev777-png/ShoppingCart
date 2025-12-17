@@ -1,19 +1,18 @@
-const jwt = require("jsonwebtoken");
-const JWT_SECRET = process.env.JWT_SECRET || "default_session_secret";
+const { verifyToken } = require("../utils/jwtUtils");
 
-const fetchUser = async (req, res, next) => {
+const fetchUser = (req, res, next) => {
   const token = req.header("auth-token");
   if (!token) {
-    return res.status(401).json({ success: false, message: "Unauthorized: Please login first" });
+    return res.status(401).json({ success: false, message: "Login required" });
   }
 
   try {
-    const data = jwt.verify(token, JWT_SECRET);
+    const data = verifyToken(token);
     req.user = data.email;
     req.role = data.role;
     next();
   } catch {
-    res.status(401).json({ success: false, errors: "Invalid token" });
+    res.status(401).json({ success: false, message: "Invalid token" });
   }
 };
 

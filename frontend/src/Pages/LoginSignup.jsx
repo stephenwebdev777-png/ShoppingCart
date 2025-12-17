@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+/* eslint-disable react-hooks/set-state-in-effect */
+/* eslint-disable no-unused-vars */
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import "./CSS/LoginSignup.css";
 import shopper_logo from "../Assets/logo_big.png";
@@ -38,26 +40,34 @@ const LoginSignup = ({ mode }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const API_BASE_URL = "http://localhost:3000";
-  const [errorMsg, setErrorMsg] = useState("");
 
-  const [modeState, setModeState] = useState(
-    mode === "signup" || location.pathname === "/signup" ? "signup" : "login"
-  );
+  const [errorMsg, setErrorMsg] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
+  const [modeState, setModeState] = useState(mode || "login");
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
+
   const [forgotEmail, setForgotEmail] = useState("");
-  const [resetMessage, setResetMessage] = useState("");
+
+  // Clean up messages and handle redirects from ProtectedRoutes
+  useEffect(() => {
+    setErrorMsg("");
+    setResetMessage("");
+    if (mode) {
+      setModeState(mode);
+    }
+    // If redirected from ProtectedRoute, show the message passed in state
+    if (location.state?.message) {
+      setErrorMsg(location.state.message);
+    }
+  }, [mode, location]);
 
   const changeHandler = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const formTitle =
-    modeState === "login" || modeState === "forgot"
-      ? "Sign in or Create account"
-      : "Create Account";
 
   const login = async () => {
     if (!formData.email.trim() || !formData.password.trim()) {
@@ -67,7 +77,7 @@ const LoginSignup = ({ mode }) => {
 
     setErrorMsg("");
     try {
-      const response = await fetch(`${API_BASE_URL}/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -76,21 +86,41 @@ const LoginSignup = ({ mode }) => {
         }),
       });
       const data = await response.json();
+
       if (data.success) {
         localStorage.setItem("auth-token", data.token);
-        setTimeout(() => window.location.reload(), 100);
-        navigate(data.role === "admin" ? "/admin" : "/");
+
+        const params = new URLSearchParams(window.location.search);
+        const redirectPath = params.get("redirect");
+
+        if (data.role === "admin") {
+          window.location.replace("/admin");
+        } else if (redirectPath) {
+          window.location.replace(decodeURIComponent(redirectPath));
+        } else {
+          window.location.replace("/");
+        }
       } else {
-        setErrorMsg(data.errors || "Invalid email or password");
+        setErrorMsg(data.message || "Invalid credentials");
       }
-    } catch {
-      setErrorMsg("Something went wrong. Please try again.");
+    } catch (err) {
+      setErrorMsg("Something went wrong. Please check your server connection.");
     }
   };
 
   const signup = async () => {
+    if (
+      !formData.email.trim() ||
+      !formData.password.trim() ||
+      !formData.username.trim()
+    ) {
+      setErrorMsg("Please fill in all fields");
+      return;
+    }
+
+    setErrorMsg("");
     try {
-      const response = await fetch(`${API_BASE_URL}/signup`, {
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -101,66 +131,44 @@ const LoginSignup = ({ mode }) => {
       });
       const data = await response.json();
       if (data.success) {
-        alert("Signup successful. Please log in now.");
+        setResetMessage("Signup successful! Redirecting to login...");
         setFormData({ username: "", email: "", password: "" });
-        setModeState("login");
-        navigate("/login");
+        setTimeout(() => navigate("/login"), 2000);
       } else {
-        alert(data.errors || "Signup failed");
+        setErrorMsg(data.message || "Signup failed");
       }
-    } catch {
-      alert("Signup failed. Please try again.");
+    } catch (err) {
+      setErrorMsg("Signup failed. Please try again.");
     }
-  };
-
-  const handleToggle = () => {
-    const newMode = modeState === "login" ? "signup" : "login";
-    setModeState(newMode);
-    setResetMessage("");
-    navigate(newMode === "signup" ? "/signup" : "/login");
-  };
-
-  const handleForgotToggle = () => {
-    setModeState("forgot");
-    setResetMessage("");
-    navigate("/forgotpassword");
-  };
-
-  const handleBackToLogin = () => {
-    setModeState("login");
-    setResetMessage("");
-    setForgotEmail("");
-    navigate("/login");
   };
 
   const forgotPasswordHandler = async () => {
     if (!forgotEmail.trim()) {
-      setResetMessage("Please enter your email address.");
+      setErrorMsg("Please enter your email address.");
       return;
     }
+    setErrorMsg("");
     setResetMessage("Sending password reset email...");
+
     try {
-      const response = await fetch(`${API_BASE_URL}/forgotpassword`, {
+      const response = await fetch(`${API_BASE_URL}/auth/forgotpassword`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: forgotEmail.trim() }),
       });
       const data = await response.json();
-      setResetMessage(
-        data.success
-          ? data.message
-          : data.errors || "Failed to send reset email."
-      );
+
       if (data.success) {
-        alert(
-          "Success! Check your email for the password reset link (via Mailtrap)."
+        setResetMessage(
+          "Success! Check your Mailtrap inbox for the reset link."
         );
       } else {
-        alert("Error: " + (data.errors || "Could not process request."));
+        setResetMessage("");
+        setErrorMsg(data.message || "Failed to send reset email.");
       }
-    } catch {
-      setResetMessage("A network error occurred. Please try again.");
-      alert("A network error occurred. Please try again.");
+    } catch (err) {
+      setResetMessage("");
+      setErrorMsg("A network error occurred. Please try again.");
     }
   };
 
@@ -170,10 +178,9 @@ const LoginSignup = ({ mode }) => {
         <div className="forgot-password-content">
           <h1>Reset Password</h1>
           <p
-            style={{ marginBottom: "20px", color: "#5c5c5c", fontSize: "19px" }}
+            style={{ marginBottom: "20px", color: "#5c5c5c", fontSize: "17px" }}
           >
-            Enter the email address associated with your account to receive a
-            reset link.
+            Enter your email address to receive a reset link.
           </p>
           <div className="loginsignup-fields">
             <input
@@ -183,40 +190,47 @@ const LoginSignup = ({ mode }) => {
               onChange={(e) => setForgotEmail(e.target.value)}
             />
           </div>
-          <button onClick={forgotPasswordHandler}>Send Reset Link</button>
+
+          {errorMsg && (
+            <p
+              className="error-msg"
+              style={{ color: "red", marginTop: "10px" }}
+            >
+              {errorMsg}
+            </p>
+          )}
           {resetMessage && (
             <p
-              style={{
-                color:
-                  resetMessage.includes("sent") ||
-                  resetMessage.includes("success")
-                    ? "green"
-                    : "#ff4141",
-                marginTop: "15px",
-              }}
+              className="success-msg"
+              style={{ color: "green", marginTop: "10px" }}
             >
               {resetMessage}
             </p>
           )}
-          <hr style={{ margin: "20px 0", borderColor: "#e0e0e0" }} />
+
+          <button onClick={forgotPasswordHandler} style={{ marginTop: "20px" }}>
+            Send Reset Link
+          </button>
+
           <p
-            onClick={handleBackToLogin}
+            onClick={() => navigate("/login")}
             style={{
-              color: "#f32d2dff",
+              textAlign: "center",
+              color: "#ff4141",
               cursor: "pointer",
-              marginTop: "10px",
-              fontWeight: 500,
+              marginTop: "20px",
+              fontWeight: "600",
+              fontSize: "18px",
             }}
           >
-            &larr;Back to Login
+            ← Back to Login
           </p>
         </div>
       );
     }
-
     return (
       <>
-        <h1>{formTitle}</h1>
+        <h1>{modeState === "login" ? "Sign In" : "Sign Up"}</h1>
         <div className="loginsignup-fields">
           {modeState === "signup" && (
             <input
@@ -242,77 +256,88 @@ const LoginSignup = ({ mode }) => {
             placeholder="Password"
           />
         </div>
+
         {errorMsg && (
-          <p style={{ color: "#ff4141",marginTop:"5px",marginBottom: "-10px", fontSize: "16px" }}>
+          <p className="error-msg" style={{ color: "red", marginTop: "10px" }}>
             {errorMsg}
           </p>
         )}
+        {resetMessage && (
+          <p
+            className="success-msg"
+            style={{ color: "green", marginTop: "10px" }}
+          >
+            {resetMessage}
+          </p>
+        )}
+
         <button onClick={() => (modeState === "login" ? login() : signup())}>
           Continue
         </button>
+
         {modeState === "login" && (
           <p
-            onClick={handleForgotToggle}
+            onClick={() => navigate("/forgotpassword")}
             style={{
               textAlign: "right",
-              marginTop: "10px",
+              marginTop: "15px",
               cursor: "pointer",
               color: "#007bff",
-              fontSize: "18px",
+              fontSize: "16px",
               textDecoration: "underline",
             }}
           >
             Forgot Password?
           </p>
         )}
-        {modeState === "login" && (
-          <p className="loginsignup-agree">
-            By continuing, you agree to Shoppers Conditions of Use and Privacy
-            Notice.
-          </p>
-        )}
-        <hr style={{ margin: "15px 0", borderColor: "#e0e0e0" }} />
-        {modeState === "login" ? (
-          <p style={{ marginTop: "10px", color: "#5c5c5c", fontSize: "18px" }}>
-            Create an account?{" "}
-            <span
-              onClick={handleToggle}
-              style={{ color: "#f32d2dff", cursor: "pointer", fontWeight: 500 }}
-            >
-              Click here
-            </span>
-          </p>
-        ) : (
-          <p className="loginsignup-login">
-            Already have an account?{" "}
-            <span onClick={handleToggle} className="btn">
-              Login here
-            </span>
-          </p>
-        )}
+
+        <div className="loginsignup-login" style={{ marginTop: "20px" }}>
+          {modeState === "login" ? (
+            <p>
+              Create an account?{" "}
+              <span
+                onClick={() => navigate("/signup")}
+                style={{ color: "#ff4141", cursor: "pointer" }}
+              >
+                Click here
+              </span>
+            </p>
+          ) : (
+            <p>
+              Already have an account?{" "}
+              <span
+                onClick={() => navigate("/login")}
+                style={{ color: "#ff4141", cursor: "pointer" }}
+              >
+                Login here
+              </span>
+            </p>
+          )}
+        </div>
       </>
     );
   };
 
   return (
-    <>
+    <div className="loginsignup-page">
+      {/* SimpleHeader included here; Ensure App.jsx hides the main Navbar on this route */}
       <SimpleHeader />
-      <div className="loginsignup">
+      <div
+        className="loginsignup"
+        style={{ paddingBottom: "100px", paddingTop: "50px" }}
+      >
         <div
           className="loginsignup-container"
           style={{
-            height:
-              modeState === "forgot"
-                ? "450px"
-                : modeState === "login"
-                ? "500px"
-                : "600px",
+            height: "auto",
+            minHeight: modeState === "forgot" ? "400px" : "500px",
+            paddingBottom: "40px",
           }}
         >
           {renderFormContent()}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
