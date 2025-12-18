@@ -1,0 +1,292 @@
+[{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd2b"
+  },
+  "id": 101,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_1.png",
+  "category": "women",
+  "new_price": 420,
+  "old_price": 780,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd2c"
+  },
+  "id": 102,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_2.png",
+  "category": "women",
+  "new_price": 510,
+  "old_price": 895,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd2d"
+  },
+  "id": 103,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_3.png",
+  "category": "women",
+  "new_price": 365,
+  "old_price": 610,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd2e"
+  },
+  "id": 104,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_4.png",
+  "category": "women",
+  "new_price": 899,
+  "old_price": 920,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd2f"
+  },
+  "id": 105,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_5.png",
+  "category": "women",
+  "new_price": 499,
+  "old_price": 760,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd30"
+  },
+  "id": 106,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_6.png",
+  "category": "women",
+  "new_price": 699,
+  "old_price": 880,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd31"
+  },
+  "id": 107,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_7.png",
+  "category": "women",
+  "new_price": 385,
+  "old_price": 620,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd32"
+  },
+  "id": 108,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_8.png",
+  "category": "women",
+  "new_price": 420,
+  "old_price": 790,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd33"
+  },
+  "id": 109,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_9.png",
+  "category": "women",
+  "new_price": 550,
+  "old_price": 820,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd34"
+  },
+  "id": 110,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_10.png",
+  "category": "women",
+  "new_price": 360,
+  "old_price": 580,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd36"
+  },
+  "id": 112,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_12.png",
+  "category": "women",
+  "new_price": 395,
+  "old_price": 700,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd37"
+  },
+  "id": 113,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_13.png",
+  "category": "men",
+  "new_price": 499,
+  "old_price": 850,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd38"
+  },
+  "id": 114,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_14.png",
+  "category": "men",
+  "new_price": 350,
+  "old_price": 620,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd39"
+  },
+  "id": 115,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_15.png",
+  "category": "men",
+  "new_price": 800,
+  "old_price": 900,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd3a"
+  },
+  "id": 116,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_16.png",
+  "category": "men",
+  "new_price": 620,
+  "old_price": 880,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd3b"
+  },
+  "id": 117,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_17.png",
+  "category": "men",
+  "new_price": 430,
+  "old_price": 760,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd3c"
+  },
+  "id": 118,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_18.png",
+  "category": "men",
+  "new_price": 550,
+  "old_price": 880,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd3d"
+  },
+  "id": 119,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_19.png",
+  "category": "men",
+  "new_price": 740,
+  "old_price": 900,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd3e"
+  },
+  "id": 120,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_20.png",
+  "category": "men",
+  "new_price": 365,
+  "old_price": 590,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd3f"
+  },
+  "id": 121,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_21.png",
+  "category": "men",
+  "new_price": 780,
+  "old_price": 890,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd40"
+  },
+  "id": 122,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_22.png",
+  "category": "men",
+  "new_price": 360,
+  "old_price": 600,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd41"
+  },
+  "id": 123,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_23.png",
+  "category": "men",
+  "new_price": 580,
+  "old_price": 840,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6932663f738ea5de03d0cd42"
+  },
+  "id": 124,
+  "name": "Men Green Solid Zippered Full-Zip Slim Fit Bomber Jacket",
+  "image": "http://localhost:3000/images/product_24.png",
+  "category": "men",
+  "new_price": 420,
+  "old_price": 730,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "694275bf1a63a7d2c05a2e5a"
+  },
+  "id": 125,
+  "name": "product123",
+  "image": "http://localhost:3000/images/product_1765963199560.png",
+  "category": "men",
+  "new_price": 456,
+  "old_price": 677,
+  "available": true,
+  "date": {
+    "$date": "2025-12-17T09:19:59.614Z"
+  },
+  "__v": 0
+}]

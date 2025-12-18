@@ -1,0 +1,36 @@
+[{
+  "_id": {
+    "$oid": "693a99d81f34f137a7c92256"
+  },
+  "username": "Kiru",
+  "email": "kiru@gmail.com",
+  "password": "$2b$10$v/3NfslMigNLFfLncb504.4XjZMlKTyg6038Nb5H5fd3sUP/pR3j6",
+  "role": "user",
+  "__v": 0,
+  "cartData": [
+    {
+      "key": "103_M",
+      "quantity": 2
+    }
+  ],
+  "resetPasswordExpires": {
+    "$date": "2025-12-18T08:44:58.294Z"
+  },
+  "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcnVAZ21haWwuY29tIiwiaWF0IjoxNzY1OTYxMDk4LCJleHAiOjE3NjYwNDc0OTh9.TesOEggAN_wzYNDXkOTlRg1Ku18xu2YLAeIgiTqKsAE"
+},
+{
+  "_id": {
+    "$oid": "693a9a101f34f137a7c92271"
+  },
+  "username": "Admin",
+  "email": "admin@gmail.com",
+  "password": "$2b$10$TKBbfAvTPLiYiE7/xaqFjOry8H5JLCvsbfoBFEDZ4GehPX/onyD3G",
+  "role": "admin",
+  "__v": 0,
+  "cartData": [
+    {
+      "key": "102_L",
+      "quantity": 3
+    }
+  ]
+}]

@@ -1,17 +1,16 @@
 /* eslint-disable react-hooks/set-state-in-effect */
-import React, { useContext, useState, useEffect } from "react"; //shop category pages 
+import React, { useContext, useState, useEffect } from "react";
 import "./CSS/ShopCategory.css";
 import { ShopContext } from "../Context/ShopContext";
 import Item from "../Components/Item/Item";
 
 const ShopCategory = (props) => {
   const { all_product } = useContext(ShopContext);
-
   const [sortType, setSortType] = useState("default");
 
   useEffect(() => {
     setSortType("default");
-  }, [props.category]);  //reset sorting when the category changes
+  }, [props.category]);
 
   let filtered = all_product.filter((item) => item.category === props.category);
 
@@ -29,7 +28,6 @@ const ShopCategory = (props) => {
         <p>
           <span>Explore Products</span>
         </p>
-
         <div className="shopcategory-sort">
           <select
             value={sortType}
@@ -52,6 +50,7 @@ const ShopCategory = (props) => {
             image={item.image}
             new_price={item.new_price}
             old_price={item.old_price}
+            category={props.category} // CRITICAL: Passing category to Item
           />
         ))}
       </div>

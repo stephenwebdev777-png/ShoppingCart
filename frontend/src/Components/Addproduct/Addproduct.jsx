@@ -12,7 +12,7 @@ const Addproduct = ({ onProductAdded }) => {
     old_price: "",
   });
 
-  const imagehandler = (e) => {
+  const imagehandler = (e) => { 
     setImage(e.target.files[0]);
   };
 
@@ -36,9 +36,8 @@ const Addproduct = ({ onProductAdded }) => {
     let formData = new FormData();
     formData.append("product", image);
 
-   
     try {
-      const uploadResp = await fetch("http://localhost:3000/upload", {
+      const uploadResp = await fetch("http://localhost:3000/products/upload", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -49,7 +48,6 @@ const Addproduct = ({ onProductAdded }) => {
       responseData = await uploadResp.json();
 
       if (responseData.success) {
-    
         const product = {
           ...productDetails,
           image: responseData.image_url,
@@ -57,7 +55,7 @@ const Addproduct = ({ onProductAdded }) => {
           old_price: Number(productDetails.old_price),
         };
 
-        const addResp = await fetch("http://localhost:3000/addproduct", {
+        const addResp = await fetch("http://localhost:3000/products/addproduct", {
           method: "POST",
           headers: {
             Accept: "application/json",

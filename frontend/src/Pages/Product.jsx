@@ -1,91 +1,101 @@
 /* eslint-disable no-unused-vars */
+/* cite: Product.jsx, App.jsx */
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Breadcrum from "../Components/Breadcrums/Breadcrum";
 import ProductDisplay from "../Components/ProductDisplay/ProductDisplay";
-import "./CSS/Product.css";
 
 const Product = () => {
   const { productId } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
-
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("auth-token");
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!productId) return;
-      setLoading(true);
       try {
-        // FIX: Added /products prefix to match backend index.js mounting
         const response = await fetch(
-          `http://localhost:3000/products/product/${productId}`,
-          {
-            method: "GET",
-            headers: {
-              "auth-token": token || "",
-              "Content-Type": "application/json",
-            },
-          }
+          `http://localhost:3000/products/product/${productId}`
         );
-
         if (response.ok) {
           const data = await response.json();
-          setProduct(data);
-          setError(null);
-        } else if (response.status === 401) {
-          setError("unauthorized");
-        } else if (response.status === 404) {
-          setError("not_found"); // Handles IDs that don't exist in DB
+
+          // VERIFY CATEGORY MATCH: Extract category from URL path
+          const urlCategory = location.pathname.split("/")[1]; // e.g., "mens" or "womens"
+          const normalizedUrlCategory =
+            urlCategory === "mens" ? "men" : "women";
+
+          if (data.category !== normalizedUrlCategory) {
+            setError("category_mismatch"); // Wrong category for this ID
+          } else {
+            setProduct(data);
+            setError(null);
+          }
         } else {
-          setError("error");
+          setError("not_found"); // Invalid ID
         }
       } catch (err) {
         setError("network_error");
-      } finally {
-        setLoading(false);
       }
     };
-
     fetchProduct();
-  }, [productId, token]);
+  }, [productId, location.pathname]);
 
-  if (loading)
+  // Handle Scroll Lock for Standalone Error View
+  useEffect(() => {
+    if (error === "not_found" || error === "category_mismatch") {
+      document.body.style.overflow = "hidden";
+      document.body.style.height = "100vh";
+    } else {
+      document.body.style.overflow = "auto";
+      document.body.style.height = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.height = "auto";
+    };
+  }, [error]);
+
+  if (error === "not_found" || error === "category_mismatch") {
     return (
       <div
-        className="loading"
-        style={{ padding: "100px", textAlign: "center" }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "#fff",
+          zIndex: 9999,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          fontFamily: "system-ui, sans-serif",
+        }}
       >
-        Loading...
-      </div>
-    );
-
-  // Handle Unauthorized (User not logged in)
-  if (error === "unauthorized") {
-    return (
-      <div style={{ padding: "100px", textAlign: "center" }}>
-        <h2>Login Required</h2>
-        <p>Please login to view full product details.</p>
+        <h1 style={{ fontSize: "30px", fontWeight: "500", color: "#202124" }}>
+          This product does not exist in our {location.pathname.split("/")[1]}{" "}
+          catalog.
+        </h1>
+        <p style={{ fontSize: "17px", color: "#70757a", marginTop: "10px" }}>
+          HTTP ERROR 404
+        </p>
         <button
-          onClick={() => navigate(`/login?redirect=${location.pathname}`)}
+          onClick={() => navigate("/")}
+          style={{
+            marginTop: "30px",
+            padding: "10px 20px",
+            backgroundColor: "#1a73e8",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
         >
-          Go to Login
+          Return to Shop
         </button>
-      </div>
-    );
-  }
-
-  // Handle Missing Products (e.g., /product/1000)
-  if (error === "not_found") {
-    return (
-      <div style={{ padding: "100px", textAlign: "center" }}>
-        <h1 style={{ fontSize: "80px", color: "#ccc" }}>404</h1>
-        <h2>Product Unavailable</h2>
-        <p>The product you are looking for does not exist in our catalog.</p>
-        <button onClick={() => navigate("/")}>Return to Shop</button>
       </div>
     );
   }

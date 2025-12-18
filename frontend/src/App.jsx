@@ -1,4 +1,5 @@
-import React from "react";
+/* cite: App.jsx, authController.js, isAdmin.js */
+import React, { useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -17,33 +18,109 @@ import LoginSignup from "./Pages/LoginSignup";
 import Admin from "./Pages/Admin/Admin";
 import Addproduct from "./Components/Addproduct/Addproduct";
 import Listproduct from "./Components/Listproduct/Listproduct";
+import Proceed from "./Components/Proceed/Proceed";
+import ResetPassword from "./Pages/ResetPassword";
 import banner_women from "./Components/Assets/banner_women.png";
 import banner_mens from "./Components/Assets/banner_mens.png";
-import ResetPassword from "./Pages/ResetPassword";
 
-const ProtectedRoute = ({ children }) => {
+// Built-in Scroll Fix
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const currentPathValid = [
+      "/",
+      "/mens",
+      "/womens",
+      "/login",
+      "/signup",
+      "/forgotpassword",
+      "/cart",
+      "/checkout",
+      "/admin",
+    ].some(
+      (path) =>
+        pathname === path ||
+        pathname.includes("/product/") ||
+        pathname.includes("/admin/")
+    );
+
+    if (currentPathValid) {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname]);
+  return null;
+};
+
+// ROLE-BASED PROTECTED ROUTE
+/* cite: App.jsx */
+const RoleProtectedRoute = ({ children, allowedRole }) => {
   const token = localStorage.getItem("auth-token");
+  const userRole = localStorage.getItem("user-role");
   const location = useLocation();
 
   if (!token) {
-    // Redirect with a state message so LoginSignup can show a popup
+    // PASS THE FULL CURRENT PATH to redirect back exactly here after login
     return (
       <Navigate
         to={`/login?redirect=${encodeURIComponent(location.pathname)}`}
-        state={{ message: "Please login to continue." }}
         replace
       />
     );
   }
+
+  if (allowedRole === "admin" && userRole !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+
+  if (allowedRole === "user" && userRole === "admin") {
+    return <Navigate to="/admin" replace />;
+  }
+
   return children;
 };
 
+// Standalone 404 Component
+const NotFoundPage = () => {
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.body.style.height = "100vh";
+    return () => {
+      document.body.style.overflow = "auto";
+      document.body.style.height = "auto";
+    };
+  }, []);
+
+  return (
+    <div
+      style={{
+        fontFamily: "system-ui, sans-serif",
+        padding: "8% 12%",
+        height: "100vh",
+        backgroundColor: "#fff",
+      }}
+    >
+      <h1 style={{ fontSize: "35px", color: "#202124" }}>
+        This Shopper page can’t be found
+      </h1>
+      <p style={{ fontSize: "24px" }}>
+        No webpage found for:{" "}
+        <span style={{ color: "#1a73e8" }}>{window.location.href}</span>
+      </p>
+      <p style={{ fontSize: "17px", color: "#70757a", marginTop: "20px" }}>
+        HTTP ERROR 404
+      </p>
+    </div>
+  );
+};
+
+/* cite: App.jsx */
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<NavbarWrapper />}>
-          {/* PUBLIC: Everyone can see these */}
+          {/* PUBLIC ROUTES: Anyone can see these */}
           <Route index element={<Shop />} />
           <Route
             path="mens"
@@ -53,55 +130,60 @@ function App() {
             path="womens"
             element={<ShopCategory category="women" banner={banner_women} />}
           />
+
           <Route path="login" element={<LoginSignup mode="login" />} />
           <Route path="signup" element={<LoginSignup mode="signup" />} />
-          <Route
-            path="forgotpassword"
-            element={<LoginSignup mode="forgot" />}
-          />
-          <Route path="reset-password/:token" element={<ResetPassword />} />
 
-          {/* PRIVATE: Must be logged in to view these specific product paths */}
+          {/* PROTECTED ROUTES: Only users can view products or checkout */}
           <Route
             path="mens/product/:productId"
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute allowedRole="user">
                 <Product />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
           <Route
             path="womens/product/:productId"
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute allowedRole="user">
                 <Product />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
             }
           />
-
           <Route
             path="cart"
             element={
-              <ProtectedRoute>
+              <RoleProtectedRoute allowedRole="user">
                 <Cart />
-              </ProtectedRoute>
+              </RoleProtectedRoute>
+            }
+          />
+          <Route
+            path="checkout"
+            element={
+              <RoleProtectedRoute allowedRole="user">
+                <Proceed />
+              </RoleProtectedRoute>
             }
           />
         </Route>
 
-        {/* ADMIN: Private and specific */}
+        {/* Admin Dashboard */}
         <Route
           path="/admin"
           element={
-            <ProtectedRoute>
+            <RoleProtectedRoute allowedRole="admin">
               <Admin />
-            </ProtectedRoute>
+            </RoleProtectedRoute>
           }
         >
           <Route index element={<Navigate to="addproduct" replace />} />
           <Route path="addproduct" element={<Addproduct />} />
           <Route path="listproduct" element={<Listproduct />} />
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
@@ -109,16 +191,17 @@ function App() {
 
 const NavbarWrapper = () => {
   const location = useLocation();
-  // Hide Navbar on Login, Signup, and ForgotPassword pages to prevent double logo
-  const hideNavbar = ["/login", "/signup", "/forgotpassword"].includes(
-    location.pathname
-  );
-
+  const hideLayout = [
+    "/login",
+    "/signup",
+    "/forgotpassword",
+    "/checkout",
+  ].includes(location.pathname);
   return (
     <>
-      {!hideNavbar && <Navbar />}
+      {!hideLayout && <Navbar />}
       <Outlet />
-      {!hideNavbar && <Footer />}
+      {!hideLayout && <Footer />}
     </>
   );
 };

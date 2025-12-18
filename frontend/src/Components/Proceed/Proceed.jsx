@@ -32,7 +32,7 @@ const Proceed = () => {
 
     const fetchUserData = async () => {
       try {
-        // FIX: Added /user prefix to match backend index.js
+        // Fetches user information from the backend /user prefix
         const response = await fetch("http://localhost:3000/user/getuserinfo", {
           method: "POST",
           headers: {
@@ -56,42 +56,26 @@ const Proceed = () => {
     fetchUserData();
   }, []);
 
+  // UPDATED: handlePlaceOrder no longer calls the clearcart API
   const handlePlaceOrder = async () => {
     if (!paymentMethod) {
       displayNotification("Please select a payment method.");
       return;
     }
 
-    const token = localStorage.getItem("auth-token");
-    try {
-      // FIX: Added /user prefix and clearcart endpoint
-      const response = await fetch("http://localhost:3000/user/clearcart", {
-        method: "POST",
-        headers: {
-          "auth-token": token,
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-
-      if (data.success) {
-        setShowSuccessBanner(true);
-      } else {
-        displayNotification("Failed to finalize order. Try again.");
-      }
-    } catch (error) {
-      displayNotification("Network error. Please try again.");
-    }
+    // Success UI is triggered without clearing database cart data
+    setShowSuccessBanner(true);
   };
 
   const handleBannerDismiss = () => {
     setShowSuccessBanner(false);
-    window.location.replace("/"); // Hard refresh to ensure ShopContext cart clears
+    // Uses navigate to return home without a hard refresh to keep current cart context
+    navigate("/");
   };
 
   return (
     <div style={{ position: "relative" }}>
-      {/* Login Popup for logged out users accessing via URL directly */}
+      {/* Standalone Login Modal */}
       {showLoginPopup && (
         <div className="login-modal-overlay">
           <div className="login-modal-content">
@@ -108,7 +92,7 @@ const Proceed = () => {
         </div>
       )}
 
-      {/* Order Success Banner */}
+      {/* Success Notification Banner */}
       <div
         className={`success-banner ${showSuccessBanner ? "show" : ""}`}
         style={{
@@ -134,6 +118,7 @@ const Proceed = () => {
         </button>
       </div>
 
+      {/* Checkout Container matching Proceed.css classes */}
       <div
         className="checkout-page-container"
         style={{ opacity: showSuccessBanner ? 0.3 : 1 }}
@@ -144,7 +129,8 @@ const Proceed = () => {
           <h2>1. Delivery Address</h2>
           <div className="delivery-info">
             <p>
-              Delivering to: <strong>{userName}</strong>
+              Delivering to:{" "}
+              <strong className="user-name-display">{userName}</strong>
             </p>
             {isEditing ? (
               <textarea
@@ -156,12 +142,14 @@ const Proceed = () => {
             ) : (
               <p className="current-address">{address}</p>
             )}
-            <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="change-address-btn"
-            >
-              {isEditing ? "Confirm" : "Change Address"}
-            </button>
+            <div className="address-actions">
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className="change-address-btn"
+              >
+                {isEditing ? "Confirm" : "Change Address"}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -180,6 +168,7 @@ const Proceed = () => {
                     type="radio"
                     name="payment"
                     value={method}
+                    checked={paymentMethod === method}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                   />
                   {method === "COD" ? "Cash on Delivery" : `Pay via ${method}`}
@@ -208,6 +197,7 @@ const Proceed = () => {
             color: "white",
             padding: "10px 20px",
             borderRadius: "5px",
+            zIndex: 3000,
           }}
         >
           {notificationMessage}

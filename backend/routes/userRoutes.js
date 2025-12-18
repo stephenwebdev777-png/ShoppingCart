@@ -16,6 +16,5 @@ router.post("/removefromcart", fetchUser, removeFromCart); //
 router.post("/getcart", fetchUser, getCart); //
 router.post("/updatecart", fetchUser, updateCart); //
 router.post("/getuserinfo", fetchUser, getUserInfo); //
-router.post("/clearcart", fetchUser, clearCart); //
 
 module.exports = router; //

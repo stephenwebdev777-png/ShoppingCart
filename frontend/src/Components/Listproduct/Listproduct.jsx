@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import "./Listproduct.css";
 import cross_icon from "../../assets/cross_icon.png";
 
-const Listproduct = ({refreshTrigger}) => {
+const Listproduct = ({ refreshTrigger }) => {
   const [allproducts, setAllproducts] = useState([]);
 
   const fetchInfo = async () => {
-    const res = await fetch("http://localhost:3000/allproduct");
+    const res = await fetch("http://localhost:3000/products/allproduct");
     const data = await res.json();
     setAllproducts(data);
   };
@@ -19,10 +19,10 @@ const Listproduct = ({refreshTrigger}) => {
   const remove_product = async (id) => {
     const token = localStorage.getItem("auth-token");
     if (!token) {
-        alert("Authentication token missing. Please log in as admin.");
-        return; 
+      alert("Authentication token missing. Please log in as admin.");
+      return;
     }
-    await fetch("http://localhost:3000/removeproduct", {
+    await fetch("http://localhost:3000/products/removeproduct", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -31,7 +31,7 @@ const Listproduct = ({refreshTrigger}) => {
       },
       body: JSON.stringify({ id }),
     });
-    fetchInfo(); 
+    fetchInfo();
   };
 
   return (
@@ -46,7 +46,7 @@ const Listproduct = ({refreshTrigger}) => {
         <p>Remove</p>
       </div>
       <div className="listproduct-allproducts">
-       <hr/>
+        <hr />
         {allproducts.map((product) => (
           <div
             className="listproduct-format-main listproduct-format"
@@ -62,16 +62,15 @@ const Listproduct = ({refreshTrigger}) => {
             <p>Rs.{product.new_price}</p>
             <p>{product.category}</p>
             <img
-             onClick={() => remove_product(product.id)}
+              onClick={() => remove_product(product.id)}
               src={cross_icon}
               alt=""
               className="listproduct-remove-icon"
-            />         
+            />
           </div>
         ))}
       </div>
     </div>
   );
 };
-
 export default Listproduct;

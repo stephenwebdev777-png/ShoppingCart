@@ -1,27 +1,20 @@
 import React from "react";
 import "./Item.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Item = (props) => {
-  const navigate = useNavigate();
-
-  // Maps database category to your desired URL path
-  const categoryPath = props.category === "women" ? "womens" : "mens";
-  const productPath = `/${categoryPath}/product/${props.id}`;
-
-  const handleItemClick = (e) => {
-    const token = localStorage.getItem("auth-token");
-    if (!token) {
-      e.preventDefault(); // Block the <Link>
-      alert("Please login to view product details.");
-      navigate(`/login?redirect=${encodeURIComponent(productPath)}`);
-    }
-  };
+  // Map "men" to "mens" and "women" to "womens" to match App.jsx routes
+  const categoryPath = props.category === "men" ? "mens" : "womens";
 
   return (
     <div className="item">
-      <Link to={productPath} onClick={handleItemClick}>
-        <img src={props.image} alt={props.name} />
+      {/* Dynamic routing based on category */}
+      <Link to={`/${categoryPath}/product/${props.id}`}>
+        <img
+          onClick={() => window.scrollTo(0, 0)}
+          src={props.image}
+          alt={props.name}
+        />
       </Link>
       <p>{props.name}</p>
       <div className="item-prices">
