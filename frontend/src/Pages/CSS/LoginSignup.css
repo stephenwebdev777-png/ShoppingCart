@@ -1,41 +1,73 @@
 .loginsignup {
   width: 100%;
-  height: 80vh;
+  min-height: 100vh;
   background: #fce3fe;
-  padding-top: 100px;
-  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers everything horizontally */
+  padding-top: 60px;
+  padding-bottom: 60px;
+  box-sizing: border-box;
 }
 
-.loginsignup-container {
+/* Styling for the Logo outside the box */
+.loginsignup-header-outside {
+  margin-bottom: 30px; /* Space between logo and white container */
+}
 
- width: 580px;
-  height: 540px;
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-logo img {
+  width: 50px;
+}
+
+.nav-logo p {
+  color: #171717;
+  font-size: 40px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* The White Container Box */
+.loginsignup-container {
+  width: 580px;
   background: #fff;
-  margin: auto;
-  padding: 50px 60px;
+  padding: 40px 60px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Optional: subtle shadow */
 }
 
 .loginsignup-container h1 {
-  margin: 20px 0px;
+  margin: 10px 0px;
+  font-size: 32px;
+  font-weight: 600;
+  color: #171717;
 }
+
 .loginsignup-fields {
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  margin-top: 30px;
-
+  gap: 25px;
+  margin-top: 25px;
 }
+
 .loginsignup-fields input {
   width: 100%;
-  height: 70px;
+  height: 65px;
   border: 1px solid #c9c9c9;
   color: #5c5c5c;
   outline: none;
   padding-left: 20px;
   font-size: 18px;
+  box-sizing: border-box;
 }
+
 .loginsignup-container button {
-  width: 580px;
+  width: 100%;
   height: 72px;
   background: #ff4141;
   color: #fff;
@@ -45,8 +77,9 @@
   cursor: pointer;
   margin-top: 30px;
 }
+
 .loginsignup-login {
-  margin-top: 30px;
+  margin-top: 25px;
   color: #5c5c5c;
   font-size: 18px;
   font-weight: 500;
@@ -55,16 +88,5 @@
 .loginsignup-login span {
   color: #ff4141;
   font-weight: 600;
-  cursor: pointer;
-}
-.loginsignup-agree {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 19px;
-  font-size: 18px;
-  font-weight: 500;
-}
-.btn{
   cursor: pointer;
 }

@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
-/* cite: Product.jsx, App.jsx */
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Breadcrum from "../Components/Breadcrums/Breadcrum";
 import ProductDisplay from "../Components/ProductDisplay/ProductDisplay";
 
@@ -11,53 +10,59 @@ const Product = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           `http://localhost:3000/products/product/${productId}`
         );
+
         if (response.ok) {
           const data = await response.json();
+          const urlCategory = location.pathname.split("/")[1];
 
-          // VERIFY CATEGORY MATCH: Extract category from URL path
-          const urlCategory = location.pathname.split("/")[1]; // e.g., "mens" or "womens"
-          const normalizedUrlCategory =
-            urlCategory === "mens" ? "men" : "women";
+          const validRoutes = {
+            men: "mens",
+            mens: "mens",
+            women: "womens",
+            womens: "womens",
+            "women new": "womens",
+          };
 
-          if (data.category !== normalizedUrlCategory) {
-            setError("category_mismatch"); // Wrong category for this ID
-          } else {
-            setProduct(data);
-            setError(null);
+          if (validRoutes[data.category] !== urlCategory) {
+            setError("page_not_found");
+            setLoading(false);
+            return;
           }
+          const token = localStorage.getItem("auth-token");
+          if (!token) {
+            navigate(
+              `/login?redirect=${encodeURIComponent(location.pathname)}`
+            );
+            return;
+          }
+
+          setProduct(data);
+          setError(null);
         } else {
-          setError("not_found"); // Invalid ID
+          setError("page_not_found");
         }
       } catch (err) {
         setError("network_error");
+      } finally {
+        setTimeout(() => setLoading(false), 150);
       }
     };
     fetchProduct();
-  }, [productId, location.pathname]);
+  }, [productId, location.pathname, navigate]);
 
-  // Handle Scroll Lock for Standalone Error View
-  useEffect(() => {
-    if (error === "not_found" || error === "category_mismatch") {
-      document.body.style.overflow = "hidden";
-      document.body.style.height = "100vh";
-    } else {
-      document.body.style.overflow = "auto";
-      document.body.style.height = "auto";
-    }
-    return () => {
-      document.body.style.overflow = "auto";
-      document.body.style.height = "auto";
-    };
-  }, [error]);
+  if (loading)
+    return <div style={{ height: "100vh", backgroundColor: "white" }}></div>;
 
-  if (error === "not_found" || error === "category_mismatch") {
+  if (error === "page_not_found") {
     return (
       <div
         style={{
@@ -66,42 +71,30 @@ const Product = () => {
           left: 0,
           width: "100vw",
           height: "100vh",
-          backgroundColor: "#fff",
-          zIndex: 9999,
+          backgroundColor: "#ffffff",
+          zIndex: 10000,
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
-          fontFamily: "system-ui, sans-serif",
+          justifyContent: "center",
+          textAlign: "center",
         }}
       >
-        <h1 style={{ fontSize: "30px", fontWeight: "500", color: "#202124" }}>
-          This product does not exist in our {location.pathname.split("/")[1]}{" "}
-          catalog.
+        <h1 style={{ fontSize: "40px", color: "#ff4141", margin: "0" }}>
+          {" "}
+          This Shopper page can't be found
         </h1>
-        <p style={{ fontSize: "17px", color: "#70757a", marginTop: "10px" }}>
-          HTTP ERROR 404
+
+        <p style={{fontSize: "20px", color: "#5f6368", marginTop: "10px" }}>
+          No webpage found for: <b>{location.pathname}</b>
+         <p style={{ marginTop: "20px" }}> HTTP ERROR 404</p>
         </p>
-        <button
-          onClick={() => navigate("/")}
-          style={{
-            marginTop: "30px",
-            padding: "10px 20px",
-            backgroundColor: "#1a73e8",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Return to Shop
-        </button>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="product-container">
       {product && (
         <>
           <Breadcrum product={product} />

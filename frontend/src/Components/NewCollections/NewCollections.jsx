@@ -19,7 +19,6 @@ const NewCollections = () => {
       <hr />
       <div className="collections">
         {new_collection.map((item, i) => {
-          // Delivery date logic synchronized with ProductDisplay.jsx
           const daysToAdd = 7 + (item.id % 4);
           const deliveryDate = new Date();
           deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);
@@ -36,8 +35,7 @@ const NewCollections = () => {
                 image={item.image}
                 new_price={item.new_price}
                 old_price={item.old_price}
-                // Ensure "women" is passed for popular items to build /womens/product/id links
-                category={item.category === "women" ? "womens" : "mens"}
+                category={item.category}
               />
               <p
                 style={{

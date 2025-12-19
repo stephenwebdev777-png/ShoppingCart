@@ -45,21 +45,19 @@ const ScrollToTop = () => {
     );
 
     if (currentPathValid) {
+      //Scrolls page to top when route changes.
       window.scrollTo(0, 0);
     }
   }, [pathname]);
   return null;
 };
 
-// ROLE-BASED PROTECTED ROUTE
-/* cite: App.jsx */
 const RoleProtectedRoute = ({ children, allowedRole }) => {
   const token = localStorage.getItem("auth-token");
   const userRole = localStorage.getItem("user-role");
   const location = useLocation();
 
   if (!token) {
-    // PASS THE FULL CURRENT PATH to redirect back exactly here after login
     return (
       <Navigate
         to={`/login?redirect=${encodeURIComponent(location.pathname)}`}
@@ -69,6 +67,7 @@ const RoleProtectedRoute = ({ children, allowedRole }) => {
   }
 
   if (allowedRole === "admin" && userRole !== "admin") {
+    //Non-admin trying admin page
     return <Navigate to="/" replace />;
   }
 
@@ -79,7 +78,6 @@ const RoleProtectedRoute = ({ children, allowedRole }) => {
   return children;
 };
 
-// Standalone 404 Component
 const NotFoundPage = () => {
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -100,7 +98,7 @@ const NotFoundPage = () => {
       }}
     >
       <h1 style={{ fontSize: "35px", color: "#202124" }}>
-        This Shopper page can’t be found
+        This Shopper page can't be found
       </h1>
       <p style={{ fontSize: "24px" }}>
         No webpage found for:{" "}
@@ -109,18 +107,34 @@ const NotFoundPage = () => {
       <p style={{ fontSize: "17px", color: "#70757a", marginTop: "20px" }}>
         HTTP ERROR 404
       </p>
+      <button
+        onClick={() => window.location.reload()}
+        style={{
+          marginTop: "40px",
+          padding: "10px 24px",
+          backgroundColor: "#1a73e8",
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer",
+          fontSize: "14px",
+          fontWeight: "500",
+          boxShadow:
+            "0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15)",
+        }}
+      >
+        Refresh
+      </button>
     </div>
   );
 };
 
-/* cite: App.jsx */
 function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<NavbarWrapper />}>
-          {/* PUBLIC ROUTES: Anyone can see these */}
           <Route index element={<Shop />} />
           <Route
             path="mens"
@@ -133,24 +147,8 @@ function App() {
 
           <Route path="login" element={<LoginSignup mode="login" />} />
           <Route path="signup" element={<LoginSignup mode="signup" />} />
-
-          {/* PROTECTED ROUTES: Only users can view products or checkout */}
-          <Route
-            path="mens/product/:productId"
-            element={
-              <RoleProtectedRoute allowedRole="user">
-                <Product />
-              </RoleProtectedRoute>
-            }
-          />
-          <Route
-            path="womens/product/:productId"
-            element={
-              <RoleProtectedRoute allowedRole="user">
-                <Product />
-              </RoleProtectedRoute>
-            }
-          />
+          <Route path="mens/product/:productId" element={<Product />} />
+          <Route path="womens/product/:productId" element={<Product />} />
           <Route
             path="cart"
             element={
@@ -167,9 +165,9 @@ function App() {
               </RoleProtectedRoute>
             }
           />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
         </Route>
 
-        {/* Admin Dashboard */}
         <Route
           path="/admin"
           element={
@@ -191,12 +189,10 @@ function App() {
 
 const NavbarWrapper = () => {
   const location = useLocation();
-  const hideLayout = [
-    "/login",
-    "/signup",
-    "/forgotpassword",
-    "/checkout",
-  ].includes(location.pathname);
+  const hideLayout =
+    ["/login", "/signup", "/forgotpassword", "/checkout"].includes(
+      location.pathname
+    ) || location.pathname.startsWith("/reset-password/");
   return (
     <>
       {!hideLayout && <Navbar />}

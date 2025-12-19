@@ -10,7 +10,7 @@ const {
 
 const upload = require("../config/multer");
 const isAdmin = require("../middleware/isAdmin");
-const fetchUser = require("../middleware/fetchUser"); 
+// const fetchUser = require("../middleware/fetchUser"); 
 
 const router = express.Router();
 

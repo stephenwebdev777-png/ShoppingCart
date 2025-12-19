@@ -3,12 +3,21 @@ import "./Item.css";
 import { Link } from "react-router-dom";
 
 const Item = (props) => {
-  // Map "men" to "mens" and "women" to "womens" to match App.jsx routes
-  const categoryPath = props.category === "men" ? "mens" : "womens";
+  const getCategoryPath = (cat) => {
+    const mapping = {
+      men: "mens",
+      mens: "mens",
+      women: "womens",
+      womens: "womens",
+      "women new": "womens",
+    };
+    return mapping[cat] || "womens";
+  };
+
+  const categoryPath = getCategoryPath(props.category);
 
   return (
     <div className="item">
-      {/* Dynamic routing based on category */}
       <Link to={`/${categoryPath}/product/${props.id}`}>
         <img
           onClick={() => window.scrollTo(0, 0)}

@@ -276,17 +276,17 @@
 },
 {
   "_id": {
-    "$oid": "694275bf1a63a7d2c05a2e5a"
+    "$oid": "6944eb432f4049a6e14c822f"
   },
-  "id": 125,
-  "name": "product123",
-  "image": "http://localhost:3000/images/product_1765963199560.png",
+  "id": 126,
+  "name": "Striped Flutter Sleeve Overlap Collar Peplum Hem Blouse",
+  "image": "http://localhost:3000/images/product_1766124355688.png",
   "category": "men",
-  "new_price": 456,
+  "new_price": 124,
   "old_price": 677,
   "available": true,
   "date": {
-    "$date": "2025-12-17T09:19:59.614Z"
+    "$date": "2025-12-19T06:05:55.735Z"
   },
   "__v": 0
 }]

@@ -9,14 +9,18 @@
   "__v": 0,
   "cartData": [
     {
-      "key": "103_M",
+      "key": "114_M",
       "quantity": 2
+    },
+    {
+      "key": "114_L",
+      "quantity": 1
     }
   ],
   "resetPasswordExpires": {
-    "$date": "2025-12-18T08:44:58.294Z"
+    "$date": "2025-12-20T08:20:56.212Z"
   },
-  "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcnVAZ21haWwuY29tIiwiaWF0IjoxNzY1OTYxMDk4LCJleHAiOjE3NjYwNDc0OTh9.TesOEggAN_wzYNDXkOTlRg1Ku18xu2YLAeIgiTqKsAE"
+  "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcnVAZ21haWwuY29tIiwiaWF0IjoxNzY2MTMyNDU2LCJleHAiOjE3NjYyMTg4NTZ9.5tzO65d3f3c-Z3bNFdQrNddboVigQahp0SrevBQ8wCs"
 },
 {
   "_id": {
@@ -26,11 +30,5 @@
   "email": "admin@gmail.com",
   "password": "$2b$10$TKBbfAvTPLiYiE7/xaqFjOry8H5JLCvsbfoBFEDZ4GehPX/onyD3G",
   "role": "admin",
-  "__v": 0,
-  "cartData": [
-    {
-      "key": "102_L",
-      "quantity": 3
-    }
-  ]
+  "__v": 0
 }]

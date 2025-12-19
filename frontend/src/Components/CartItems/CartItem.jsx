@@ -39,7 +39,6 @@ const CartItem = () => {
       <hr />
 
       {all_product.map((e) => {
-        // Filter the array for items matching this product ID
         const matchedItems = cartItems.filter(
           (item) => item.key.startsWith(e.id + "_") && item.quantity > 0
         );

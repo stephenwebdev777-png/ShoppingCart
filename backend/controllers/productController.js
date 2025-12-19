@@ -46,9 +46,15 @@ const getProductById = async (req, res) => {
   }
 };
 
+/* cite: productController.js */
 const getNewCollections = async (req, res) => {
-  const products = await Product.find({ category: "men" }).sort({ date:-1 }).limit(8);
-  res.json(products);
+  try {
+    // Find ALL products, sort by date (newest first), limit to 8
+    const products = await Product.find({}).sort({ date: -1 }).limit(8);
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error" });
+  }
 };
 
 const getPopularInWomen = async (req, res) => {

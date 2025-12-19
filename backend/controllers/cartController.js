@@ -14,7 +14,6 @@ exports.addToCart = async (req, res) => {
     if (itemIndex > -1) {
       cartData[itemIndex].quantity += 1;
     } else {
-      // NEW ITEM IS ADDED AT THE END, MAINTAINING SEQUENCE
       cartData.push({ key: itemId, quantity: 1 });
     }
     await User.findOneAndUpdate({ email: req.user }, { cartData });
@@ -37,7 +36,7 @@ exports.removeFromCart = async (req, res) => {
       if (cartData[itemIndex].quantity > 1) {
         cartData[itemIndex].quantity -= 1;
       } else {
-        // Remove item entirely if quantity reaches zero
+      
         cartData.splice(itemIndex, 1);
       }
       await User.findOneAndUpdate({ email: req.user }, { cartData });
