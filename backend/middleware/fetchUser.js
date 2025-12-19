@@ -5,7 +5,6 @@ const fetchUser = (req, res, next) => {
   if (!token) {
     return res.status(401).json({ success: false, message: "Login required" });
   }
-
   try {
     const data = verifyToken(token);
     req.user = data.email;
