@@ -1,4 +1,4 @@
-/* cite: CartItem.jsx, ShopContext.jsx */
+
 import React, { useContext } from "react";
 import "./CartItem.css";
 import { ShopContext } from "../../Context/ShopContext";
@@ -14,13 +14,17 @@ const CartItem = () => {
     getTotalCartAmount,
   } = useContext(ShopContext);
   const navigate = useNavigate();
-
   const handleCheckout = () => {
+    const token = localStorage.getItem("auth-token");
     const hasItems = cartItems.some((item) => item.quantity > 0);
+
     if (!hasItems) {
-      alert(
-        "Nothing added in cart! Please add items to your cart before proceeding to checkout."
-      );
+      alert("Nothing added in cart! Please add items before proceeding.");
+      return;
+    }   
+    if (!token) {
+      alert("Please login to proceed to checkout.");   
+      navigate("/login");
       return;
     }
     navigate("/checkout");
@@ -44,8 +48,8 @@ const CartItem = () => {
         );
 
         return matchedItems.map((item) => {
-          const size = item.key.split("_")[1];
-          return (
+          const size = item.key.split("_")[1];  //based on size 
+          return (  
             <div
               className="cartitems-format cartitems-format-main"
               key={item.key}

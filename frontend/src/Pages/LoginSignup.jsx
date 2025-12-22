@@ -42,55 +42,52 @@ const LoginSignup = ({ mode }) => {
     }
   };
 
+  // HANDLER: User Login with Admin Redirect
   const login = async () => {
-    let responseData;
-    await fetch("http://localhost:3000/auth/login", {
+    const response = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then((data) => (responseData = data));
+    });
+    const data = await response.json();
 
-    if (responseData.success) {
-      localStorage.setItem("auth-token", responseData.token);
-      localStorage.setItem("user-role", responseData.role);
-      const params = new URLSearchParams(window.location.search);
-      const redirectPath = params.get("redirect");
-      if (responseData.role === "admin") {
-        window.location.replace("/admin");
+    if (data.success) {
+      localStorage.setItem("auth-token", data.token);
+      localStorage.setItem("user-role", data.role);
+      if (data.role === "admin") {
+        window.location.replace("/admin/addproduct");
       } else {
-        window.location.replace(
-          redirectPath ? decodeURIComponent(redirectPath) : "/"
-        );
+        window.location.replace("/");
       }
     } else {
-      alert("Invalid login credentials");
+      alert(data.errors || "Login Failed");
     }
   };
 
   const signup = async () => {
-    let responseData;
-    await fetch("http://localhost:3000/auth/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    })
-      .then((res) => res.json())
-      .then((data) => (responseData = data));
+    try {
+      const response = await fetch("http://localhost:3000/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const responseData = await response.json();
 
-    if (responseData.success) {
-      localStorage.setItem("auth-token", responseData.token);
-      localStorage.setItem("user-role", responseData.role);
-      window.location.replace("/");
-    } else {
-      alert(responseData.message);
+      if (responseData.success) {
+        alert("Account created successfully! Please login to continue.");
+
+        setState("login");
+
+        setFormData({ ...formData, password: "" });
+      } else {
+        alert(responseData.message || "Signup failed");
+      }
+    } catch (error) {
+      alert("Error connecting to the server.");
     }
   };
-
   return (
     <div className="loginsignup">
-   
       <div className="loginsignup-header-outside">
         <Link to="/" style={{ textDecoration: "none" }}>
           <div className="nav-logo">

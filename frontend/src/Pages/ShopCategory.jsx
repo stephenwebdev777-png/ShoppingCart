@@ -12,6 +12,17 @@ const ShopCategory = (props) => {
     setSortType("default");
   }, [props.category]);
 
+  // Helper function for consistent date calculation
+  const getDeliveryDate = (productId) => {
+    const daysToAdd = 7 + (productId % 4);
+    const deliveryDate = new Date();
+    deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);
+    return deliveryDate.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+    });
+  };
+
   let filtered = all_product.filter((item) => item.category === props.category);
 
   if (sortType === "low-high") {
@@ -42,17 +53,28 @@ const ShopCategory = (props) => {
       </div>
 
       <div className="shopcategory-products">
-        {filtered.map((item, i) => (
-          <Item
-            key={i}
-            id={item.id}
-            name={item.name}
-            image={item.image}
-            new_price={item.new_price}
-            old_price={item.old_price}
-            category={props.category} // CRITICAL: Passing category to Item
-          />
-        ))}
+        {filtered.map((item, i) => {
+          const deliveryDateString = getDeliveryDate(item.id);
+          return (
+            <div key={i} className="shopcategory-item-container">
+              <Item
+                id={item.id}
+                name={item.name}
+                image={item.image}
+                new_price={item.new_price}
+                old_price={item.old_price}
+                category={props.category}
+              />
+              
+              <div className="shopcategory-delivery">
+                <p style={{ fontSize: "16px", marginTop: "5px", color: "#111" }}>
+                  <span style={{ fontWeight: "bold" }}>Free Delivery,</span>{" "}
+                  <span style={{ color: "#ff4141" }}>{deliveryDateString}</span>
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

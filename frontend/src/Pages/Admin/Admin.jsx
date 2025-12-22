@@ -2,48 +2,60 @@ import React from "react";
 import { useNavigate, Outlet } from "react-router-dom";
 import "./Admin.css";
 import Navbar from "../../Components/adminNavbar/Navbar";
-import Sidebar from "../../Components/Sidebar/Sidebar"; 
+import Sidebar from "../../Components/Sidebar/Sidebar";
 
 const Admin = () => {
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('auth-token');
-    localStorage.removeItem('user-role'); 
-    navigate('/');
+  const handleLogout = async () => {
+    const token = localStorage.getItem("auth-token");
+    if (token) {
+      try {
+        await fetch("http://localhost:3000/auth/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "auth-token": token,
+          },
+        });
+      } catch (error) {
+        console.error("Failed to blacklist token on server:", error);
+      }
+    }
+    localStorage.removeItem("auth-token");
+    localStorage.removeItem("user-role");
+    navigate("/");
   };
 
   return (
     <div className="admin-panel">
-      <div 
-        style={{ 
-        
-          backgroundColor: '#fff',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          height: '80px',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0 20px',
-          justifyContent: 'space-between'
+      <div
+        style={{
+          backgroundColor: "#fff",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+          height: "80px",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 20px",
+          justifyContent: "space-between",
         }}
       >
         <Navbar />
-        <button 
+        <button
           className="logout-button"
           onClick={handleLogout}
-          style={{ 
-            margin: '0',
-            position: 'static',
-            height: '58px'
+          style={{
+            margin: "0",
+            position: "static",
+            height: "58px",
           }}
         >
           Logout
         </button>
       </div>
 
-      <div style={{ display: 'flex', flex: 1 }}>
+      <div style={{ display: "flex", flex: 1 }}>
         <Sidebar />
-        <div style={{ flex: 1, padding: '20px', overflowY: 'auto' }}>
+        <div style={{ flex: 1, padding: "20px", overflowY: "auto" }}>
           <Outlet />
         </div>
       </div>

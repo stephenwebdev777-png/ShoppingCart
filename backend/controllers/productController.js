@@ -46,10 +46,8 @@ const getProductById = async (req, res) => {
   }
 };
 
-/* cite: productController.js */
 const getNewCollections = async (req, res) => {
   try {
-    // Find ALL products, sort by date (newest first), limit to 8
     const products = await Product.find({}).sort({ date: -1 }).limit(8);
     res.json(products);
   } catch (error) {

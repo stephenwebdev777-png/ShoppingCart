@@ -3,6 +3,7 @@ const nodemailer = require("nodemailer");
 const User = require("../model/User");
 const { hashPassword } = require("../utils/hashUtils");
 const transporter = require("../config/mail");
+
 // FORGOT PASSWORD
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
@@ -57,7 +58,7 @@ const resetPassword = async (req, res) => {
   }
 
   user.password = await hashPassword(newPassword);
-  user.resetPasswordToken = undefined;
+  user.resetPasswordToken = undefined;  //Clears reset token
   user.resetPasswordExpires = undefined;
   await user.save();
 

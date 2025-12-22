@@ -32,7 +32,6 @@ const Proceed = () => {
 
     const fetchUserData = async () => {
       try {
-        // Fetches user information from the backend /user prefix
         const response = await fetch("http://localhost:3000/user/getuserinfo", {
           method: "POST",
           headers: {
@@ -55,27 +54,22 @@ const Proceed = () => {
     };
     fetchUserData();
   }, []);
-
-  // UPDATED: handlePlaceOrder no longer calls the clearcart API
   const handlePlaceOrder = async () => {
     if (!paymentMethod) {
       displayNotification("Please select a payment method.");
       return;
     }
 
-    // Success UI is triggered without clearing database cart data
     setShowSuccessBanner(true);
   };
 
   const handleBannerDismiss = () => {
     setShowSuccessBanner(false);
-    // Uses navigate to return home without a hard refresh to keep current cart context
     navigate("/");
   };
 
   return (
     <div style={{ position: "relative" }}>
-      {/* Standalone Login Modal */}
       {showLoginPopup && (
         <div className="login-modal-overlay">
           <div className="login-modal-content">
@@ -92,7 +86,6 @@ const Proceed = () => {
         </div>
       )}
 
-      {/* Success Notification Banner */}
       <div
         className={`success-banner ${showSuccessBanner ? "show" : ""}`}
         style={{
@@ -118,7 +111,6 @@ const Proceed = () => {
         </button>
       </div>
 
-      {/* Checkout Container matching Proceed.css classes */}
       <div
         className="checkout-page-container"
         style={{ opacity: showSuccessBanner ? 0.3 : 1 }}

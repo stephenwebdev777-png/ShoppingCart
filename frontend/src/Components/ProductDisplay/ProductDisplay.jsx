@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react"; //single product page
 import "./ProductDisplay.css";
 import star_icon from "../Assets/star_icon.png";
@@ -39,12 +40,7 @@ const ProductDisplay = ({ product }) => {
   const confidenceBadges = [...baseBadges, ...optionalBadges];
 
   const handleAddToCart = () => {
-    const token = localStorage.getItem("auth-token");
-    if (!token) {
-      alert("Please login to add items to cart.");
-      navigate("/login");
-      return;
-    }
+    // REMOVED: token check here so non-users can add to cart
     if (!selectedSize) {
       alert("Please select a size before adding to cart.");
       return;
