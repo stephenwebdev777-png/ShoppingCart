@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/set-state-in-effect */
 import React, { useEffect, useState } from "react";
 import "./Listproduct.css";
@@ -47,7 +48,8 @@ const Listproduct = ({ refreshTrigger }) => {
       </div>
       <div className="listproduct-allproducts">
         <hr />
-        {allproducts.map((product) => (
+      
+        {allproducts.map((product,index) => (
           <div
             className="listproduct-format-main listproduct-format"
             key={product._id}

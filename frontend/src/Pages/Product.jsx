@@ -85,10 +85,10 @@ const Product = () => {
           This Shopper page can't be found
         </h1>
 
-        <p style={{fontSize: "20px", color: "#5f6368", marginTop: "10px" }}>
+        <div style={{ fontSize: "20px", color: "#5f6368", marginTop: "10px" }}>
           No webpage found for: <b>{location.pathname}</b>
-         <p style={{ marginTop: "20px" }}> HTTP ERROR 404</p>
-        </p>
+          <p style={{ marginTop: "20px" }}> HTTP ERROR 404</p>
+        </div>
       </div>
     );
   }

@@ -99,20 +99,6 @@ Navigate to your frontend directory (e.g., `frontend` or `react-app`).
     ```
     The React application should open in your browser (usually `http://localhost:5173`).
 
-## 🔑 Authentication and Access
-
-| Route | Access | Purpose |
-| :--- | :--- | :--- |
-| `/login` | Public | User login. |
-| `/signup` | Public | User registration. |
-| `/forgotpassword` | Public | Initiates the email-based password reset process. |
-| `/resetpassword/:token` | Public (Token Required) | Allows users to set a new password. |
-| `/cart` | Public | View and manage shopping cart contents. |
-| `/checkout` | **Logged-in User Only** | Final order confirmation and submission. |
-| `/admin` | Admin Only | Redirects to `/admin/addproduct`. |
-| `/admin/addproduct` | Admin Only | Form for adding new items to the shop. |
-| `/admin/listproduct` | Admin Only | View, edit, and remove all existing products. |
-
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page].
