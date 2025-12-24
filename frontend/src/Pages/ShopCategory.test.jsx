@@ -1,42 +1,83 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import { ShopContext } from '../Context/ShopContext';
-import ShopCategory from './ShopCategory';
-import { BrowserRouter } from 'react-router-dom';
-import { expect, test } from 'vitest';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 
-const mockContext = {
-  all_product: [
-    { id: 1, name: "Cheap Shirt", category: "mens", new_price: 10, old_price: 20 },
-    { id: 2, name: "Expensive Shirt", category: "mens", new_price: 100, old_price: 200 }
-  ]
+import ShopCategory from "./ShopCategory";
+import { ShopContext } from "../Context/ShopContext";
+
+const mockProducts = [
+  { id: 1, name: "Product A", category: "men", image: "img1.jpg", new_price: 50, old_price: 80 },
+  { id: 2, name: "Product B", category: "men", image: "img2.jpg", new_price: 30, old_price: 50 },
+  { id: 3, name: "Product C", category: "women", image: "img3.jpg", new_price: 100, old_price: 150 },
+];
+
+//test-id used by React Testing Library
+vi.mock("../Components/Item/Item", () => ({
+  default: ({ name, new_price }) => (
+     <div data-testid="product-item"> 
+      <span>{name}</span>
+      <span data-testid="price-value">{new_price}</span>
+    </div>
+  ),
+}));
+
+const renderWithContext = (props) => {
+  return render(
+    <ShopContext.Provider value={{ all_product: mockProducts }}>
+      <ShopCategory {...props} />
+    </ShopContext.Provider>
+  );
 };
 
-test('filters and sorts products by price', () => {
-  render(
-    <BrowserRouter>
-      <ShopContext.Provider value={mockContext}>
-        <ShopCategory category="mens" banner="test.jpg" />
-      </ShopContext.Provider>
-    </BrowserRouter>
-  );
+describe("ShopCategory Component", () => {
+  const defaultProps = {
+    category: "men",
+    banner: "men-banner.png",
+  };
 
-  // 1. Change the Sort Dropdown to High to Low
-  const select = screen.getByRole('combobox');
-  fireEvent.change(select, { target: { value: 'high-low' } });
+  it("renders the correct banner image", () => {
+    const { container } = renderWithContext(defaultProps);
+    // Use querySelector (css )
+    const banner = container.querySelector(".shopcategory-banner");
+    expect(banner).toBeInTheDocument();
+    expect(banner).toHaveAttribute("src", "men-banner.png");
+  });
 
-  // 2. Target the product names specifically.
-  // We look for paragraphs that ARE NOT "Explore Products" or "Free Delivery"
-  const allParagraphs = screen.getAllByRole('paragraph');
-  
-  const productNames = allParagraphs
-    .map(p => p.textContent.trim())
-    .filter(text => 
-      text !== "Explore Products" && 
-      !text.includes("Free Delivery") &&
-      text !== ""
-    );
+  it("filters products based on category", () => {
+    renderWithContext(defaultProps);
+    const items = screen.getAllByTestId("product-item");  //data-testid 
+    expect(items).toHaveLength(2);
+    expect(screen.getByText("Product A")).toBeInTheDocument();
+  });
 
-  // 3. Verify that the expensive item is now first in the list
-  expect(productNames[0]).toBe('Expensive Shirt');
-  expect(productNames[1]).toBe('Cheap Shirt');
+  it("sorts products by price: Low to High", () => {
+    renderWithContext(defaultProps);
+    const select = screen.getByRole("combobox");
+    
+    //firevent-user changing the value of an input
+    fireEvent.change(select, { target: { value: "low-high" } });
+
+    // Using data-testid instead of ClassName
+    const prices = screen.getAllByTestId("price-value");
+    expect(prices[0].textContent).toBe("30"); 
+    expect(prices[1].textContent).toBe("50");
+  });
+
+  it("sorts products by price: High to Low", () => {
+    renderWithContext(defaultProps);
+    const select = screen.getByRole("combobox");
+    
+    //firevent-user changing the value of an input
+    fireEvent.change(select, { target: { value: "high-low" } });  
+    const prices = screen.getAllByTestId("price-value");
+    expect(prices[0].textContent).toBe("50");
+    expect(prices[1].textContent).toBe("30");
+  });
+
+  it("displays the delivery date text", () => {
+    renderWithContext(defaultProps);
+    //vary in capital letters - (i) case insensitive 
+    const deliveryInfo = screen.getAllByText(/Free Delivery/i);   
+    expect(deliveryInfo.length).toBeGreaterThan(0);
+  });
 });

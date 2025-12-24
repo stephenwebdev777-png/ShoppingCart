@@ -24,7 +24,7 @@ describe('Individual Item Component', () => {
       </BrowserRouter>
     );
     const link = screen.getByRole('link');
-    // Checks if the link leads to product 5
+
     expect(link).toHaveAttribute('href', expect.stringContaining('/product/5'));
   });
 });

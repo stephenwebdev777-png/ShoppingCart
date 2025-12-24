@@ -8,7 +8,6 @@ describe("Listproduct Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // 1. Setup fetch mock
     global.fetch = vi.fn((url) => {
       if (url.includes('allproduct')) {
         return Promise.resolve({
@@ -17,11 +16,10 @@ describe("Listproduct Component", () => {
           ]),
         });
       }
-      // Return success for removeproduct
+
       return Promise.resolve({ json: () => Promise.resolve({ success: true }) });
     });
 
-    // 2. Robust localStorage mock
     const mockToken = "mock-admin-token";
     Object.defineProperty(window, 'localStorage', {
       value: {
@@ -37,16 +35,12 @@ describe("Listproduct Component", () => {
   test('sends POST request to remove product when auth token exists', async () => {
     const { container } = render(<Listproduct />);
 
-    // Wait for data to render
     await screen.findByText("Database Item");
 
-    // Find the icon by class
     const removeIcon = container.querySelector('.listproduct-remove-icon');
-    
-    // Use fireEvent (no extra install needed)
+
     fireEvent.click(removeIcon);
 
-    // Verify the removal call exists in the fetch history
     await waitFor(() => {
       const calls = vi.mocked(fetch).mock.calls;
       const removeCall = calls.find(call => call[0].includes('removeproduct'));
