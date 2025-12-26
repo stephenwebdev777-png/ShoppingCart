@@ -6,7 +6,7 @@ import { vi, expect, test, beforeEach, describe } from 'vitest';
 describe("Listproduct Component", () => {
   
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllMocks(); //Resets all mocks before each test
 
     global.fetch = vi.fn((url) => {
       if (url.includes('allproduct')) {

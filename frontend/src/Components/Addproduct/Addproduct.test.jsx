@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+//render ->React component into a fake DOM ,fireEvent->simulate user actions
 import Addproduct from './Addproduct';
 import { vi, expect, test, describe } from 'vitest';
 
@@ -10,6 +11,7 @@ describe('Addproduct Admin Logic', () => {
   expect(nameInputs[0].value).toBe('New Winter Boots');
 });
 
+//select option for category
   test('allows category selection change', () => {
     render(<Addproduct />);
     const select = screen.getByRole('combobox');
