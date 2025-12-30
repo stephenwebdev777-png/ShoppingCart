@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import "./CSS/LoginSignup.css";
 import logo from "../Assets/logo.png";
 
@@ -11,6 +11,13 @@ const LoginSignup = ({ mode }) => {
     password: "",
     email: "",
   });
+
+  // Access the current URL location
+  const location = useLocation();
+
+  // Extract the 'redirect' parameter from the URL (e.g., ?redirect=/mens/product/12)
+  const queryParams = new URLSearchParams(location.search);
+  const redirectPath = queryParams.get("redirect") || "/";
 
   const changeHandler = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -42,7 +49,7 @@ const LoginSignup = ({ mode }) => {
     }
   };
 
-  // HANDLER: User Login with Admin Redirect
+  // HANDLER: User Login with Dynamic Redirect
   const login = async () => {
     const response = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
@@ -54,10 +61,12 @@ const LoginSignup = ({ mode }) => {
     if (data.success) {
       localStorage.setItem("auth-token", data.token);
       localStorage.setItem("user-role", data.role);
+
       if (data.role === "admin") {
         window.location.replace("/admin/addproduct");
       } else {
-        window.location.replace("/");
+        // Use the redirect path captured from the URL
+        window.location.replace(redirectPath);
       }
     } else {
       alert(data.errors || "Login Failed");
@@ -75,9 +84,7 @@ const LoginSignup = ({ mode }) => {
 
       if (responseData.success) {
         alert("Account created successfully! Please login to continue.");
-
         setState("login");
-
         setFormData({ ...formData, password: "" });
       } else {
         alert(responseData.message || "Signup failed");
@@ -86,6 +93,7 @@ const LoginSignup = ({ mode }) => {
       alert("Error connecting to the server.");
     }
   };
+
   return (
     <div className="loginsignup">
       <div className="loginsignup-header-outside">

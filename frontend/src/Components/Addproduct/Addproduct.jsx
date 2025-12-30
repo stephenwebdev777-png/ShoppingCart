@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import "./Addproduct.css";
 import upload_area from "../../assets/upload_area.svg";
+import { useDispatch } from "react-redux";
+import { fetchAllProducts } from "../../Redux/shopSlice";
 
-const Addproduct = ({ onProductAdded }) => {
+const Addproduct = () => {
+  const dispatch = useDispatch();
   const [image, setImage] = useState(false);
   const [productDetails, setProductDetails] = useState({
     name: "",
@@ -12,7 +15,7 @@ const Addproduct = ({ onProductAdded }) => {
     old_price: "",
   });
 
-  const imagehandler = (e) => { 
+  const imagehandler = (e) => {
     setImage(e.target.files[0]);
   };
 
@@ -32,47 +35,39 @@ const Addproduct = ({ onProductAdded }) => {
       return;
     }
 
-    let responseData;
     let formData = new FormData();
     formData.append("product", image);
 
     try {
       const uploadResp = await fetch("http://localhost:3000/products/upload", {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-          "auth-token": token,
-        },
+        headers: { Accept: "application/json", "auth-token": token },
         body: formData,
       });
-      responseData = await uploadResp.json();
+      const responseData = await uploadResp.json();
 
       if (responseData.success) {
-        const product = {
-          ...productDetails,
-          image: responseData.image_url,
-          new_price: Number(productDetails.new_price),
-          old_price: Number(productDetails.old_price),
-        };
+        const product = { ...productDetails, image: responseData.image_url };
 
-        const addResp = await fetch("http://localhost:3000/products/addproduct", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "auth-token": token,
-          },
-          body: JSON.stringify(product),
-        });
-
-        const data = await addResp.json();
-
-        if (data.success) {
-          alert("Product Added Successfully");
-          if (onProductAdded) {
-            onProductAdded();
+        const addResp = await fetch(
+          "http://localhost:3000/products/addproduct",
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "auth-token": token,
+            },
+            body: JSON.stringify(product),
           }
+        );
+        const addData = await addResp.json();
 
+        if (addData.success) {
+          alert("Product Added Successfully");
+          // REDUX: Refresh the global product list
+          dispatch(fetchAllProducts());
+          // Reset form
           setProductDetails({
             name: "",
             image: "",
@@ -81,20 +76,17 @@ const Addproduct = ({ onProductAdded }) => {
             old_price: "",
           });
           setImage(false);
-        } else {
-          alert("Failed to add product: " + (data.message || "Unknown error"));
         }
       }
-    } catch (err) {
-      console.error("Error adding product:", err);
-      alert("Server error. Please check if the backend is running.");
+    } catch (error) {
+      console.error("Error adding product:", error);
     }
   };
 
   return (
     <div className="add-product">
       <div className="addproduct-itemfield">
-        <p>Product title</p>
+        <p>Product Title</p>
         <input
           value={productDetails.name}
           onChange={changeHandler}

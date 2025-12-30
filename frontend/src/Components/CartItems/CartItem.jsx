@@ -1,4 +1,4 @@
-
+/* cite: CartItem.jsx */
 import React, { useContext } from "react";
 import "./CartItem.css";
 import { ShopContext } from "../../Context/ShopContext";
@@ -10,10 +10,13 @@ const CartItem = () => {
     all_product,
     cartItems,
     removeFromCart,
+    deleteFromCart, // Use the new function here
     addToCart,
     getTotalCartAmount,
   } = useContext(ShopContext);
+
   const navigate = useNavigate();
+
   const handleCheckout = () => {
     const token = localStorage.getItem("auth-token");
     const hasItems = cartItems.some((item) => item.quantity > 0);
@@ -21,9 +24,9 @@ const CartItem = () => {
     if (!hasItems) {
       alert("Nothing added in cart! Please add items before proceeding.");
       return;
-    }   
+    }
     if (!token) {
-      alert("Please login to proceed to checkout.");   
+      alert("Please login to proceed to checkout.");
       navigate("/login");
       return;
     }
@@ -48,8 +51,8 @@ const CartItem = () => {
         );
 
         return matchedItems.map((item) => {
-          const size = item.key.split("_")[1];  //based on size 
-          return (  
+          const size = item.key.split("_")[1];
+          return (
             <div
               className="cartitems-format cartitems-format-main"
               key={item.key}
@@ -59,7 +62,9 @@ const CartItem = () => {
                 {e.name} ({size})
               </p>
               <p>Rs.{e.new_price}</p>
+
               <div className="cartitems-quantity-box">
+                {/* MINUS: Reduces quantity by 1 */}
                 <span
                   className="quantity-btn"
                   onClick={() => removeFromCart(item.key)}
@@ -68,6 +73,7 @@ const CartItem = () => {
                   -{" "}
                 </span>
                 <button className="cartitems-quantity">{item.quantity}</button>
+                {/* PLUS: Increases quantity by 1 */}
                 <span
                   className="quantity-btn"
                   onClick={() => addToCart(e.id, size)}
@@ -76,11 +82,14 @@ const CartItem = () => {
                   +{" "}
                 </span>
               </div>
+
               <p>Rs.{e.new_price * item.quantity}</p>
+
+              {/* REMOVE ICON: Deletes the whole product entry instantly */}
               <img
                 className="cartitems-remove-icon"
                 src={remove_icon}
-                onClick={() => removeFromCart(item.key)}
+                onClick={() => deleteFromCart(item.key)}
                 alt="remove"
               />
             </div>

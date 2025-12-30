@@ -3,20 +3,41 @@ import React, { useContext, useState, useEffect } from "react";
 import "./CSS/ShopCategory.css";
 import { ShopContext } from "../Context/ShopContext";
 import Item from "../Components/Item/Item";
+import { useNavigate } from "react-router-dom";
 
 const ShopCategory = (props) => {
   const { all_product } = useContext(ShopContext);
   const [sortType, setSortType] = useState("default");
+  const [showModal, setShowModal] = useState(false);
+  const [redirectPath, setRedirectPath] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     setSortType("default");
   }, [props.category]);
 
-  // Helper function for consistent date calculation
-  const getDeliveryDate = (productId) => {
-    const daysToAdd = 7 + (productId % 4);
+  const triggerModal = (path) => {
+    setRedirectPath(path);
+    setShowModal(true);
+  };
+
+  const handleGoToLogin = () => {
+    setShowModal(false);
+    // Redirect to login and pass the product path as a query parameter
+    navigate(`/login?redirect=${encodeURIComponent(redirectPath)}`);
+  };
+
+  const getDeliveryDate = (oldPrice, newPrice) => {
+    const difference = Math.abs(oldPrice - newPrice);
+    const ratio = (difference / newPrice) * 100;
+
+    // Use the same formula as Shop.jsx
+    let variance = Math.round(ratio) % 7;
+    const daysToAdd = 4 + variance;
+
     const deliveryDate = new Date();
     deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);
+
     return deliveryDate.toLocaleDateString("en-US", {
       day: "numeric",
       month: "short",
@@ -33,6 +54,23 @@ const ShopCategory = (props) => {
 
   return (
     <div className="shop-category">
+      {showModal && (
+        <div className="auth-modal-overlay">
+          <div className="auth-modal">
+            <h2>Login Required</h2>
+            <p>Please login to view product details and continue shopping.</p>
+            <div className="modal-buttons">
+              <button className="btn-login" onClick={handleGoToLogin}>
+                Go to Login
+              </button>
+              <button className="btn-close" onClick={() => setShowModal(false)}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <img className="shopcategory-banner" src={props.banner} alt="" />
 
       <div className="shopcategory-indexSort">
@@ -54,7 +92,7 @@ const ShopCategory = (props) => {
 
       <div className="shopcategory-products">
         {filtered.map((item, i) => {
-          const deliveryDateString = getDeliveryDate(item.id);
+          const deliveryDateString = getDeliveryDate(item.old_price, item.new_price);
           return (
             <div key={i} className="shopcategory-item-container">
               <Item
@@ -64,10 +102,12 @@ const ShopCategory = (props) => {
                 new_price={item.new_price}
                 old_price={item.old_price}
                 category={props.category}
+                onItemClick={triggerModal}
               />
-              
               <div className="shopcategory-delivery">
-                <p style={{ fontSize: "16px", marginTop: "5px", color: "#111" }}>
+                <p
+                  style={{ fontSize: "16px", marginTop: "5px", color: "#111" }}
+                >
                   <span style={{ fontWeight: "bold" }}>Free Delivery,</span>{" "}
                   <span style={{ color: "#ff4141" }}>{deliveryDateString}</span>
                 </p>

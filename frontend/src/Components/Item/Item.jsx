@@ -4,26 +4,27 @@ import { Link } from "react-router-dom";
 
 const Item = (props) => {
   const getCategoryPath = (cat) => {
-    const mapping = {
-      men: "mens",
-      mens: "mens",
-      women: "womens",
-      womens: "womens",
-      "women new": "womens",
-    };
+    const mapping = { men: "mens", women: "womens", "women new": "womens" };
     return mapping[cat] || "womens";
   };
 
   const categoryPath = getCategoryPath(props.category);
+  const productPath = `/${categoryPath}/product/${props.id}`;
+
+  const handleProductClick = (e) => {
+    const token = localStorage.getItem("auth-token");
+    if (!token) {
+      e.preventDefault(); // Stop navigation
+      props.onItemClick(productPath); // Trigger the login modal
+    } else {
+      window.scrollTo(0, 0);
+    }
+  };
 
   return (
     <div className="item">
-      <Link to={`/${categoryPath}/product/${props.id}`}>
-        <img
-          onClick={() => window.scrollTo(0, 0)}
-          src={props.image}
-          alt={props.name}
-        />
+      <Link onClick={handleProductClick} to={productPath}>
+        <img src={props.image} alt={props.name} />
       </Link>
       <p>{props.name}</p>
       <div className="item-prices">

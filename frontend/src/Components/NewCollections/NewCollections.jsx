@@ -1,8 +1,9 @@
+/* cite: NewCollections.jsx */
 import React, { useEffect, useState } from "react";
 import "./NewCollections.css";
 import Item from "../Item/Item";
 
-const NewCollections = () => {
+const NewCollections = (props) => {
   const [new_collection, setNew_collection] = useState([]);
   const API_BASE_URL = "http://localhost:3000";
 
@@ -19,14 +20,10 @@ const NewCollections = () => {
       <hr />
       <div className="collections">
         {new_collection.map((item, i) => {
-          const daysToAdd = 7 + (item.id % 4);
-          const deliveryDate = new Date();
-          deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);
-          const deliveryDateString = deliveryDate.toLocaleDateString("en-US", {
-            day: "numeric",
-            month: "short",
-          });
-
+          const deliveryDateString = props.getDelivery(
+            item.old_price,
+            item.new_price
+          );
           return (
             <div key={i} className="collection-item-wrapper">
               <Item
@@ -35,7 +32,7 @@ const NewCollections = () => {
                 image={item.image}
                 new_price={item.new_price}
                 old_price={item.old_price}
-                category={item.category}
+                onItemClick={props.onItemClick}
               />
               <p
                 style={{
@@ -46,9 +43,7 @@ const NewCollections = () => {
                 }}
               >
                 Free Delivery ,{" "}
-                <span style={{ color: "#ff4141", fontWeight: "bold" }}>
-                  {deliveryDateString}
-                </span>
+                <span style={{ color: "#ff4141" }}>{deliveryDateString}</span>
               </p>
             </div>
           );

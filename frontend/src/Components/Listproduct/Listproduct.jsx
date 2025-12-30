@@ -1,21 +1,17 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/set-state-in-effect */
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./Listproduct.css";
 import cross_icon from "../../assets/cross_icon.png";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchAllProducts } from "../../Redux/shopSlice";
 
-const Listproduct = ({ refreshTrigger }) => {
-  const [allproducts, setAllproducts] = useState([]);
-
-  const fetchInfo = async () => {
-    const res = await fetch("http://localhost:3000/products/allproduct");
-    const data = await res.json();
-    setAllproducts(data);
-  };
+const Listproduct = () => {
+  const dispatch = useDispatch();
+  // REDUX: Pulling state from the store
+  const { all_product, loading } = useSelector((state) => state.shop);
 
   useEffect(() => {
-    fetchInfo();
-  }, [refreshTrigger]); //refresh the product list only when a new product is added
+    dispatch(fetchAllProducts());
+  }, [dispatch]);
 
   const remove_product = async (id) => {
     const token = localStorage.getItem("auth-token");
@@ -32,8 +28,11 @@ const Listproduct = ({ refreshTrigger }) => {
       },
       body: JSON.stringify({ id }),
     });
-    fetchInfo();
+    // REDUX: Refresh global list after removal
+    dispatch(fetchAllProducts());
   };
+
+  if (loading) return <p>Loading products...</p>;
 
   return (
     <div className="list-product">
@@ -48,31 +47,31 @@ const Listproduct = ({ refreshTrigger }) => {
       </div>
       <div className="listproduct-allproducts">
         <hr />
-      
-        {allproducts.map((product,index) => (
-          <div
-            className="listproduct-format-main listproduct-format"
-            key={product._id}
-          >
-            <img
-              src={product.image}
-              alt=""
-              className="listproduct-product-icon"
-            />
-            <p>{product.name}</p>
-            <p>Rs.{product.old_price}</p>
-            <p>Rs.{product.new_price}</p>
-            <p>{product.category}</p>
-            <img
-              onClick={() => remove_product(product.id)}
-              src={cross_icon}
-              alt=""
-              className="listproduct-remove-icon"
-            />
-          </div>
+        {all_product.map((product) => (
+          <React.Fragment key={product.id}>
+            <div className="listproduct-format-main listproduct-format">
+              <img
+                src={product.image}
+                alt=""
+                className="listproduct-product-icon"
+              />
+              <p>{product.name}</p>
+              <p>Rs.{product.old_price}</p>
+              <p>Rs.{product.new_price}</p>
+              <p>{product.category}</p>
+              <img
+                onClick={() => remove_product(product.id)}
+                src={cross_icon}
+                alt=""
+                className="listproduct-remove-icon"
+              />
+            </div>
+            <hr />
+          </React.Fragment>
         ))}
       </div>
     </div>
   );
 };
+
 export default Listproduct;

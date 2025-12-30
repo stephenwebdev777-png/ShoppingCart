@@ -53,6 +53,11 @@ const shopSlice = createSlice({
                 }
             }
         },
+        // NEW: Moved inside the reducers block
+        deleteFromCartLocal: (state, action) => {
+            const key = action.payload;
+            state.cartItems = state.cartItems.filter(item => item.key !== key);
+        },
         setCartItemsManual: (state, action) => {
             state.cartItems = action.payload;
         }
@@ -68,5 +73,13 @@ const shopSlice = createSlice({
     }
 });
 
-export const { addToCartLocal, removeFromCartLocal, clearCart, setCartItemsManual } = shopSlice.actions;
+// Added deleteFromCartLocal to the exports
+export const { 
+    addToCartLocal, 
+    removeFromCartLocal, 
+    deleteFromCartLocal, 
+    clearCart, 
+    setCartItemsManual 
+} = shopSlice.actions;
+
 export default shopSlice.reducer;

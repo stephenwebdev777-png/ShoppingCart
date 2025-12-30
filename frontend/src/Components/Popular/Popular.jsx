@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import "./Popular.css";
 import Item from "../Item/Item";
 
-const Popular = () => {
+const Popular = (props) => {
   const [popularProducts, setPopularProducts] = useState([]);
   const API_BASE_URL = "http://localhost:3000";
 
@@ -20,15 +20,10 @@ const Popular = () => {
       <hr />
       <div className="popular-item">
         {popularProducts.map((item, i) => {
-          
-          const daysToAdd = 7 + (item.id % 4);
-          const deliveryDate = new Date();
-          deliveryDate.setDate(deliveryDate.getDate() + daysToAdd);
-          const deliveryDateString = deliveryDate.toLocaleDateString("en-US", {
-            day: "numeric",
-            month: "short",
-          });
-
+          const deliveryDateString = props.getDelivery(
+            item.old_price,
+            item.new_price
+          );
           return (
             <div key={i} className="popular-item-container">
               <Item
@@ -36,8 +31,8 @@ const Popular = () => {
                 name={item.name}
                 image={item.image}
                 new_price={item.new_price}
-                old_price={item.old_price}              
-                category={item.category === "women" ? "womens" : "mens"}
+                old_price={item.old_price}
+                onItemClick={props.onItemClick}
               />
               <p
                 style={{
@@ -48,9 +43,7 @@ const Popular = () => {
                 }}
               >
                 Free Delivery ,{" "}
-                <span style={{ color: "#ff4141", fontWeight: "bold" }}>
-                  {deliveryDateString}
-                </span>
+                <span style={{ color: "#ff4141" }}>{deliveryDateString}</span>
               </p>
             </div>
           );
