@@ -3,6 +3,7 @@ const {
   getAllProducts,
   addProduct,
   removeProduct,
+  updateProduct,
   getProductById,
   getNewCollections,
   getPopularInWomen,
@@ -22,6 +23,8 @@ router.get("/product/:id",getProductById);
 
 router.post("/addproduct", isAdmin, addProduct);
 router.post("/removeproduct", isAdmin, removeProduct);
+
+router.post("/updateproduct", isAdmin, updateProduct);
 
 router.post("/upload", isAdmin,upload.single('product'), (req, res) => {
   res.json({

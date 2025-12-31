@@ -33,6 +33,21 @@ const removeProduct = async (req, res) => {
   res.json({ success: true, message: "Product Removed" });
 };
 
+const updateProduct = async (req, res) => {
+  try {
+    const { id, name, category, new_price, old_price } = req.body;
+    const updated = await Product.findOneAndUpdate(
+      { id: id },
+      { name, category, new_price: Number(new_price), old_price: Number(old_price) },
+      { new: true }
+    );
+    if (!updated) return res.status(404).json({ success: false, message: "Not found" });
+    res.json({ success: true, message: "Product Updated" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Update Error" });
+  }
+};
+
 const getProductById = async (req, res) => {
   try {   
     const product = await Product.findOne({ id: Number(req.params.id) });    
@@ -64,6 +79,7 @@ module.exports = {
   getAllProducts,
   addProduct,
   removeProduct, 
+  updateProduct,
   getProductById,
   getNewCollections,
   getPopularInWomen,

@@ -1,31 +1,88 @@
-.listproduct-format-main{
-    display: grid;
-    grid-template-columns: 2fr 4fr 2fr 2fr 2fr 1fr;
-    gap:10px;
+.listproduct-format-main {
+    display: grid;   
+    grid-template-columns: 1fr 3fr 1.2fr 1.2fr 1.2fr 0.8fr 0.8fr;
+    gap: 8px;
     width: 100%;
-    padding: 20px 0px;
-    color: rgb(18, 17, 17);
-    font-size: 15px;
-    font-weight: 600;   
-    text-align: center;
+    padding: 15px 0px;
+    align-items: center;
+    color: #454545;
+    font-size: 17px;
+    font-weight: 900;
 }
+
+.listproduct-header {
+    background: #f9f9f9;
+    border-radius: 6px;
+}
+
 .listproduct-format {
-    padding: 15px 0;
-    row-gap: 20px;
+    padding: 10px 0;
+    font-weight: 400;
 }
 
-.listproduct-product-icon{
-    height: 80px;
-    justify-self: start;
+.listproduct-product-icon {
+    height: 110px;
+    width: 100px;
+    object-fit: contain;
+    justify-self: center;
 }
 
-.listproduct-format-main p{
+.listproduct-format-main p {
     justify-self: center;
     text-align: center;
+    margin: 0;
 }
 
-.listproduct-remove-icon{
+.listproduct-edit-btn {
+    background: #e2e2e2;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
     cursor: pointer;
-    margin: auto;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.3s;
     justify-self: center;
 }
+
+.listproduct-edit-btn:hover {
+    background: #3e95f1;   
+    color: white;
+}
+
+.listproduct-remove-icon {
+    cursor: pointer;
+    width: 15px;
+    justify-self: center;
+}
+
+.listproduct-allproducts {
+    overflow-y: auto;
+}
+.edit-input {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 90%;
+    font-size: 17px;
+}
+
+.edit-input.small {
+    width: 60px;
+    justify-self: center;
+}
+
+.save-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+      font-size: 17px;
+}
+
+.editing-row {
+    background-color: #f0f7ff;
+}
+

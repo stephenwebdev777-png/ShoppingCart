@@ -4,15 +4,16 @@ import CartItem from "./CartItem";
 import { BrowserRouter } from "react-router-dom";
 import { vi, expect, test, describe } from "vitest";
 
+// Updated Mock Context to include deleteFromCart
 const mockContext = {
   all_product: [
     { id: 1, name: "Premium Jacket", new_price: 100, image: "img.jpg" },
   ],
-  // FIX 1: cartItems must be an array for .filter() and use the correct key format "id_size"
   cartItems: [{ key: "1_S", quantity: 2 }],
   getTotalCartAmount: () => 200,
   removeFromCart: vi.fn(),
   addToCart: vi.fn(),
+  deleteFromCart: vi.fn(), // Added mock for the new delete function
 };
 
 describe("CartItem Component", () => {
@@ -25,17 +26,17 @@ describe("CartItem Component", () => {
       </BrowserRouter>
     );
 
-    // FIX 2: Use a Regex to match "Premium Jacket" even if it has (S) next to it
+    // Matches product name even with size appended, e.g., "Premium Jacket (S)"
     expect(screen.getByText(/Premium Jacket/i)).toBeInTheDocument();
 
-    // Verify Quantity
+    // Verify Quantity display
     expect(screen.getByText("2")).toBeInTheDocument();
 
-    // Verify Totals
+    // Verify Totals are rendered
     expect(screen.getAllByText(/200/).length).toBeGreaterThan(0);
   });
 
-  test("calls removeFromCart with the correct key when delete icon is clicked", () => {
+  test("calls deleteFromCart with the correct key when the remove icon is clicked", () => {
     render(
       <BrowserRouter>
         <ShopContext.Provider value={mockContext}>
@@ -43,8 +44,23 @@ describe("CartItem Component", () => {
         </ShopContext.Provider>
       </BrowserRouter>
     );
+
     const removeIcon = screen.getByAltText("remove");
     fireEvent.click(removeIcon);
+    expect(mockContext.deleteFromCart).toHaveBeenCalledWith("1_S");
+  });
+
+  test("calls removeFromCart when the minus button is clicked", () => {
+    render(
+      <BrowserRouter>
+        <ShopContext.Provider value={mockContext}>
+          <CartItem />
+        </ShopContext.Provider>
+      </BrowserRouter>
+    );
+
+    const minusBtn = screen.getByText("-");
+    fireEvent.click(minusBtn);
 
     expect(mockContext.removeFromCart).toHaveBeenCalledWith("1_S");
   });

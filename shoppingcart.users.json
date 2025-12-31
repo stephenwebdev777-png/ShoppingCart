@@ -6,18 +6,18 @@
   "email": "kiru@gmail.com",
   "password": "$2b$10$v/3NfslMigNLFfLncb504.4XjZMlKTyg6038Nb5H5fd3sUP/pR3j6",
   "role": "user",
-  "__v": 5,
+  "__v": 102,
   "cartData": [
     {
-      "key": "114_M",
-      "quantity": 2
-    },
-    {
-      "key": "114_L",
-      "quantity": 2
-    },
-    {
       "key": "102_M",
+      "quantity": 1
+    },
+    {
+      "key": "102_S",
+      "quantity": 2
+    },
+    {
+      "key": "107_S",
       "quantity": 2
     }
   ],
@@ -34,5 +34,5 @@
   "email": "admin@gmail.com",
   "password": "$2b$10$TKBbfAvTPLiYiE7/xaqFjOry8H5JLCvsbfoBFEDZ4GehPX/onyD3G",
   "role": "admin",
-  "__v": 0
+  "__v": 1
 }]

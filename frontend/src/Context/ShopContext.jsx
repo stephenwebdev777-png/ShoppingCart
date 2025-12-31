@@ -64,17 +64,9 @@ const ShopContextProvider = (props) => {
       });
     }
   };
-
-  /** * NEW: deleteFromCart
-   * Removes the item entirely regardless of quantity
-   */
   const deleteFromCart = (key) => {
     const token = localStorage.getItem("auth-token");
-
-    // 1. Update Redux (Remove completely from UI)
     dispatch(deleteFromCartLocal(key));
-
-    // 2. Sync with DB (Calls a different endpoint for full removal)
     if (token) {
       fetch("http://localhost:3000/user/removeentireitem", {
         method: "POST",
