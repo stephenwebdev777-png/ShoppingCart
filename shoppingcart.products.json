@@ -273,4 +273,20 @@
   "new_price": 420,
   "old_price": 730,
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695762f6db9eefef48caf5be"
+  },
+  "id": 125,
+  "name": "product123",
+  "image": "http://localhost:3000/images/product_1767334646071.png",
+  "category": "women",
+  "new_price": 555,
+  "old_price": 677,
+  "available": true,
+  "date": {
+    "$date": "2026-01-02T06:17:26.113Z"
+  },
+  "__v": 0
 }]

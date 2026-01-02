@@ -6,19 +6,19 @@
   "email": "kiru@gmail.com",
   "password": "$2b$10$v/3NfslMigNLFfLncb504.4XjZMlKTyg6038Nb5H5fd3sUP/pR3j6",
   "role": "user",
-  "__v": 102,
+  "__v": 154,
   "cartData": [
-    {
-      "key": "102_M",
-      "quantity": 1
-    },
     {
       "key": "102_S",
       "quantity": 2
     },
     {
-      "key": "107_S",
-      "quantity": 2
+      "key": "116_XL",
+      "quantity": 1
+    },
+    {
+      "key": "119_M",
+      "quantity": 1
     }
   ],
   "resetPasswordExpires": {

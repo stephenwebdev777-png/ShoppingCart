@@ -65,9 +65,9 @@ const Addproduct = () => {
 
         if (addData.success) {
           alert("Product Added Successfully");
-          // REDUX: Refresh the global product list
+         
           dispatch(fetchAllProducts());
-          // Reset form
+     
           setProductDetails({
             name: "",
             image: "",

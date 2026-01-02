@@ -47,7 +47,8 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
     try {
         const token = req.header('auth-token');
-        if (!token) return res.status(400).json({ success: false, message: "No token provided" });
+        if (!token) 
+          return res.status(400).json({ success: false, message: "No token provided" });
 
         const blacklistedToken = new Blacklist({ token });
         await blacklistedToken.save();

@@ -20,7 +20,7 @@ const fetchUser = async (req, res, next) => {
         req.user = data;
         next();
     } catch (error) {
-        res.status(401).send({ errors: "Invalid Token" });
+        res.status(401).send({ errors: "Invalid Token.Login " });
     }
 };
 

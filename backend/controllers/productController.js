@@ -27,8 +27,7 @@ const addProduct = async (req, res) => {
   }
 };
 
-const removeProduct = async (req, res) => {
-  
+const removeProduct = async (req, res) => {  
   await Product.findOneAndDelete({ id: req.body.id });
   res.json({ success: true, message: "Product Removed" });
 };
@@ -41,7 +40,8 @@ const updateProduct = async (req, res) => {
       { name, category, new_price: Number(new_price), old_price: Number(old_price) },
       { new: true }
     );
-    if (!updated) return res.status(404).json({ success: false, message: "Not found" });
+    if (!updated) 
+      return res.status(404).json({ success: false, message: "Not found" });
     res.json({ success: true, message: "Product Updated" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Update Error" });

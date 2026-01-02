@@ -1,4 +1,3 @@
-/* cite: CartItem.jsx */
 import React, { useContext } from "react";
 import "./CartItem.css";
 import { ShopContext } from "../../Context/ShopContext";
@@ -10,7 +9,7 @@ const CartItem = () => {
     all_product,
     cartItems,
     removeFromCart,
-    deleteFromCart, // Use the new function here
+    deleteFromCart,
     addToCart,
     getTotalCartAmount,
   } = useContext(ShopContext);
@@ -49,7 +48,6 @@ const CartItem = () => {
         const matchedItems = cartItems.filter(
           (item) => item.key.startsWith(e.id + "_") && item.quantity > 0
         );
-
         return matchedItems.map((item) => {
           const size = item.key.split("_")[1];
           return (
@@ -64,7 +62,6 @@ const CartItem = () => {
               <p>Rs.{e.new_price}</p>
 
               <div className="cartitems-quantity-box">
-                {/* MINUS: Reduces quantity by 1 */}
                 <span
                   className="quantity-btn"
                   onClick={() => removeFromCart(item.key)}
@@ -73,7 +70,6 @@ const CartItem = () => {
                   -{" "}
                 </span>
                 <button className="cartitems-quantity">{item.quantity}</button>
-                {/* PLUS: Increases quantity by 1 */}
                 <span
                   className="quantity-btn"
                   onClick={() => addToCart(e.id, size)}
@@ -85,7 +81,6 @@ const CartItem = () => {
 
               <p>Rs.{e.new_price * item.quantity}</p>
 
-              {/* REMOVE ICON: Deletes the whole product entry instantly */}
               <img
                 className="cartitems-remove-icon"
                 src={remove_icon}

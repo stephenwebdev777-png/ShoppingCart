@@ -1,8 +1,8 @@
+//Handles async actions
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const API_BASE_URL = "http://localhost:3000";
-
-// Async Thunks for API Calls
+                                                 //sliceName/actionName
 export const fetchAllProducts = createAsyncThunk('shop/fetchAllProducts', async () => {
     const response = await fetch(`${API_BASE_URL}/products/allproduct`);
     return response.json();
@@ -14,7 +14,8 @@ export const fetchCartData = createAsyncThunk('shop/fetchCartData', async (token
             method: "POST",
             headers: { "auth-token": token, "Content-Type": "application/json" }
         });
-        if (response.status === 401) return rejectWithValue("Unauthorized");
+        if (response.status === 401)
+             return rejectWithValue("Unauthorized");
         return response.json();
     } catch (err) {
         return rejectWithValue(err.message);
@@ -23,15 +24,16 @@ export const fetchCartData = createAsyncThunk('shop/fetchCartData', async (token
 
 const shopSlice = createSlice({
     name: 'shop',
-    initialState: {
-        all_product: [],
+    initialState: {  //states
+        all_product: [],  
         cartItems: [],
         loading: false,
     },
     reducers: {
         clearCart: (state) => {
             state.cartItems = [];
-        },
+        }, 
+        //{ itemId, size }
         addToCartLocal: (state, action) => {
             const { itemId, size } = action.payload;
             const key = `${itemId}_${size}`;
@@ -42,6 +44,7 @@ const shopSlice = createSlice({
                 state.cartItems.push({ key: key, quantity: 1 });
             }
         },
+        //remove one quantity of item from cart
         removeFromCartLocal: (state, action) => {
             const key = action.payload;
             const index = state.cartItems.findIndex(item => item.key === key);
@@ -53,8 +56,8 @@ const shopSlice = createSlice({
                 }
             }
         },
-        // NEW: Moved inside the reducers block
-        deleteFromCartLocal: (state, action) => {
+        //delete entire item from cart
+           deleteFromCartLocal: (state, action) => {
             const key = action.payload;
             state.cartItems = state.cartItems.filter(item => item.key !== key);
         },
@@ -62,7 +65,8 @@ const shopSlice = createSlice({
             state.cartItems = action.payload;
         }
     },
-    extraReducers: (builder) => {
+    extraReducers: (builder) => { 
+        //helper object from Redux Toolkit
         builder
             .addCase(fetchAllProducts.fulfilled, (state, action) => {
                 state.all_product = action.payload;
@@ -73,7 +77,6 @@ const shopSlice = createSlice({
     }
 });
 
-// Added deleteFromCartLocal to the exports
 export const { 
     addToCartLocal, 
     removeFromCartLocal, 

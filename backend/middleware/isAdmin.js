@@ -1,4 +1,4 @@
-/* cite: isAdmin.js, fetchUser.js */
+
 const { verifyToken } = require("../utils/jwtUtils");
 const Blacklist = require("../model/Blacklist");
 
@@ -24,7 +24,7 @@ const isAdmin = async (req, res, next) => {
     req.role = data.role;
     next();
   } catch (error) {
-    res.status(401).json({ success: false, message: "Invalid token" });
+    res.status(401).json({ success: false, message: "Invalid token.Login" });
   }
 };
 

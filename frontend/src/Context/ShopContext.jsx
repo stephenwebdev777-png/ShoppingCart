@@ -1,12 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";//useSelector to access state from Redux store
 import {
   fetchAllProducts,
   fetchCartData,
   addToCartLocal,
   removeFromCartLocal,
-  deleteFromCartLocal, // Add this new action import
+  deleteFromCartLocal, 
   clearCart,
   setCartItemsManual,
 } from "../Redux/shopSlice";
@@ -83,7 +83,7 @@ const ShopContextProvider = (props) => {
     cartItems,
     addToCart,
     removeFromCart,
-    deleteFromCart, // Make sure to add this to context
+    deleteFromCart, 
     setCartItems: (data) => dispatch(setCartItemsManual(data)),
     getTotalCartItems: () =>
       cartItems.reduce((total, item) => total + item.quantity, 0),
