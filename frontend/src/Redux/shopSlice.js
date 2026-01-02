@@ -66,7 +66,6 @@ const shopSlice = createSlice({
         }
     },
     extraReducers: (builder) => { 
-        //helper object from Redux Toolkit
         builder
             .addCase(fetchAllProducts.fulfilled, (state, action) => {
                 state.all_product = action.payload;
