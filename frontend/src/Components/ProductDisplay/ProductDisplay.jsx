@@ -40,7 +40,6 @@ const ProductDisplay = ({ product }) => {
   const confidenceBadges = [...baseBadges, ...optionalBadges];
 
   const handleAddToCart = () => {
-    // REMOVED: token check here so non-users can add to cart
     if (!selectedSize) {
       alert("Please select a size before adding to cart.");
       return;
@@ -120,7 +119,7 @@ const ProductDisplay = ({ product }) => {
             {["S", "M", "L", "XL", "XXL"].map((size) => (
               <div
                 key={size}
-                className={selectedSize === size ? "size-selected" : ""} //highlights size
+                className={selectedSize === size ? "size-selected" : ""} 
                 onClick={() => setSelectedSize(size)}
               >
                 {size}

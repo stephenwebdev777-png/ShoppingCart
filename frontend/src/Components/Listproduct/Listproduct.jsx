@@ -21,7 +21,6 @@ const Listproduct = () => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  // Enter Edit Mode
   const handleEditClick = (product) => {
     setEditId(product.id);
     setEditFormData({
@@ -32,12 +31,10 @@ const Listproduct = () => {
     });
   };
 
-  // Handle Input Changes
   const handleInputChange = (e) => {
     setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
   };
 
-  // Save Changes to Backend
   const save_product = async (id) => {
     const token = localStorage.getItem("auth-token");
     const response = await fetch(

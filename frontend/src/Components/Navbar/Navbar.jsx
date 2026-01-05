@@ -1,54 +1,85 @@
 /* eslint-disable no-unused-vars */
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback } from "react";
 import "./Navbar.css";
 import logo from "../Assets/logo.png";
 import cart_icon from "../Assets/cart_icon.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 
 const Navbar = () => {
   const [menu, setMenu] = useState("shop");
-  const { getTotalCartItems, setCartItems } = useContext(ShopContext);
+  const { getTotalCartItems, clearCart } = useContext(ShopContext);
+  const navigate = useNavigate();
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem("auth-token"));
 
+  // Function to wipe local data and redirect
+  const forceLogoutCleanup = useCallback(() => {
+    localStorage.removeItem("auth-token");
+    localStorage.removeItem("user-role");
+    clearCart();
+    setIsAuth(false);
+    navigate("/");
+  }, [clearCart, navigate]);
+
+  // Validate the token with the server
+  const validateToken = useCallback(async () => {
+    const token = localStorage.getItem("auth-token");
+    if (!token) return;
+
+    try {
+      const response = await fetch("http://localhost:3000/user/getuserinfo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+      });
+      const data = await response.json();
+
+      // If backend says success is false (blacklisted/invalid), logout immediately
+      if (!data.success) {
+        forceLogoutCleanup();
+      } else {
+        setIsAuth(true);
+      }
+    } catch (error) {
+      forceLogoutCleanup();
+    }
+  }, [forceLogoutCleanup]);
+
   useEffect(() => {
-    const validateToken = async () => {
-      const token = localStorage.getItem("auth-token");
-      if (!token) {
-        setIsAuth(false);
-        return;
+    // 1. Listen for changes in other tabs
+    window.addEventListener("storage", (e) => {
+      if (e.key === "auth-token") {
+        validateToken();
       }
+    });
 
-      try {
-        const response = await fetch("http://localhost:3000/user/getuserinfo", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": token,
-          },
-        });
-        const data = await response.json();
-
-        if (!data.success) {
-          localStorage.removeItem("auth-token");
-          localStorage.removeItem("user-role");
-          setCartItems([]);
-          setIsAuth(false);
+    // 2. Poll for manual console changes every 500ms
+    let lastToken = localStorage.getItem("auth-token");
+    const interval = setInterval(() => {
+      const currentToken = localStorage.getItem("auth-token");
+      if (currentToken !== lastToken) {
+        lastToken = currentToken;
+        if (currentToken) {
+          validateToken(); // Check if the new token is valid/blacklisted
         } else {
-          setIsAuth(true);
+          forceLogoutCleanup(); // Token was deleted
         }
-      } catch (error) {
-        setIsAuth(false);
       }
-    };
+    }, 500);
 
-    validateToken();
-  }, [setCartItems]);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("storage", validateToken);
+    };
+  }, [validateToken, forceLogoutCleanup]);
 
   const handleLogout = async () => {
     const token = localStorage.getItem("auth-token");
     if (token) {
       try {
+        // Trigger the backend logout route
         await fetch("http://localhost:3000/auth/logout", {
           method: "POST",
           headers: {
@@ -57,13 +88,10 @@ const Navbar = () => {
           },
         });
       } catch (error) {
-        console.error("Logout failed:", error);
+        console.error("Logout failed", error);
       }
     }
-    localStorage.removeItem("auth-token");
-    localStorage.removeItem("user-role");
-    setCartItems([]);
-    setIsAuth(false);
+    forceLogoutCleanup();
     window.location.replace("/");
   };
 
@@ -77,26 +105,19 @@ const Navbar = () => {
       </Link>
       <ul className="nav-menu">
         <li onClick={() => setMenu("shop")}>
-          <Link style={{ textDecoration: "none" }} to="/">
-            Shop
-          </Link>
-          {menu === "shop" ? <hr /> : <></>}
+          <Link style={{ textDecoration: "none" }} to="/">Shop</Link>
+          {menu === "shop" ? <hr /> : null}
         </li>
         <li onClick={() => setMenu("mens")}>
-          <Link style={{ textDecoration: "none" }} to="/mens">
-            Men
-          </Link>
-          {menu === "mens" ? <hr /> : <></>}
+          <Link style={{ textDecoration: "none" }} to="/mens">Men</Link>
+          {menu === "mens" ? <hr /> : null}
         </li>
         <li onClick={() => setMenu("womens")}>
-          <Link style={{ textDecoration: "none" }} to="/womens">
-            Women
-          </Link>
-          {menu === "womens" ? <hr /> : <></>}
+          <Link style={{ textDecoration: "none" }} to="/womens">Women</Link>
+          {menu === "womens" ? <hr /> : null}
         </li>
       </ul>
       <div className="nav-login-cart">
-       
         {isAuth ? (
           <button onClick={handleLogout}>Logout</button>
         ) : (

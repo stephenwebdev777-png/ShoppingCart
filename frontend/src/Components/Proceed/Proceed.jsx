@@ -29,7 +29,6 @@ const Proceed = () => {
       setShowLoginPopup(true);
       return;
     }
-
     const fetchUserData = async () => {
       try {
         const response = await fetch("http://localhost:3000/user/getuserinfo", {

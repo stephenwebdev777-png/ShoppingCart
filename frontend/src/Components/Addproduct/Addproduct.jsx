@@ -66,7 +66,7 @@ const Addproduct = () => {
         if (addData.success) {
           alert("Product Added Successfully");
          
-          dispatch(fetchAllProducts());
+          dispatch(fetchAllProducts());  //redux
      
           setProductDetails({
             name: "",

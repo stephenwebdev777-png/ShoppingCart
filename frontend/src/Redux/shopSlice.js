@@ -1,87 +1,155 @@
-//Handles async actions
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const API_BASE_URL = "http://localhost:3000";
-                                                 //sliceName/actionName
-export const fetchAllProducts = createAsyncThunk('shop/fetchAllProducts', async () => {
-    const response = await fetch(`${API_BASE_URL}/products/allproduct`);
-    return response.json();
-});
 
-export const fetchCartData = createAsyncThunk('shop/fetchCartData', async (token, { rejectWithValue }) => {
-    try {
-        const response = await fetch(`${API_BASE_URL}/user/getcart`, {
-            method: "POST",
-            headers: { "auth-token": token, "Content-Type": "application/json" }
-        });
-        if (response.status === 401)
-             return rejectWithValue("Unauthorized");
-        return response.json();
-    } catch (err) {
-        return rejectWithValue(err.message);
+/* ===================== ASYNC THUNKS ===================== */
+
+export const fetchAllProducts = createAsyncThunk(
+  "shop/fetchAllProducts",
+  async () => {
+    const res = await fetch(`${API_BASE_URL}/products/allproduct`);
+    return res.json();
+  }
+);
+
+export const fetchCartData = createAsyncThunk(
+  "shop/fetchCartData",
+  async (token, { rejectWithValue }) => {
+    const res = await fetch(`${API_BASE_URL}/user/getcart`, {
+      method: "POST",
+      headers: {
+        "auth-token": token,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (res.status === 401) return rejectWithValue("Unauthorized");
+    return res.json();
+  }
+);
+
+export const addToCart = createAsyncThunk(
+  "shop/addToCart",
+  async ({ itemId, size }, { rejectWithValue }) => {
+    const token = localStorage.getItem("auth-token");
+    const key = `${itemId}_${size}`;
+
+    if (token) {
+      const res = await fetch(`${API_BASE_URL}/user/addtocart`, {
+        method: "POST",
+        headers: {
+          "auth-token": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId: key }),
+      });
+
+      if (res.status === 401) return rejectWithValue("Unauthorized");
     }
-});
+
+    return { key };
+  }
+);
+
+export const removeFromCart = createAsyncThunk(
+  "shop/removeFromCart",
+  async (key, { rejectWithValue }) => {
+    const token = localStorage.getItem("auth-token");
+
+    if (token) {
+      const res = await fetch(`${API_BASE_URL}/user/removefromcart`, {
+        method: "POST",
+        headers: {
+          "auth-token": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId: key }),
+      });
+
+      if (res.status === 401) return rejectWithValue("Unauthorized");
+    }
+
+    return key;
+  }
+);
+
+export const deleteFromCart = createAsyncThunk(
+  "shop/deleteFromCart",
+  async (key, { rejectWithValue }) => {
+    const token = localStorage.getItem("auth-token");
+
+    if (token) {
+      const res = await fetch(`${API_BASE_URL}/user/removeentireitem`, {
+        method: "POST",
+        headers: {
+          "auth-token": token,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId: key }),
+      });
+
+      if (res.status === 401) return rejectWithValue("Unauthorized");
+    }
+
+    return key;
+  }
+);
+
+/* ===================== SLICE ===================== */
 
 const shopSlice = createSlice({
-    name: 'shop',
-    initialState: {  //states
-        all_product: [],  
-        cartItems: [],
-        loading: false,
+  name: "shop",
+  initialState: {
+    all_product: [],
+    cartItems: [],
+  },
+  reducers: {
+    clearCart: (state) => {
+      state.cartItems = [];
     },
-    reducers: {
-        clearCart: (state) => {
-            state.cartItems = [];
-        }, 
-        //{ itemId, size }
-        addToCartLocal: (state, action) => {
-            const { itemId, size } = action.payload;
-            const key = `${itemId}_${size}`;
-            const existingItem = state.cartItems.find(item => item.key === key);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                state.cartItems.push({ key: key, quantity: 1 });
-            }
-        },
-        //remove one quantity of item from cart
-        removeFromCartLocal: (state, action) => {
-            const key = action.payload;
-            const index = state.cartItems.findIndex(item => item.key === key);
-            if (index > -1) {
-                if (state.cartItems[index].quantity > 1) {
-                    state.cartItems[index].quantity -= 1;
-                } else {
-                    state.cartItems.splice(index, 1);
-                }
-            }
-        },
-        //delete entire item from cart
-           deleteFromCartLocal: (state, action) => {
-            const key = action.payload;
-            state.cartItems = state.cartItems.filter(item => item.key !== key);
-        },
-        setCartItemsManual: (state, action) => {
-            state.cartItems = action.payload;
+  },
+  extraReducers: (builder) => {
+    builder
+      /* PRODUCTS */
+      .addCase(fetchAllProducts.fulfilled, (state, action) => {
+        state.all_product = action.payload;
+      })
+
+      /* CART LOAD */
+      .addCase(fetchCartData.fulfilled, (state, action) => {
+        if (Array.isArray(action.payload)) {
+          state.cartItems = action.payload;
         }
-    },
-    extraReducers: (builder) => { 
-        builder
-            .addCase(fetchAllProducts.fulfilled, (state, action) => {
-                state.all_product = action.payload;
-            })
-            .addCase(fetchCartData.fulfilled, (state, action) => {
-                if (Array.isArray(action.payload)) state.cartItems = action.payload;
-            });
-    }
+      })
+
+      /* ADD */
+      .addCase(addToCart.fulfilled, (state, action) => {
+        const { key } = action.payload;
+        const item = state.cartItems.find((i) => i.key === key);
+
+        if (item) item.quantity += 1;
+        else state.cartItems.push({ key, quantity: 1 });
+      })
+
+      /* REMOVE */
+      .addCase(removeFromCart.fulfilled, (state, action) => {
+        const key = action.payload;
+        const item = state.cartItems.find((i) => i.key === key);
+
+        if (!item) return;
+        if (item.quantity > 1) item.quantity -= 1;
+        else
+          state.cartItems = state.cartItems.filter((i) => i.key !== key);
+      })
+
+      /* DELETE */
+      .addCase(deleteFromCart.fulfilled, (state, action) => {
+        state.cartItems = state.cartItems.filter(
+          (i) => i.key !== action.payload
+        );
+      });
+  },
 });
 
-export const { 
-    addToCartLocal, 
-    removeFromCartLocal, 
-    deleteFromCartLocal, 
-    clearCart, 
-    setCartItemsManual 
-} = shopSlice.actions;
-
+export const { clearCart } = shopSlice.actions;
 export default shopSlice.reducer;

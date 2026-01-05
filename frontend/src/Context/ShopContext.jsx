@@ -1,19 +1,18 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";//useSelector to access state from Redux store
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllProducts,
   fetchCartData,
-  addToCartLocal,
-  removeFromCartLocal,
-  deleteFromCartLocal, 
+  addToCart,
+  removeFromCart,
+  deleteFromCart,
   clearCart,
-  setCartItemsManual,
 } from "../Redux/shopSlice";
 
 export const ShopContext = createContext(null);
 
-const ShopContextProvider = (props) => {
+const ShopContextProvider = ({ children }) => {
   const dispatch = useDispatch();
   const { all_product, cartItems } = useSelector((state) => state.shop);
 
@@ -26,6 +25,7 @@ const ShopContextProvider = (props) => {
 
   useEffect(() => {
     dispatch(fetchAllProducts());
+
     const token = localStorage.getItem("auth-token");
     if (token) {
       dispatch(fetchCartData(token))
@@ -34,71 +34,37 @@ const ShopContextProvider = (props) => {
     }
   }, [dispatch, handleForceLogout]);
 
-  const addToCart = (itemId, size) => {
-    const token = localStorage.getItem("auth-token");
-    const key = `${itemId}_${size}`;
-    dispatch(addToCartLocal({ itemId, size }));
-
-    if (token) {
-      fetch("http://localhost:3000/user/addtocart", {
-        method: "POST",
-        headers: { "auth-token": token, "Content-Type": "application/json" },
-        body: JSON.stringify({ itemId: key }),
-      }).then((res) => {
-        if (res.status === 401) handleForceLogout();
-      });
-    }
-  };
-
-  const removeFromCart = (key) => {
-    const token = localStorage.getItem("auth-token");
-    dispatch(removeFromCartLocal(key));
-
-    if (token) {
-      fetch("http://localhost:3000/user/removefromcart", {
-        method: "POST",
-        headers: { "auth-token": token, "Content-Type": "application/json" },
-        body: JSON.stringify({ itemId: key }),
-      }).then((res) => {
-        if (res.status === 401) handleForceLogout();
-      });
-    }
-  };
-  const deleteFromCart = (key) => {
-    const token = localStorage.getItem("auth-token");
-    dispatch(deleteFromCartLocal(key));
-    if (token) {
-      fetch("http://localhost:3000/user/removeentireitem", {
-        method: "POST",
-        headers: { "auth-token": token, "Content-Type": "application/json" },
-        body: JSON.stringify({ itemId: key }),
-      }).then((res) => {
-        if (res.status === 401) handleForceLogout();
-      });
-    }
-  };
-
   const contextValue = {
     all_product,
     cartItems,
-    addToCart,
-    removeFromCart,
-    deleteFromCart, 
-    setCartItems: (data) => dispatch(setCartItemsManual(data)),
+
+    addToCart: (itemId, size) =>
+      dispatch(addToCart({ itemId, size })).unwrap().catch(handleForceLogout),
+
+    removeFromCart: (key) =>
+      dispatch(removeFromCart(key)).unwrap().catch(handleForceLogout),
+
+    deleteFromCart: (key) =>
+      dispatch(deleteFromCart(key)).unwrap().catch(handleForceLogout),
+
+    clearCart: () => dispatch(clearCart()),
+
     getTotalCartItems: () =>
       cartItems.reduce((total, item) => total + item.quantity, 0),
-    getTotalCartAmount: () => {
-      return cartItems.reduce((total, item) => {
+
+    getTotalCartAmount: () =>
+      cartItems.reduce((total, item) => {
         const [id] = item.key.split("_");
-        const itemInfo = all_product.find((p) => p.id === Number(id));
-        return itemInfo ? total + itemInfo.new_price * item.quantity : total;
-      }, 0);
-    },
+        const product = all_product.find((p) => p.id === Number(id));
+        return product
+          ? total + product.new_price * item.quantity
+          : total;
+      }, 0),
   };
 
   return (
     <ShopContext.Provider value={contextValue}>
-      {props.children}
+      {children}
     </ShopContext.Provider>
   );
 };

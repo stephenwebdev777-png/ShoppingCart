@@ -11,11 +11,9 @@ const LoginSignup = ({ mode }) => {
     password: "",
     email: "",
   });
-
-  // Access the current URL location
   const location = useLocation();
 
-  // Extract the 'redirect' parameter from the URL (e.g., ?redirect=/mens/product/12)
+  // Extract the 'redirect' parameter from the URL ( ?redirect=/mens/product/12)
   const queryParams = new URLSearchParams(location.search);
   const redirectPath = queryParams.get("redirect") || "/";
 
@@ -49,7 +47,6 @@ const LoginSignup = ({ mode }) => {
     }
   };
 
-  // HANDLER: User Login with Dynamic Redirect
   const login = async () => {
     const response = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
@@ -65,7 +62,7 @@ const LoginSignup = ({ mode }) => {
       if (data.role === "admin") {
         window.location.replace("/admin/addproduct");
       } else {
-        // Use the redirect path captured from the URL
+      
         window.location.replace(redirectPath);
       }
     } else {
