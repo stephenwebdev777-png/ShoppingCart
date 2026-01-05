@@ -289,4 +289,20 @@
     "$date": "2026-01-02T06:17:26.113Z"
   },
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695b825afd13478674cf1f92"
+  },
+  "id": 126,
+  "name": "product123",
+  "image": "http://localhost:3000/images/product_1767604826727.png",
+  "category": "women",
+  "new_price": 324,
+  "old_price": 567,
+  "available": true,
+  "date": {
+    "$date": "2026-01-05T09:20:26.768Z"
+  },
+  "__v": 0
 }]
