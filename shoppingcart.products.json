@@ -305,4 +305,52 @@
     "$date": "2026-01-05T09:20:26.768Z"
   },
   "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695cf465136e15b9967ea966"
+  },
+  "id": 127,
+  "name": "kid",
+  "image": "http://localhost:3000/images/product_1767699504949.png",
+  "category": "men",
+  "new_price": 449,
+  "old_price": 799,
+  "available": true,
+  "date": {
+    "$date": "2026-01-06T11:39:17.212Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695cf70b38e9c54dc490fb3d"
+  },
+  "id": 128,
+  "name": "Blue Denim",
+  "image": "http://localhost:3000/images/product_1767699504949.png",
+  "category": "men",
+  "new_price": 500,
+  "old_price": 800,
+  "date": {
+    "$date": "2026-01-06T11:50:35.885Z"
+  },
+  "available": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695cf70b38e9c54dc490fb3e"
+  },
+  "id": 129,
+  "name": "Pink Dress",
+  "image": "http://localhost:3000/images/product_1767699504949.png",
+  "category": "women",
+  "new_price": 450,
+  "old_price": 900,
+  "date": {
+    "$date": "2026-01-06T11:50:35.885Z"
+  },
+  "available": true,
+  "__v": 0
 }]

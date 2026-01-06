@@ -4,9 +4,9 @@
   },
   "username": "Kiru",
   "email": "kiru@gmail.com",
-  "password": "$2b$10$v/3NfslMigNLFfLncb504.4XjZMlKTyg6038Nb5H5fd3sUP/pR3j6",
+  "password": "$2b$10$h9lgGiPU43UvRPM3DZegnu/ZC5sbL4i9J5mq0YUG6dGQe5ZLQI4zi",
   "role": "user",
-  "__v": 185,
+  "__v": 187,
   "cartData": [
     {
       "key": "103_M",
@@ -19,12 +19,16 @@
     {
       "key": "126_L",
       "quantity": 1
+    },
+    {
+      "key": "102_XXL",
+      "quantity": 1
+    },
+    {
+      "key": "104_M",
+      "quantity": 1
     }
-  ],
-  "resetPasswordExpires": {
-    "$date": "2025-12-20T08:20:56.212Z"
-  },
-  "resetPasswordToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpcnVAZ21haWwuY29tIiwiaWF0IjoxNzY2MTMyNDU2LCJleHAiOjE3NjYyMTg4NTZ9.5tzO65d3f3c-Z3bNFdQrNddboVigQahp0SrevBQ8wCs"
+  ]
 },
 {
   "_id": {
