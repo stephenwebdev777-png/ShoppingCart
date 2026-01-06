@@ -1,7 +1,10 @@
 const multer = require("multer");
 const path = require("path");
-
 const uploadDir = './upload/images';
+const fs = require("fs");
+const csv = require("csv-parser");
+const xlsx = require("xlsx");
+const Product = require("../model/Product");
 
 // Storage configuration for images
 const storage = multer.diskStorage({
@@ -12,5 +15,65 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+const bulkUpload = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: "No file uploaded" });
+        }
 
-module.exports = upload;
+        const filePath = req.file.path;
+        const fileExtension = path.extname(req.file.originalname).toLowerCase();
+        let products = [];
+
+        if (fileExtension === '.csv') {
+            // Process CSV
+            fs.createReadStream(filePath)
+                .pipe(csv())
+                .on('data', (data) => products.push(data))
+                .on('end', async () => {
+                    await saveToDatabase(products, res, filePath);
+                });
+        } else if (fileExtension === '.xlsx' || fileExtension === '.xls') {
+            // Process Excel
+            const workbook = xlsx.readFile(filePath);
+            const sheetName = workbook.SheetNames[0];
+            const sheet = workbook.Sheets[sheetName];
+            products = xlsx.utils.sheet_to_json(sheet);
+            await saveToDatabase(products, res, filePath);
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// 3. Helper function to save products
+const saveToDatabase = async (products, res, filePath) => {
+    try {
+       const lastProduct = await Product.findOne().sort({ id: -1 });
+        let currentId = lastProduct ? lastProduct.id + 1 : 100;
+        const formattedProducts = products.map((item) => {
+            const product = {
+                id: currentId, // Use the manually incremented ID
+                name: item.name,
+                image: item.image,
+                category: item.category,
+                new_price: Number(item.new_price),
+                old_price: Number(item.old_price),
+                date: Date.now(),
+                available: true,
+            };
+            currentId++; // Increment for next item
+            return product;
+        });
+
+        await Product.insertMany(formattedProducts);
+        if (fs.existsSync(filePath)) 
+          fs.unlinkSync(filePath);
+        res.json({ success: true, message: `${formattedProducts.length} products added!` });
+    } catch (err) {
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath); 
+        console.error("Bulk Upload Error:", err);
+        res.status(400).json({ success: false, message: "Check file formatting", error: err.message });
+    }
+};
+module.exports = { bulkUpload, upload };

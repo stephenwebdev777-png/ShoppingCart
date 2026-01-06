@@ -9,7 +9,7 @@ const {
   getPopularInWomen,
 } = require("../controllers/productController");
 
-const upload = require("../config/multer");
+const {bulkUpload,upload}= require("../config/multer");
 const isAdmin = require("../middleware/isAdmin");
 // const fetchUser = require("../middleware/fetchUser"); 
 
@@ -26,11 +26,14 @@ router.post("/removeproduct", isAdmin, removeProduct);
 
 router.post("/updateproduct", isAdmin, updateProduct);
 
+
 router.post("/upload", isAdmin,upload.single('product'), (req, res) => {
   res.json({
     success: 1,
     image_url: `http://localhost:3000/images/${req.file.filename}`
   });
 });
+
+router.post("/bulk-upload",isAdmin, upload.single('bulk-products'), bulkUpload)
 
 module.exports = router;
