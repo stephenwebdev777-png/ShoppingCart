@@ -25,7 +25,7 @@ Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 const mockReplace = vi.fn();  //navigate to either login or signup
-Object.defineProperty(window, "location", {
+Object.defineProperty(window, "location", { //instead of window.location.replace() used mockreplace
   value: { replace: mockReplace },
   writable: true,
 });
@@ -44,7 +44,7 @@ describe("LoginSignup Component", () => {
     return render(
       <MemoryRouter>
         <LoginSignup mode={mode} />
-      </MemoryRouter>//history of navigation
+      </MemoryRouter> //history of navigation
     );
   };
 

@@ -27,6 +27,12 @@ const Sidebar = () => {
           <p>List Product</p>
         </div>
       </Link>
+      <Link to={'/admin/bulkproducts'} style={{ textDecoration: 'none' }} >
+        <div className={`sidebar-item ${isActive('/admin/bulkproducts') ? 'active' : ''}`}> 
+          <img src={list_product_icon} alt='List Product Icon'/>
+          <p>Bulk Products</p>
+        </div>
+      </Link>
       
     </div>
     </>

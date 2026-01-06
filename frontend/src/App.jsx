@@ -18,6 +18,7 @@ import LoginSignup from "./Pages/LoginSignup";
 import Admin from "./Pages/Admin/Admin";
 import Addproduct from "./Components/Addproduct/Addproduct";
 import Listproduct from "./Components/Listproduct/Listproduct";
+import BulkProducts from "./Components/BulkProducts/BulkProducts";
 import Proceed from "./Components/Proceed/Proceed";
 import ResetPassword from "./Pages/ResetPassword";
 import banner_women from "./Components/Assets/banner_women.png";
@@ -179,6 +180,7 @@ function App() {
           <Route index element={<Navigate to="addproduct" replace />} />
           <Route path="addproduct" element={<Addproduct />} />
           <Route path="listproduct" element={<Listproduct />} />
+          <Route path="bulkproducts" element={<BulkProducts />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

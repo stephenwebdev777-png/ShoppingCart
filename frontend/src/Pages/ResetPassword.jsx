@@ -16,7 +16,7 @@ const ResetPassword = () => {
       return;
     }
 
-    const res = await fetch("http://localhost:3000/resetpassword", {
+    const res = await fetch("http://localhost:3000/auth/resetpassword", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, newPassword }),

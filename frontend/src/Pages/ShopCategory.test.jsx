@@ -11,8 +11,6 @@ const mockProducts = [
   { id: 2, name: "Product B", category: "men", image: "img2.jpg", new_price: 30, old_price: 50 },
   { id: 3, name: "Product C", category: "women", image: "img3.jpg", new_price: 100, old_price: 150 },
 ];
-
-// Mock Item component
 vi.mock("../Components/Item/Item", () => ({
   default: ({ name, new_price, onItemClick }) => (
      <div data-testid="product-item" onClick={() => onItemClick('/product/1')}> 
@@ -24,7 +22,7 @@ vi.mock("../Components/Item/Item", () => ({
 
 const renderWithContext = (props) => {
   return render(
-    <BrowserRouter> {/* WRAP IN ROUTER */}
+    <BrowserRouter>
       <ShopContext.Provider value={{ all_product: mockProducts }}>
         <ShopCategory {...props} />
       </ShopContext.Provider>
@@ -59,7 +57,7 @@ describe("ShopCategory Component", () => {
     fireEvent.change(select, { target: { value: "low-high" } });
 
     const prices = screen.getAllByTestId("price-value");
-    // Product B (30) then Product A (50)
+  
     expect(prices[0].textContent).toBe("30"); 
     expect(prices[1].textContent).toBe("50");
   });
@@ -70,14 +68,13 @@ describe("ShopCategory Component", () => {
     
     fireEvent.change(select, { target: { value: "high-low" } });  
     const prices = screen.getAllByTestId("price-value");
-    // Product A (50) then Product B (30)
+   
     expect(prices[0].textContent).toBe("50");
     expect(prices[1].textContent).toBe("30");
   });
 
   it("displays the delivery date text", () => {
     renderWithContext(defaultProps);
-    // This matches the "Free Delivery," text in your ShopCategory.jsx
     const deliveryInfo = screen.getAllByText(/Free Delivery/i);   
     expect(deliveryInfo.length).toBeGreaterThan(0);
   });
@@ -85,9 +82,7 @@ describe("ShopCategory Component", () => {
   it("opens login modal when a product is clicked", () => {
     renderWithContext(defaultProps);
     const items = screen.getAllByTestId("product-item");
-    fireEvent.click(items[0]); // Click Product A
-    
-    // Check if modal text appears
+    fireEvent.click(items[0]); 
     expect(screen.getByText(/Login Required/i)).toBeInTheDocument();
   });
 });

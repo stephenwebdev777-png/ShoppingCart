@@ -35,9 +35,7 @@ const Navbar = () => {
         },
       });
       const data = await response.json();
-
-      // If backend says success is false (blacklisted/invalid), logout immediately
-      if (!data.success) {
+  if (!data.success) {
         forceLogoutCleanup();
       } else {
         setIsAuth(true);
@@ -48,23 +46,21 @@ const Navbar = () => {
   }, [forceLogoutCleanup]);
 
   useEffect(() => {
-    // 1. Listen for changes in other tabs
+ 
     window.addEventListener("storage", (e) => {
       if (e.key === "auth-token") {
         validateToken();
       }
     });
-
-    // 2. Poll for manual console changes every 500ms
     let lastToken = localStorage.getItem("auth-token");
     const interval = setInterval(() => {
       const currentToken = localStorage.getItem("auth-token");
       if (currentToken !== lastToken) {
         lastToken = currentToken;
         if (currentToken) {
-          validateToken(); // Check if the new token is valid/blacklisted
+          validateToken(); 
         } else {
-          forceLogoutCleanup(); // Token was deleted
+          forceLogoutCleanup(); 
         }
       }
     }, 500);
@@ -79,7 +75,6 @@ const Navbar = () => {
     const token = localStorage.getItem("auth-token");
     if (token) {
       try {
-        // Trigger the backend logout route
         await fetch("http://localhost:3000/auth/logout", {
           method: "POST",
           headers: {

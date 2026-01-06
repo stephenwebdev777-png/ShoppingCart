@@ -4,7 +4,6 @@ import CartItem from "./CartItem";
 import { BrowserRouter } from "react-router-dom";
 import { vi, expect, test, describe } from "vitest";
 
-// Updated Mock Context to include deleteFromCart
 const mockContext = {
   all_product: [
     { id: 1, name: "Premium Jacket", new_price: 100, image: "img.jpg" },
@@ -13,7 +12,7 @@ const mockContext = {
   getTotalCartAmount: () => 200,
   removeFromCart: vi.fn(),
   addToCart: vi.fn(),
-  deleteFromCart: vi.fn(), // Added mock for the new delete function
+  deleteFromCart: vi.fn(), 
 };
 
 describe("CartItem Component", () => {
@@ -25,14 +24,10 @@ describe("CartItem Component", () => {
         </ShopContext.Provider>
       </BrowserRouter>
     );
-
-    // Matches product name even with size appended, e.g., "Premium Jacket (S)"
     expect(screen.getByText(/Premium Jacket/i)).toBeInTheDocument();
 
-    // Verify Quantity display
     expect(screen.getByText("2")).toBeInTheDocument();
 
-    // Verify Totals are rendered
     expect(screen.getAllByText(/200/).length).toBeGreaterThan(0);
   });
 

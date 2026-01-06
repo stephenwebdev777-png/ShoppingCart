@@ -68,7 +68,7 @@ describe("ResetPassword Component", () => {
     fireEvent.click(button);
 
     await waitFor(() => {
-      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/resetpassword", expect.objectContaining({
+      expect(fetch).toHaveBeenCalledWith("http://localhost:3000/auth/resetpassword", expect.objectContaining({
         method: "POST",
         body: JSON.stringify({ token: "test-token-123", newPassword: "securePass123" }),
       }));

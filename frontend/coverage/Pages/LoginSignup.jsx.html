@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.97% </span>
+                <span class="strong">84% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>39/47</span>
+                <span class='fraction'>42/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.31% </span>
+                <span class="strong">77.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>29/38</span>
+                <span class='fraction'>31/40</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.22% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/45</span>
+                <span class='fraction'>40/48</span>
             </div>
         
             
@@ -249,7 +249,12 @@
 <a name='L184'></a><a href='#L184'>184</a>
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
-<a name='L187'></a><a href='#L187'>187</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -262,6 +267,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -293,7 +303,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -305,8 +314,10 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -326,15 +337,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
@@ -437,7 +447,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom"; // Import useLocation
 import "./CSS/LoginSignup.css";
 import logo from "../Assets/logo.png";
 &nbsp;
@@ -448,6 +458,11 @@ const LoginSignup = ({ mode }) =&gt; {
     password: "",
     email: "",
   });
+  const location = useLocation();
+&nbsp;
+  // Extract the 'redirect' parameter from the URL ( ?redirect=/mens/product/12)
+  const queryParams = new URLSearchParams(location.search);
+  const redirectPath = queryParams.get("redirect") || "/";
 &nbsp;
   const changeHandler = (e) =&gt; {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -479,7 +494,6 @@ const LoginSignup = ({ mode }) =&gt; {
     }
   };
 &nbsp;
-  // HANDLER: User Login with Admin Redirect
   const login = async () =&gt; {
     const response = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
@@ -491,10 +505,12 @@ const LoginSignup = ({ mode }) =&gt; {
     if (data.success) {
       localStorage.setItem("auth-token", data.token);
       localStorage.setItem("user-role", data.role);
+&nbsp;
       if (data.role === "admin") {
         window.location.replace("/admin/addproduct");
       } else {
-        window.location.replace("/");
+      
+        window.location.replace(redirectPath);
       }
     } else {
       alert(data.errors || <span class="branch-1 cbranch-no" title="branch not covered" >"Login Failed")</span>;
@@ -512,9 +528,7 @@ const LoginSignup = ({ mode }) =&gt; {
 &nbsp;
       if (responseData.success) {
         alert("Account created successfully! Please login to continue.");
-&nbsp;
         setState("login");
-&nbsp;
         setFormData({ ...formData, password: "" });
       } else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >        alert(responseData.message || "Signup failed");</span>
@@ -523,6 +537,7 @@ const LoginSignup = ({ mode }) =&gt; {
 <span class="cstat-no" title="statement not covered" >      alert("Error connecting to the server.");</span>
     }
   };
+&nbsp;
   return (
     &lt;div className="loginsignup"&gt;
       &lt;div className="loginsignup-header-outside"&gt;
@@ -628,7 +643,7 @@ export default LoginSignup;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-30T06:14:56.060Z
+                at 2026-01-06T05:28:05.325Z
             </div>
         <script src="../prettify.js"></script>
         <script>

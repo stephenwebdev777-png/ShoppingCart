@@ -5,7 +5,6 @@ import { vi, expect, test, beforeEach, describe } from "vitest";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 
-// Helper to generate a store with specific product data
 const createMockStore = (products = []) => {
   return configureStore({
     reducer: {
@@ -17,7 +16,7 @@ const createMockStore = (products = []) => {
   });
 };
 
-describe("Listproduct Component (Inline Editing)", () => {
+describe("Listproduct Component", () => {
   const mockProduct = {
     _id: "67890",
     id: 1,
@@ -29,9 +28,8 @@ describe("Listproduct Component (Inline Editing)", () => {
   };
 
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.clearAllMocks(); //clean mocks for every test
 
-    // Mock Global Fetch
     global.fetch = vi.fn((url) => {
       if (url.includes("allproduct")) {
         return Promise.resolve({
@@ -42,8 +40,6 @@ describe("Listproduct Component (Inline Editing)", () => {
         json: () => Promise.resolve({ success: true }),
       });
     });
-
-    // Mock LocalStorage
     const mockToken = "mock-admin-token";
     Object.defineProperty(window, "localStorage", {
       value: {
@@ -52,7 +48,6 @@ describe("Listproduct Component (Inline Editing)", () => {
       writable: true,
     });
 
-    // Mock window.confirm for the delete test
     window.confirm = vi.fn(() => true);
   });
 
@@ -64,17 +59,13 @@ describe("Listproduct Component (Inline Editing)", () => {
         <Listproduct />
       </Provider>
     );
-
-    // Click the Edit button
     const editBtn = await screen.findByText("Edit");
     fireEvent.click(editBtn);
 
-    // Verify that the text turns into an input field
     const nameInput = screen.getByDisplayValue("Database Item");
     expect(nameInput).toBeInTheDocument();
     expect(nameInput.tagName).toBe("INPUT");
 
-    // Verify Save button appears
     expect(screen.getByText("Save")).toBeInTheDocument();
   });
 
@@ -87,14 +78,11 @@ describe("Listproduct Component (Inline Editing)", () => {
       </Provider>
     );
 
-    // Enter edit mode
     fireEvent.click(await screen.findByText("Edit"));
 
-    // Change the value
     const nameInput = screen.getByDisplayValue("Database Item");
     fireEvent.change(nameInput, { target: { value: "Updated Item Name", name: "name" } });
 
-    // Click Save
     const saveBtn = screen.getByText("Save");
     fireEvent.click(saveBtn);
 
@@ -103,7 +91,7 @@ describe("Listproduct Component (Inline Editing)", () => {
       const updateCall = calls.find((call) => call[0].includes("updateproduct"));
       
       expect(updateCall).toBeDefined();
-      // Verify the body contains the new name
+    
       const requestBody = JSON.parse(updateCall[1].body);
       expect(requestBody.name).toBe("Updated Item Name");
       expect(requestBody.id).toBe(1);
@@ -124,7 +112,6 @@ describe("Listproduct Component (Inline Editing)", () => {
     const removeIcon = container.querySelector(".listproduct-remove-icon");
     fireEvent.click(removeIcon);
 
-    // Verify window.confirm was called
     expect(window.confirm).toHaveBeenCalled();
 
     await waitFor(() => {

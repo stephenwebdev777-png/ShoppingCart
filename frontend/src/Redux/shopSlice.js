@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const API_BASE_URL = "http://localhost:3000";
 
-/* ===================== ASYNC THUNKS ===================== */
-
 export const fetchAllProducts = createAsyncThunk(
   "shop/fetchAllProducts",
   async () => {
@@ -23,7 +21,8 @@ export const fetchCartData = createAsyncThunk(
       },
     });
 
-    if (res.status === 401) return rejectWithValue("Unauthorized");
+    if (res.status === 401) 
+      return rejectWithValue("Unauthorized");
     return res.json();
   }
 );
@@ -44,7 +43,8 @@ export const addToCart = createAsyncThunk(
         body: JSON.stringify({ itemId: key }),
       });
 
-      if (res.status === 401) return rejectWithValue("Unauthorized");
+      if (res.status === 401) 
+        return rejectWithValue("Unauthorized");
     }
 
     return { key };
@@ -66,9 +66,9 @@ export const removeFromCart = createAsyncThunk(
         body: JSON.stringify({ itemId: key }),
       });
 
-      if (res.status === 401) return rejectWithValue("Unauthorized");
+      if (res.status === 401) 
+        return rejectWithValue("Unauthorized");
     }
-
     return key;
   }
 );
@@ -88,15 +88,13 @@ export const deleteFromCart = createAsyncThunk(
         body: JSON.stringify({ itemId: key }),
       });
 
-      if (res.status === 401) return rejectWithValue("Unauthorized");
+      if (res.status === 401)
+         return rejectWithValue("Unauthorized");
     }
 
     return key;
   }
 );
-
-/* ===================== SLICE ===================== */
-
 const shopSlice = createSlice({
   name: "shop",
   initialState: {
@@ -104,25 +102,21 @@ const shopSlice = createSlice({
     cartItems: [],
   },
   reducers: {
-    clearCart: (state) => {
+    clearCart: (state) => { //no api call, just clear local cart so used reducers
       state.cartItems = [];
     },
   },
   extraReducers: (builder) => {
-    builder
-      /* PRODUCTS */
+    builder  
       .addCase(fetchAllProducts.fulfilled, (state, action) => {
         state.all_product = action.payload;
       })
-
-      /* CART LOAD */
       .addCase(fetchCartData.fulfilled, (state, action) => {
         if (Array.isArray(action.payload)) {
           state.cartItems = action.payload;
         }
       })
 
-      /* ADD */
       .addCase(addToCart.fulfilled, (state, action) => {
         const { key } = action.payload;
         const item = state.cartItems.find((i) => i.key === key);
@@ -131,7 +125,6 @@ const shopSlice = createSlice({
         else state.cartItems.push({ key, quantity: 1 });
       })
 
-      /* REMOVE */
       .addCase(removeFromCart.fulfilled, (state, action) => {
         const key = action.payload;
         const item = state.cartItems.find((i) => i.key === key);
@@ -141,8 +134,6 @@ const shopSlice = createSlice({
         else
           state.cartItems = state.cartItems.filter((i) => i.key !== key);
       })
-
-      /* DELETE */
       .addCase(deleteFromCart.fulfilled, (state, action) => {
         state.cartItems = state.cartItems.filter(
           (i) => i.key !== action.payload
