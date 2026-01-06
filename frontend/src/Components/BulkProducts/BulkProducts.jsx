@@ -7,9 +7,7 @@ const BulkProducts = () => {
 
     const handleFileChange = (e) => {
         
-    };
-
-   
+    };  
 
     return (
         <div className="bulk-products">
