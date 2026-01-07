@@ -1,4 +1,3 @@
-/* cite: App.jsx, authController.js, isAdmin.js */
 import React, { useEffect } from "react";
 import {
   BrowserRouter,
@@ -68,7 +67,6 @@ const RoleProtectedRoute = ({ children, allowedRole }) => {
   }
 
   if (allowedRole === "admin" && userRole !== "admin") {
-    //Non-admin trying admin page
     return <Navigate to="/" replace />;
   }
 

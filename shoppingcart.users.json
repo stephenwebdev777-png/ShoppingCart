@@ -6,12 +6,8 @@
   "email": "kiru@gmail.com",
   "password": "$2b$10$h9lgGiPU43UvRPM3DZegnu/ZC5sbL4i9J5mq0YUG6dGQe5ZLQI4zi",
   "role": "user",
-  "__v": 187,
+  "__v": 203,
   "cartData": [
-    {
-      "key": "103_M",
-      "quantity": 1
-    },
     {
       "key": "116_XL",
       "quantity": 1
@@ -21,11 +17,7 @@
       "quantity": 1
     },
     {
-      "key": "102_XXL",
-      "quantity": 1
-    },
-    {
-      "key": "104_M",
+      "key": "114_M",
       "quantity": 1
     }
   ]

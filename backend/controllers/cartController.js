@@ -15,7 +15,7 @@ const validateCartKey = async (key) => {
             message: "Size must be uppercase. Use S, M, L, XL, XXL"
         };
     }
-    if (!allowedSizes.includes(size.toUpperCase())) {  //Adds,between each element(allowedSizes.join)
+    if (!allowedSizes.includes(size.toUpperCase())) {
         return { valid: false, message: `Invalid size. Allowed sizes: ${allowedSizes.join(', ')}` };
     }
     const productExists = await Product.findOne({ id: Number(productId) });
@@ -81,7 +81,7 @@ exports.updateCart = async (req, res) => {
                 message: "Invalid key value. Expected object of cart items"
             });
         }
-        const updates = req.body; // keys { "102_S": 6, "101_M": 5 }
+        const updates = req.body; // keys=> "102_S": 6, "101_M": 5 
         for (const key in updates) {
             const validation = await validateCartKey(key);
             if (!validation.valid) {

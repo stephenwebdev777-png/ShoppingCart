@@ -34,6 +34,6 @@ router.post("/upload", isAdmin,upload.single('product'), (req, res) => {
   });
 });
 
-router.post("/bulk-upload",isAdmin, upload.single('bulk-products'), bulkUpload)
+router.post("/bulk-upload", isAdmin, upload.single('file'), bulkUpload);
 
 module.exports = router;

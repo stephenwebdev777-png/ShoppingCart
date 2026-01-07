@@ -15,6 +15,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+//bulk uploads
 const bulkUpload = async (req, res) => {
     try {
         if (!req.file) {
@@ -34,7 +36,6 @@ const bulkUpload = async (req, res) => {
                     await saveToDatabase(products, res, filePath);
                 });
         } else if (fileExtension === '.xlsx' || fileExtension === '.xls') {
-            // Process Excel
             const workbook = xlsx.readFile(filePath);
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
@@ -46,14 +47,14 @@ const bulkUpload = async (req, res) => {
     }
 };
 
-// 3. Helper function to save products
 const saveToDatabase = async (products, res, filePath) => {
     try {
        const lastProduct = await Product.findOne().sort({ id: -1 });
         let currentId = lastProduct ? lastProduct.id + 1 : 100;
+        //format needs because datas are in string format
         const formattedProducts = products.map((item) => {
             const product = {
-                id: currentId, // Use the manually incremented ID
+                id: currentId,
                 name: item.name,
                 image: item.image,
                 category: item.category,
@@ -62,18 +63,22 @@ const saveToDatabase = async (products, res, filePath) => {
                 date: Date.now(),
                 available: true,
             };
-            currentId++; // Increment for next item
+            currentId++; 
             return product;
         });
 
         await Product.insertMany(formattedProducts);
         if (fs.existsSync(filePath)) 
           fs.unlinkSync(filePath);
-        res.json({ success: true, message: `${formattedProducts.length} products added!` });
-    } catch (err) {
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath); 
-        console.error("Bulk Upload Error:", err);
-        res.status(400).json({ success: false, message: "Check file formatting", error: err.message });
+        res.json(
+            { success: true,
+             message: `${formattedProducts.length} products added!` });
+            } catch (err) {
+        if (fs.existsSync(filePath))  //deletes the uploaded file from the server
+            fs.unlinkSync(filePath); 
+        res.status(400).json({ 
+            success: false,
+            message: "Check file formatting" });
     }
 };
 module.exports = { bulkUpload, upload };
