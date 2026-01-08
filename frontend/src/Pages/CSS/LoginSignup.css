@@ -1,92 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .loginsignup {
   width: 100%;
   min-height: 100vh;
-  background: #fce3fe;
+  background: linear-gradient(180deg, #fce3fe 0%, #f7f7f7 100%);
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centers everything horizontally */
-  padding-top: 60px;
-  padding-bottom: 60px;
+  align-items: center;
+  /* CHANGED: justify-content from center to flex-start to move it up */
+  justify-content: flex-start; 
+  /* ADDED: padding-top to control exactly how high it sits */
+  padding: 80px 20px; 
   box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Styling for the Logo outside the box */
-.loginsignup-header-outside {
-  margin-bottom: 30px; /* Space between logo and white container */
-}
-
-.nav-logo {
+.loginsignup-logo-top {
   display: flex;
   align-items: center;
   gap: 15px;
+  /* Reduced margin slightly for a tighter look at the top */
+  margin-bottom: 30px; 
+  transition: transform 0.3s ease;
 }
 
-.nav-logo img {
+.loginsignup-logo-top:hover {
+  transform: scale(1.05);
+}
+
+.loginsignup-logo-top img {
   width: 50px;
 }
 
-.nav-logo p {
+.loginsignup-logo-top p {
   color: #171717;
-  font-size: 40px;
+  font-size: 42px;
   font-weight: 700;
+  letter-spacing: 1px;
   margin: 0;
 }
 
-/* The White Container Box */
 .loginsignup-container {
-  width: 580px;
-  background: #fff;
-  padding: 40px 60px;
+  width: 100%;
+  max-width: 500px;
+  background: #ffffff;
+  padding: 50px 40px;
+  border-radius: 20px;
+  /* Enhanced shadow for better "floating" effect since it's higher up */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06); 
   box-sizing: border-box;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Optional: subtle shadow */
 }
 
 .loginsignup-container h1 {
-  margin: 10px 0px;
-  font-size: 32px;
+  margin-bottom: 30px;
+  font-size: 34px;
   font-weight: 600;
   color: #171717;
+  text-align: center;
 }
 
 .loginsignup-fields {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  margin-top: 25px;
+  gap: 20px;
 }
 
 .loginsignup-fields input {
   width: 100%;
-  height: 65px;
-  border: 1px solid #c9c9c9;
-  color: #5c5c5c;
+  height: 60px;
+  border: 1px solid #e2e2e2;
+  border-radius: 12px;
+  color: #333;
   outline: none;
-  padding-left: 20px;
+  padding: 0 20px;
   font-size: 18px;
   box-sizing: border-box;
+  background-color: #fcfcfc;
+  transition: all 0.3s ease;
+}
+
+.loginsignup-fields input:focus {
+  border-color: #ff4141;
+  background-color: #fff;
+  box-shadow: 0 0 8px rgba(255, 65, 65, 0.1);
 }
 
 .loginsignup-container button {
   width: 100%;
-  height: 72px;
+  height: 65px;
   background: #ff4141;
   color: #fff;
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
   border: none;
+  border-radius: 12px;
   cursor: pointer;
   margin-top: 30px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 65, 65, 0.3);
+}
+
+.loginsignup-container button:hover {
+  background: #e63939;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 65, 65, 0.4);
 }
 
 .loginsignup-login {
   margin-top: 25px;
-  color: #5c5c5c;
-  font-size: 18px;
-  font-weight: 500;
+  color: #6a6a6a;
+  font-size: 19px;
+  text-align: center;
 }
 
 .loginsignup-login span {
   color: #ff4141;
   font-weight: 600;
   cursor: pointer;
+  margin-left: 5px;
+}
+
+.loginsignup-login span:hover {
+  text-decoration: underline;
 }

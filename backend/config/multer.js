@@ -52,33 +52,58 @@ const saveToDatabase = async (products, res, filePath) => {
        const lastProduct = await Product.findOne().sort({ id: -1 });
         let currentId = lastProduct ? lastProduct.id + 1 : 100;
         //format needs because datas are in string format
-        const formattedProducts = products.map((item) => {
-            const product = {
-                id: currentId,
-                name: item.name,
-                image: item.image,
-                category: item.category,
-                new_price: Number(item.new_price),
-                old_price: Number(item.old_price),
-                date: Date.now(),
-                available: true,
-            };
-            currentId++; 
-            return product;
-        });
+        const formattedProducts = [];
+        const skippedItems = [];
 
-        await Product.insertMany(formattedProducts);
-        if (fs.existsSync(filePath)) 
-          fs.unlinkSync(filePath);
-        res.json(
-            { success: true,
-             message: `${formattedProducts.length} products added!` });
-            } catch (err) {
-        if (fs.existsSync(filePath))  //deletes the uploaded file from the server
-            fs.unlinkSync(filePath); 
-        res.status(400).json({ 
-            success: false,
-            message: "Check file formatting" });
+       for (let item of products) {
+      // null values check
+      if (!item.name || !item.category || item.new_price === undefined) {
+        skippedItems.push(`${item.name || "Unknown"}: Missing Fields`);
+        continue;
+      }
+
+      // duplicates check by name
+      const exists = await Product.findOne({ name: item.name.trim() });
+      if (exists) {
+        skippedItems.push(`${item.name}: Already exists in Database`);
+        continue;
+      }
+
+      formattedProducts.push({
+        id: currentId++,
+        name: item.name.trim(),
+        image: item.image || "",
+        category: item.category,
+        new_price: Number(item.new_price),
+        old_price: Number(item.old_price) || 0,
+        date: Date.now(),
+        available: true,
+      });
     }
+
+    if (formattedProducts.length === 0) {
+      if (fs.existsSync(filePath)) 
+        fs.unlinkSync(filePath);
+      return res.status(400).json({ 
+        success: false, 
+        message: "Valid products were not found. "
+      });
+    }
+
+    await Product.insertMany(formattedProducts);
+    
+    if (fs.existsSync(filePath)) 
+        fs.unlinkSync(filePath);
+
+    res.json({
+      success: true,
+      message: `${formattedProducts.length} added (${skippedItems.length} skipped)`,
+      skippeddetails: skippedItems
+    });
+
+  } catch (err) {
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    res.status(400).json({ success: false, message: "Internal Validation Error" });
+  }
 };
 module.exports = { bulkUpload, upload };

@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import upload_area from "../../assets/upload_area.svg";
-import * as XLSX from "xlsx"; // Import the parser
+import * as XLSX from "xlsx"; //to read, parse, or generate Excel files
 import "./BulkProducts.css";
 
 const BulkProducts = () => {
   const [file, setFile] = useState(null);
   const [previewData, setPreviewData] = useState([]); // Stores table data
   const [showModal, setShowModal] = useState(false); // Controls modal visibility
+  const [loading, setLoading] = useState(false); 
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -23,21 +24,27 @@ const BulkProducts = () => {
     }
   };
 
-  // Function to parse File into JSON for the table
+  //preview file data in table format 
   const handlePreview = (file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheetName = workbook.SheetNames[0];
+    const reader = new FileReader();//filereader =>browser API used to read file contents
+    reader.onload = (e) => { //onload event is triggered only after the file is fully read.
+      const data = new Uint8Array(e.target.result); // Uint8Array=>converts raw binary into a format
+      const workbook = XLSX.read(data, { type: "array" }); //parses the Excel file and converts it into a workbook object
+      
+      const sheetName = workbook.SheetNames[0];//first sheet of the workbook
       const worksheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(worksheet);
       setPreviewData(json);
     };
+    
     reader.readAsArrayBuffer(file);
   };
 
   const uploadToDatabase = async () => {
+    if (!file) 
+      return;
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("file", file);
 
@@ -60,6 +67,9 @@ const BulkProducts = () => {
     } catch (error) {
       console.error("Error:", error);
       alert("Error connecting to the server.");
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -86,7 +96,7 @@ const BulkProducts = () => {
             style={{ flex: 2, opacity: !file ? 0.6 : 1 }}
             disabled={!file}
           >
-            Upload to Database
+           {loading ? "Uploading..." : "Upload to Database"}
           </button>
 
           {file && (
@@ -101,12 +111,12 @@ const BulkProducts = () => {
         </div>
       </div>
 
-      {/* --- PREVIEW MODAL --- */}
+      {/* show modal for preview data */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h2>File Preview</h2>
+              <h2>File Preview </h2>
               <button className="close-btn" onClick={() => setShowModal(false)}>&times;</button>
             </div>
             <div className="modal-body">
@@ -115,7 +125,7 @@ const BulkProducts = () => {
                   <thead>
                     <tr>
                       {Object.keys(previewData[0]).map((key) => (
-                        <th key={key}>{key}</th>
+                        <th key={key}>{key}</th>//name,oldprice,newprice
                       ))}
                     </tr>
                   </thead>
@@ -123,7 +133,7 @@ const BulkProducts = () => {
                     {previewData.map((row, index) => (
                       <tr key={index}>
                         {Object.values(row).map((val, i) => (
-                          <td key={i}>{val}</td>
+                          <td key={i}>{val}</td> //values of each row
                         ))}
                       </tr>
                     ))}

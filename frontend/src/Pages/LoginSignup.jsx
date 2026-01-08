@@ -48,6 +48,10 @@ const LoginSignup = ({ mode }) => {
   };
 
   const login = async () => {
+    if (!formData.email || !formData.password) {
+      alert("Please fill in both Email and Password fields.");
+      return; 
+    }
     const response = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -71,6 +75,10 @@ const LoginSignup = ({ mode }) => {
   };
 
   const signup = async () => {
+    if (!formData.username || !formData.email || !formData.password) {
+      alert("All fields are required for Sign Up.");
+      return;
+    }
     try {
       const response = await fetch("http://localhost:3000/auth/signup", {
         method: "POST",
@@ -93,7 +101,7 @@ const LoginSignup = ({ mode }) => {
 
   return (
     <div className="loginsignup">
-      <div className="loginsignup-header-outside">
+      <div className="loginsignup-logo-top">
         <Link to="/" style={{ textDecoration: "none" }}>
           <div className="nav-logo">
             <img src={logo} alt="logo" />
@@ -147,7 +155,7 @@ const LoginSignup = ({ mode }) => {
                 color: "#ff4141",
                 cursor: "pointer",
                 fontWeight: "600",
-                fontSize: "15px",
+                fontSize: "18px",
               }}
             >
               Forgot Password?

@@ -276,17 +276,49 @@
 },
 {
   "_id": {
-    "$oid": "695762f6db9eefef48caf5be"
+    "$oid": "695f92df70d196b601f8d392"
   },
   "id": 125,
-  "name": "product123",
-  "image": "http://localhost:3000/images/product_1767334646071.png",
-  "category": "women",
-  "new_price": 555,
-  "old_price": 677,
-  "available": true,
+  "name": "Blue Denim",
+  "image": "http://localhost:3000/images/product_1767699504949.png",
+  "category": "men",
+  "new_price": 500,
+  "old_price": 800,
   "date": {
-    "$date": "2026-01-02T06:17:26.113Z"
+    "$date": "2026-01-08T11:19:59.264Z"
   },
+  "available": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695f92df70d196b601f8d393"
+  },
+  "id": 126,
+  "name": "Denim",
+  "image": "http://localhost:3000/images/product_1767699504949.png",
+  "category": "women",
+  "new_price": 450,
+  "old_price": 900,
+  "date": {
+    "$date": "2026-01-08T11:19:59.278Z"
+  },
+  "available": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "695f9324c2c2a7e5608f279c"
+  },
+  "id": 127,
+  "name": "Pink Dress",
+  "image": "http://localhost:3000/images/product_1767699504949.png",
+  "category": "women",
+  "new_price": 450,
+  "old_price": 900,
+  "date": {
+    "$date": "2026-01-08T11:21:08.596Z"
+  },
+  "available": true,
   "__v": 0
 }]
