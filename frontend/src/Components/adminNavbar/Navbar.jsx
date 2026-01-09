@@ -1,9 +1,7 @@
 import React from "react";
 import "./Navbar.css";
 
-// import navlogo from "../nav-logo.svg";
-
-const Navbar = () => {
+const Navbar = () => { 
   return (
     <div className="navbar">
       <img src="/navlogo.svg" className="nav-logo" alt="" />
