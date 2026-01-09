@@ -1,10 +1,10 @@
 import React from "react";
-import arrow_icon from "../Assets/arrow.png";
-import hero_image from "../Assets/hero_image.png"; 
+import arrow_icon from "../assets/arrow.png";
+import hero_image from "../assets/hero_image.png";
 import "./Sample.css";
 
 const Sample = () => {
-   const scrollToNewCollections = () => {
+  const scrollToNewCollections = () => {
     const section = document.getElementById("new-collections");
     section?.scrollIntoView({ behavior: "smooth" });
   };
@@ -14,7 +14,7 @@ const Sample = () => {
         <h2>NEW ARRIVALS ONLY</h2>
         <div>
           <div className="hero-hand-icon">
-            <p>new</p>           
+            <p>new</p>
           </div>
           <p>collections</p>
           <p>for everyone</p>
@@ -32,4 +32,3 @@ const Sample = () => {
 };
 
 export default Sample;
-  

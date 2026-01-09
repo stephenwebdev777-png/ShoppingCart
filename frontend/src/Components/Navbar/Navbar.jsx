@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import "./Navbar.css";
-import logo from "../Assets/logo.png";
-import cart_icon from "../Assets/cart_icon.png";
+import logo from "../assets/logo.png";
+import cart_icon from "../assets/cart_icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 
@@ -35,7 +35,7 @@ const Navbar = () => {
         },
       });
       const data = await response.json();
-  if (!data.success) {
+      if (!data.success) {
         forceLogoutCleanup();
       } else {
         setIsAuth(true);
@@ -46,7 +46,6 @@ const Navbar = () => {
   }, [forceLogoutCleanup]);
 
   useEffect(() => {
- 
     window.addEventListener("storage", (e) => {
       if (e.key === "auth-token") {
         validateToken();
@@ -58,9 +57,9 @@ const Navbar = () => {
       if (currentToken !== lastToken) {
         lastToken = currentToken;
         if (currentToken) {
-          validateToken(); 
+          validateToken();
         } else {
-          forceLogoutCleanup(); 
+          forceLogoutCleanup();
         }
       }
     }, 500);
@@ -100,15 +99,21 @@ const Navbar = () => {
       </Link>
       <ul className="nav-menu">
         <li onClick={() => setMenu("shop")}>
-          <Link style={{ textDecoration: "none" }} to="/">Shop</Link>
+          <Link style={{ textDecoration: "none" }} to="/">
+            Shop
+          </Link>
           {menu === "shop" ? <hr /> : null}
         </li>
         <li onClick={() => setMenu("mens")}>
-          <Link style={{ textDecoration: "none" }} to="/mens">Men</Link>
+          <Link style={{ textDecoration: "none" }} to="/mens">
+            Men
+          </Link>
           {menu === "mens" ? <hr /> : null}
         </li>
         <li onClick={() => setMenu("womens")}>
-          <Link style={{ textDecoration: "none" }} to="/womens">Women</Link>
+          <Link style={{ textDecoration: "none" }} to="/womens">
+            Women
+          </Link>
           {menu === "womens" ? <hr /> : null}
         </li>
       </ul>

@@ -7,7 +7,7 @@ const BulkProducts = () => {
   const [file, setFile] = useState(null);
   const [previewData, setPreviewData] = useState([]); // Stores table data
   const [showModal, setShowModal] = useState(false); // Controls modal visibility
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -24,36 +24,39 @@ const BulkProducts = () => {
     }
   };
 
-  //preview file data in table format 
+  //preview file data in table format
   const handlePreview = (file) => {
-    const reader = new FileReader();//filereader =>browser API used to read file contents
-    reader.onload = (e) => { //onload event is triggered only after the file is fully read.
+    const reader = new FileReader(); //filereader =>browser API used to read file contents
+    reader.onload = (e) => {
+      //onload event is triggered only after the file is fully read.
       const data = new Uint8Array(e.target.result); // Uint8Array=>converts raw binary into a format
       const workbook = XLSX.read(data, { type: "array" }); //parses the Excel file and converts it into a workbook object
-      
-      const sheetName = workbook.SheetNames[0];//first sheet of the workbook
+
+      const sheetName = workbook.SheetNames[0]; //first sheet of the workbook
       const worksheet = workbook.Sheets[sheetName];
       const json = XLSX.utils.sheet_to_json(worksheet);
       setPreviewData(json);
     };
-    
+
     reader.readAsArrayBuffer(file);
   };
 
   const uploadToDatabase = async () => {
-    if (!file) 
-      return;
+    if (!file) return;
     setLoading(true);
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:3000/products/bulk-upload", {
-        method: "POST",
-        headers: { "auth-token": localStorage.getItem("auth-token") },
-        body: formData,
-      });
+      const response = await fetch(
+        "http://localhost:3000/products/bulk-upload",
+        {
+          method: "POST",
+          headers: { "auth-token": localStorage.getItem("auth-token") },
+          body: formData,
+        }
+      );
 
       const data = await response.json();
       if (data.success) {
@@ -67,8 +70,7 @@ const BulkProducts = () => {
     } catch (error) {
       console.error("Error:", error);
       alert("Error connecting to the server.");
-    }
-    finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -79,15 +81,27 @@ const BulkProducts = () => {
 
       <div className="bulk-upload-container">
         <label htmlFor="file-input" className="upload-box">
-          <img src={upload_area} alt="Upload Icon" className="upload-thumbnail" />
+          <img
+            src={upload_area}
+            alt="Upload Icon"
+            className="upload-thumbnail"
+          />
           {!file ? (
             <p>Click to upload CSV or Excel file</p>
           ) : (
-            <p style={{ color: "#ff6a00", fontWeight: "600" }}>Selected: {file.name}</p>
+            <p style={{ color: "#ff6a00", fontWeight: "600" }}>
+              Selected: {file.name}
+            </p>
           )}
         </label>
-        
-        <input type="file" id="file-input" accept=".csv,.xlsx,.xls" onChange={handleFileChange} hidden />
+
+        <input
+          type="file"
+          id="file-input"
+          accept=".csv,.xlsx,.xls"
+          onChange={handleFileChange}
+          hidden
+        />
 
         <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
           <button
@@ -96,13 +110,13 @@ const BulkProducts = () => {
             style={{ flex: 2, opacity: !file ? 0.6 : 1 }}
             disabled={!file}
           >
-           {loading ? "Uploading..." : "Upload to Database"}
+            {loading ? "Uploading..." : "Upload to Database"}
           </button>
 
           {file && (
-            <button 
-              onClick={() => setShowModal(true)} 
-              className="bulk-btn" 
+            <button
+              onClick={() => setShowModal(true)}
+              className="bulk-btn"
               style={{ flex: 1, background: "#4b5563" }}
             >
               Preview
@@ -117,7 +131,9 @@ const BulkProducts = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h2>File Preview </h2>
-              <button className="close-btn" onClick={() => setShowModal(false)}>&times;</button>
+              <button className="close-btn" onClick={() => setShowModal(false)}>
+                &times;
+              </button>
             </div>
             <div className="modal-body">
               {previewData.length > 0 ? (
@@ -125,7 +141,7 @@ const BulkProducts = () => {
                   <thead>
                     <tr>
                       {Object.keys(previewData[0]).map((key) => (
-                        <th key={key}>{key}</th>//name,oldprice,newprice
+                        <th key={key}>{key}</th> //name,oldprice,newprice
                       ))}
                     </tr>
                   </thead>
