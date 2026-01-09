@@ -19,7 +19,7 @@ app.use(cors({
 connectDB();
 
 // Static Folder for Images 
-app.use("/images", express.static("upload/images"));
+app.use("/images", express.static(path.join(__dirname, "upload/images")));
 
 // Routes
 app.use("/auth", require("./routes/authRoutes"));
