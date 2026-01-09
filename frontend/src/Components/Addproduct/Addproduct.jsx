@@ -5,6 +5,7 @@ import { fetchAllProducts } from "../../Redux/shopSlice";
 
 const Addproduct = () => {
   const dispatch = useDispatch();
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
   const [image, setImage] = useState(false);
   const [productDetails, setProductDetails] = useState({
     name: "",
@@ -38,7 +39,7 @@ const Addproduct = () => {
     formData.append("product", image);
 
     try {
-      const uploadResp = await fetch("http://localhost:3000/products/upload", {
+      const uploadResp = await fetch(`${API_BASE_URL}/products/upload`, {
         method: "POST",
         headers: { Accept: "application/json", "auth-token": token },
         body: formData,
@@ -47,9 +48,8 @@ const Addproduct = () => {
 
       if (responseData.success) {
         const product = { ...productDetails, image: responseData.image_url };
-
-        const addResp = await fetch(
-          "http://localhost:3000/products/addproduct",
+const addResp = await fetch(
+          `${API_BASE_URL}/products/addproduct`,
           {
             method: "POST",
             headers: {

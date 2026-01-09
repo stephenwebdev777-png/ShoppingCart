@@ -5,7 +5,7 @@ import Item from "../Item/Item";
 
 const Popular = (props) => {
   const [popularProducts, setPopularProducts] = useState([]);
-  const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/products/popularinwomen`)
