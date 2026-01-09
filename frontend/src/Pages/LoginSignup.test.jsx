@@ -1,7 +1,6 @@
 /* eslint-disable no-undef */
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import React from "react";
 import { MemoryRouter } from "react-router-dom";
 import LoginSignup from "./LoginSignup";
 
@@ -57,9 +56,7 @@ describe("LoginSignup Component", () => {
         role: "user",
       }),
     });
-
     renderComponent("login");
-
     fireEvent.change(screen.getByPlaceholderText(/email address/i), {
       target: { name: "email", value: "test@user.com" },
     });
@@ -77,65 +74,68 @@ describe("LoginSignup Component", () => {
     expect(mockReplace).toHaveBeenCalledWith("/");
   });
 
-  it("admin login redirects to admin dashboard", async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({
-        success: true,
-        token: "admin-token",
-        role: "admin",
-      }),
-    });
-
-    renderComponent("login");
-
-    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
-
-    await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith("/admin/addproduct");
-    });
+it("admin login redirects to admin dashboard", async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({
+      success: true,
+      token: "admin-token",
+      role: "admin",
+    }),
   });
+
+  renderComponent("login");
+  fireEvent.change(screen.getByPlaceholderText(/email address/i), {
+    target: { name: "email", value: "admin@test.com" },
+  });
+  fireEvent.change(screen.getByPlaceholderText(/password/i), {
+    target: { name: "password", value: "admin123" },
+  });
+
+  fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+
+  await waitFor(() => {
+    expect(mockReplace).toHaveBeenCalledWith("/admin/addproduct");
+  });
+});
 
   it("switches to signup mode and renders name field", () => {
     renderComponent("login");
-
     fireEvent.click(screen.getByText(/click here/i));
-
     expect(
       screen.getByRole("heading", { name: /sign up/i })
     ).toBeInTheDocument();
-
     expect(screen.getByPlaceholderText(/your name/i)).toBeInTheDocument();
   });
 
-  it("successful signup alerts user and switches to login view", async () => {
-    global.fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => ({ success: true }),
-    });
-
-    renderComponent("signup");
-
-    fireEvent.change(screen.getByPlaceholderText(/your name/i), {
-      target: { name: "username", value: "Kiru" },
-    });
-
-    fireEvent.change(screen.getByPlaceholderText(/email address/i), {
-      target: { name: "email", value: "kiru@gmail.com" },
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: /continue/i }));
-
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith(
-        "Account created successfully! Please login to continue."
-      );
-
-      expect(
-        screen.getByRole("heading", { name: /login/i })
-      ).toBeInTheDocument();
-    });
+it("successful signup alerts user and switches to login view", async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({ success: true }),
   });
+
+  renderComponent("signup");
+  fireEvent.change(screen.getByPlaceholderText(/your name/i), {
+    target: { name: "username", value: "Kiru" },
+  });
+  fireEvent.change(screen.getByPlaceholderText(/email address/i), {
+    target: { name: "email", value: "kiru@gmail.com" },
+  });
+  fireEvent.change(screen.getByPlaceholderText(/password/i), {
+    target: { name: "password", value: "password123" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: /continue/i }));
+
+  await waitFor(() => {
+    expect(window.alert).toHaveBeenCalledWith(
+      "Account created successfully! Please login to continue."
+    );
+
+    expect(
+      screen.getByRole("heading", { name: /login/i })
+    ).toBeInTheDocument();
+  });
+});
 
   it("forgot password mode sends reset link correctly", async () => {
     global.fetch.mockResolvedValueOnce({
@@ -146,7 +146,6 @@ describe("LoginSignup Component", () => {
     renderComponent("login");
 
     fireEvent.click(screen.getByText(/forgot password\?/i));
-
     fireEvent.change(screen.getByPlaceholderText(/email address/i), {
       target: { name: "email", value: "reset@test.com" },
     });
@@ -166,7 +165,7 @@ describe("LoginSignup Component", () => {
     });
   });
 
-  it("shows error alert on failed login", async () => {
+ it("shows error alert on failed login", async () => {
     global.fetch.mockResolvedValueOnce({
       ok: true,
       json: async () => ({
@@ -176,9 +175,14 @@ describe("LoginSignup Component", () => {
     });
 
     renderComponent("login");
+    fireEvent.change(screen.getByPlaceholderText(/email address/i), {
+      target: { name: "email", value: "wrong@user.com" },
+    });
 
+    fireEvent.change(screen.getByPlaceholderText(/password/i), {
+      target: { name: "password", value: "wrongpassword" },
+    });
     fireEvent.click(screen.getByRole("button", { name: /continue/i }));
-
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith("Invalid Credentials");
     });

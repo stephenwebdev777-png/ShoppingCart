@@ -7,9 +7,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* CHANGED: justify-content from center to flex-start to move it up */
   justify-content: flex-start; 
-  /* ADDED: padding-top to control exactly how high it sits */
   padding: 80px 20px; 
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
@@ -19,7 +17,6 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  /* Reduced margin slightly for a tighter look at the top */
   margin-bottom: 30px; 
   transition: transform 0.3s ease;
 }
@@ -46,8 +43,7 @@
   background: #ffffff;
   padding: 50px 40px;
   border-radius: 20px;
-  /* Enhanced shadow for better "floating" effect since it's higher up */
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06); 
+   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06); 
   box-sizing: border-box;
 }
 

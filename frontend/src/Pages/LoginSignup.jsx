@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom"; // Import useLocation
+import { Link, useLocation } from "react-router-dom"; 
 import "./CSS/LoginSignup.css";
 import logo from "../Assets/logo.png";
 
@@ -13,7 +13,6 @@ const LoginSignup = ({ mode }) => {
   });
   const location = useLocation();
 
-  // Extract the 'redirect' parameter from the URL ( ?redirect=/mens/product/12)
   const queryParams = new URLSearchParams(location.search);
   const redirectPath = queryParams.get("redirect") || "/";
 
