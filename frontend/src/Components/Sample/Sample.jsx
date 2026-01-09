@@ -1,6 +1,6 @@
 import React from "react";
-import arrow_icon from "../assets/arrow.png";
-import hero_image from "../assets/hero_image.png";
+import arrow_icon from "../../assets/arrow.png";
+import hero_image from "../../assets/hero_image.png";
 import "./Sample.css";
 
 const Sample = () => {

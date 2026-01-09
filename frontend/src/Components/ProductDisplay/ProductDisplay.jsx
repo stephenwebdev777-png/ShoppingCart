@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react"; //single product page
 import "./ProductDisplay.css";
-import star_icon from "../assets/star_icon.png";
-import star_dull_icon from "../assets/star_dull_icon.png";
+import star_icon from "../../assets/star_icon.png";
+import star_dull_icon from "../../assets/star_dull_icon.png";
 import { ShopContext } from "../../Context/ShopContext";
 import { useNavigate } from "react-router-dom";
 

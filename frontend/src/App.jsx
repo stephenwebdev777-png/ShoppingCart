@@ -20,8 +20,8 @@ import Listproduct from "./Components/Listproduct/Listproduct";
 import BulkProducts from "./Components/BulkProducts/BulkProducts";
 import Proceed from "./Components/Proceed/Proceed";
 import ResetPassword from "./Pages/ResetPassword";
-import banner_women from "./Components/assets/banner_women.png";
-import banner_mens from "./Components/assets/banner_mens.png";
+import banner_women from "./assets/banner_women.png";
+import banner_mens from "./assets/banner_mens.png";
 
 // Built-in Scroll Fix
 const ScrollToTop = () => {

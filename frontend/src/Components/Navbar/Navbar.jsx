@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import "./Navbar.css";
-import logo from "../assets/logo.png";
-import cart_icon from "../assets/cart_icon.png";
+import logo from "../../assets/logo.png";
+import cart_icon from "../../assets/cart_icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 
