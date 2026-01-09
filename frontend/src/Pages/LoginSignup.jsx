@@ -2,9 +2,11 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./CSS/LoginSignup.css";
-//import logo
 
 const LoginSignup = ({ mode }) => {
+  // Use Environment Variable for the API URL
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const [state, setState] = useState(mode || "login");
   const [formData, setFormData] = useState({
     username: "",
@@ -26,14 +28,11 @@ const LoginSignup = ({ mode }) => {
       return;
     }
     try {
-      const response = await fetch(
-        "http://localhost:3000/auth/forgotpassword",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: formData.email }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/auth/forgotpassword`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
+      });
       const data = await response.json();
       if (data.success) {
         alert("Reset link sent! Please check your Mailtrap inbox.");
@@ -51,24 +50,28 @@ const LoginSignup = ({ mode }) => {
       alert("Please fill in both Email and Password fields.");
       return;
     }
-    const response = await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    const data = await response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
 
-    if (data.success) {
-      localStorage.setItem("auth-token", data.token);
-      localStorage.setItem("user-role", data.role);
+      if (data.success) {
+        localStorage.setItem("auth-token", data.token);
+        localStorage.setItem("user-role", data.role);
 
-      if (data.role === "admin") {
-        window.location.replace("/admin/addproduct");
+        if (data.role === "admin") {
+          window.location.replace("/admin/addproduct");
+        } else {
+          window.location.replace(redirectPath);
+        }
       } else {
-        window.location.replace(redirectPath);
+        alert(data.errors || "Login Failed");
       }
-    } else {
-      alert(data.errors || "Login Failed");
+    } catch (error) {
+      alert("Error connecting to the server.");
     }
   };
 
@@ -78,7 +81,7 @@ const LoginSignup = ({ mode }) => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3000/auth/signup", {
+      const response = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
