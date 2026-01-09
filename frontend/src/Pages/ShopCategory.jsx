@@ -92,7 +92,10 @@ const ShopCategory = (props) => {
 
       <div className="shopcategory-products">
         {filtered.map((item, i) => {
-          const deliveryDateString = getDeliveryDate(item.old_price, item.new_price);
+          const deliveryDateString = getDeliveryDate(
+            item.old_price,
+            item.new_price
+          );
           return (
             <div key={i} className="shopcategory-item-container">
               <Item

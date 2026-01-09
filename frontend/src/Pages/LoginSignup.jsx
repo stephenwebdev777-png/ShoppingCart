@@ -1,8 +1,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom"; 
+import { Link, useLocation } from "react-router-dom";
 import "./CSS/LoginSignup.css";
-import logo from "../Assets/logo.png";
+import logo from "../assets/logo.png";
 
 const LoginSignup = ({ mode }) => {
   const [state, setState] = useState(mode || "login");
@@ -49,7 +49,7 @@ const LoginSignup = ({ mode }) => {
   const login = async () => {
     if (!formData.email || !formData.password) {
       alert("Please fill in both Email and Password fields.");
-      return; 
+      return;
     }
     const response = await fetch("http://localhost:3000/auth/login", {
       method: "POST",
@@ -65,7 +65,6 @@ const LoginSignup = ({ mode }) => {
       if (data.role === "admin") {
         window.location.replace("/admin/addproduct");
       } else {
-      
         window.location.replace(redirectPath);
       }
     } else {
