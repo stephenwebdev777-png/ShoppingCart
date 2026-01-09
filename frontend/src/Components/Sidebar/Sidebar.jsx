@@ -1,8 +1,6 @@
 import React from "react";
 import "./Sidebar.css";
 import { Link, useLocation } from "react-router-dom";
-import add_product_icon from "../../assets/Product_cart.svg";
-import list_product_icon from "../../assets/Product_list_icon.svg";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -19,7 +17,7 @@ const Sidebar = () => {
               isActive("/admin/addproduct") ? "active" : ""
             }`}
           >
-            <img src={add_product_icon} alt="Add Product Icon" />
+            <img src="/Product_cart.svg" alt="Add Product Icon" />
             <p>Add Product</p>
           </div>
         </Link>
@@ -30,7 +28,7 @@ const Sidebar = () => {
               isActive("/admin/listproduct") ? "active" : ""
             }`}
           >
-            <img src={list_product_icon} alt="List Product Icon" />
+            <img src="/Product_list_icon.svg" alt="List Product Icon" />
             <p>List Product</p>
           </div>
         </Link>
@@ -40,7 +38,7 @@ const Sidebar = () => {
               isActive("/admin/bulkproducts") ? "active" : ""
             }`}
           >
-            <img src={list_product_icon} alt="List Product Icon" />
+            <img src="/Product_list_icon.svg" alt="List Product Icon" />
             <p>Bulk Products</p>
           </div>
         </Link>

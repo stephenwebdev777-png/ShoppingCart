@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useEffect, useState, useCallback } from "react";
 import "./Navbar.css";
-import logo from "../../assets/logo.png";
-import cart_icon from "../../assets/cart_icon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ShopContext } from "../../Context/ShopContext";
 
@@ -93,7 +91,7 @@ const Navbar = () => {
     <div className="navbar">
       <Link to="/" style={{ textDecoration: "none" }}>
         <div className="nav-logo">
-          <img src={logo} alt="logo" />
+          <img src="/logo.png" alt="logo" />
           <p>SHOPPER</p>
         </div>
       </Link>
@@ -126,7 +124,7 @@ const Navbar = () => {
           </Link>
         )}
         <Link to="/cart">
-          <img src={cart_icon} alt="cart" />
+          <img src="/cart_icon.png" alt="cart" />
         </Link>
         <div className="nav-cart-count">{getTotalCartItems()}</div>
       </div>

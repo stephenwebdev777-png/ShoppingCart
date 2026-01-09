@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import "./CartItem.css";
 import { ShopContext } from "../../Context/ShopContext";
-import remove_icon from "../../assets/cart_cross_icon.png";
 import { useNavigate } from "react-router-dom";
 
 const CartItem = () => {
@@ -83,7 +82,7 @@ const CartItem = () => {
 
               <img
                 className="cartitems-remove-icon"
-                src={remove_icon}
+                src="/cart_cross_icon.png"
                 onClick={() => deleteFromCart(item.key)}
                 alt="remove"
               />

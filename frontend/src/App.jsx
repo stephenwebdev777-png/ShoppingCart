@@ -20,8 +20,6 @@ import Listproduct from "./Components/Listproduct/Listproduct";
 import BulkProducts from "./Components/BulkProducts/BulkProducts";
 import Proceed from "./Components/Proceed/Proceed";
 import ResetPassword from "./Pages/ResetPassword";
-import banner_women from "./assets/banner_women.png";
-import banner_mens from "./assets/banner_mens.png";
 
 // Built-in Scroll Fix
 const ScrollToTop = () => {
@@ -137,11 +135,11 @@ function App() {
           <Route index element={<Shop />} />
           <Route
             path="mens"
-            element={<ShopCategory category="men" banner={banner_mens} />}
+            element={<ShopCategory category="men" banner="/banner_mens.png" />}
           />
           <Route
             path="womens"
-            element={<ShopCategory category="women" banner={banner_women} />}
+            element={<ShopCategory category="women" banner="/banner_women.png"/>}
           />
 
           <Route path="login" element={<LoginSignup mode="login" />} />

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import upload_area from "../../assets/upload_area.svg";
 import * as XLSX from "xlsx"; //to read, parse, or generate Excel files
 import "./BulkProducts.css";
 
@@ -82,7 +81,7 @@ const BulkProducts = () => {
       <div className="bulk-upload-container">
         <label htmlFor="file-input" className="upload-box">
           <img
-            src={upload_area}
+            src="/upload_area.svg"
             alt="Upload Icon"
             className="upload-thumbnail"
           />

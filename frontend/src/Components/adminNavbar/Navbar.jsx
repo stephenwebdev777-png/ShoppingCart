@@ -1,12 +1,12 @@
 import React from "react";
 import "./Navbar.css";
 
-import navlogo from "../../assets/nav-logo.svg";
+// import navlogo from "../nav-logo.svg";
 
 const Navbar = () => {
   return (
     <div className="navbar">
-      <img src={navlogo} className="nav-logo" alt="" />
+      <img src="/navlogo.svg" className="nav-logo" alt="" />
     </div>
   );
 };

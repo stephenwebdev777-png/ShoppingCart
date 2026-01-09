@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Listproduct.css";
-import cross_icon from "../../assets/cross_icon.png";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchAllProducts } from "../../Redux/shopSlice";
 
@@ -153,7 +152,7 @@ const Listproduct = () => {
 
               <img
                 onClick={() => remove_product(product.id)}
-                src={cross_icon}
+                src="/cross_icon.png"
                 alt=""
                 className="listproduct-remove-icon"
               />

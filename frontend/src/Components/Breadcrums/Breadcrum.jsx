@@ -1,6 +1,5 @@
 import React from "react";
 import "./Breadcrum.css";
-import arrow_icon from "../../assets/breadcrum_arrow.png";
 import { Link } from "react-router-dom";
 
 const Breadcrum = (props) => {
@@ -12,7 +11,7 @@ const Breadcrum = (props) => {
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
         SHOP
       </Link>
-      <img src={arrow_icon} alt="" />{" "}
+      <img src="/breadcrum_arrow.png" alt="" />{" "}
       <Link
         to={`/${
           product.category.toLowerCase() === "men"
@@ -25,7 +24,7 @@ const Breadcrum = (props) => {
       >
         {product.category}
       </Link>
-      <img src={arrow_icon} alt="" />
+      <img src="/breadcrum_arrow.png" alt="" />
       <Link
         to={`/${
           product.category.toLowerCase() === "men"

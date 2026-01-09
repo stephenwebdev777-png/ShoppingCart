@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./Addproduct.css";
-import upload_area from "../../assets/upload_area.svg";
 import { useDispatch } from "react-redux";
 import { fetchAllProducts } from "../../Redux/shopSlice";
 
@@ -132,7 +131,7 @@ const Addproduct = () => {
       <div className="addproduct-itemfield">
         <label htmlFor="file-input">
           <img
-            src={image ? URL.createObjectURL(image) : upload_area}
+            src={image ? URL.createObjectURL(image) : "/upload_area.svg"}
             className="addproduct-thumnail-img"
             alt=""
           />

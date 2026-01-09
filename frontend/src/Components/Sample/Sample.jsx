@@ -1,6 +1,4 @@
 import React from "react";
-import arrow_icon from "../../assets/arrow.png";
-import hero_image from "../../assets/hero_image.png";
 import "./Sample.css";
 
 const Sample = () => {
@@ -21,11 +19,11 @@ const Sample = () => {
         </div>
         <div onClick={scrollToNewCollections} className="hero-latest-btn">
           <div>Latest Collection</div>
-          <img src={arrow_icon} alt="" />
+          <img src="/arrow.png" alt="" />
         </div>
       </div>
       <div className="hero-right">
-        <img src={hero_image} alt="" />
+        <img src="/hero_image.png" alt="" />
       </div>
     </div>
   );

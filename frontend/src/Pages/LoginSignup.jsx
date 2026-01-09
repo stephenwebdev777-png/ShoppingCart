@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./CSS/LoginSignup.css";
 //import logo
-import logo from "../assets/logo.png";
 
 const LoginSignup = ({ mode }) => {
   const [state, setState] = useState(mode || "login");
@@ -103,7 +102,7 @@ const LoginSignup = ({ mode }) => {
       <div className="loginsignup-logo-top">
         <Link to="/" style={{ textDecoration: "none" }}>
           <div className="nav-logo">
-            <img src={logo} alt="logo" />
+            <img src="/logo.png" alt="logo" />
             <p>SHOPPER</p>
           </div>
         </Link>
