@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./CSS/LoginSignup.css";
+//import logo
 import logo from "../assets/logo.png";
 
 const LoginSignup = ({ mode }) => {
