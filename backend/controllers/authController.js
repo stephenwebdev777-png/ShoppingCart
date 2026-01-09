@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 const { generateToken } = require("../utils/jwtUtils");
-const { hashPassword } = require("../utils/hashUtils"); // Removed comparePassword as you're using bcrypt directly
+const { hashPassword } = require("../utils/hashUtils"); 
 const Blacklist = require("../model/Blacklist");
 
 const signup = async (req, res) => {
@@ -32,8 +32,6 @@ const signup = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // 1. Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ 
@@ -42,7 +40,6 @@ const login = async (req, res) => {
       });
     }
 
-    // 2. Check if password matches
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(400).json({ 
@@ -50,8 +47,6 @@ const login = async (req, res) => {
         errors: "Incorrect password. Please try again." 
       });
     }
-
-    // 3. Generate JWT if both are correct
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role }, 
       process.env.JWT_SECRET
