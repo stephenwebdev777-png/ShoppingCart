@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_BASE_URL = "http://localhost:3000";
+// Vite requires 'import.meta.env' for client-side variables
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
 export const fetchAllProducts = createAsyncThunk(
   "shop/fetchAllProducts",
@@ -21,8 +22,7 @@ export const fetchCartData = createAsyncThunk(
       },
     });
 
-    if (res.status === 401) 
-      return rejectWithValue("Unauthorized");
+    if (res.status === 401) return rejectWithValue("Unauthorized");
     return res.json();
   }
 );
@@ -43,10 +43,8 @@ export const addToCart = createAsyncThunk(
         body: JSON.stringify({ itemId: key }),
       });
 
-      if (res.status === 401) 
-        return rejectWithValue("Unauthorized");
+      if (res.status === 401) return rejectWithValue("Unauthorized");
     }
-
     return { key };
   }
 );
@@ -66,8 +64,7 @@ export const removeFromCart = createAsyncThunk(
         body: JSON.stringify({ itemId: key }),
       });
 
-      if (res.status === 401) 
-        return rejectWithValue("Unauthorized");
+      if (res.status === 401) return rejectWithValue("Unauthorized");
     }
     return key;
   }
@@ -88,13 +85,12 @@ export const deleteFromCart = createAsyncThunk(
         body: JSON.stringify({ itemId: key }),
       });
 
-      if (res.status === 401)
-         return rejectWithValue("Unauthorized");
+      if (res.status === 401) return rejectWithValue("Unauthorized");
     }
-
     return key;
   }
 );
+
 const shopSlice = createSlice({
   name: "shop",
   initialState: {
@@ -102,7 +98,7 @@ const shopSlice = createSlice({
     cartItems: [],
   },
   reducers: {
-    clearCart: (state) => { //no api call, just clear local cart so used reducers
+    clearCart: (state) => {
       state.cartItems = [];
     },
   },
@@ -116,28 +112,21 @@ const shopSlice = createSlice({
           state.cartItems = action.payload;
         }
       })
-
       .addCase(addToCart.fulfilled, (state, action) => {
         const { key } = action.payload;
         const item = state.cartItems.find((i) => i.key === key);
-
         if (item) item.quantity += 1;
         else state.cartItems.push({ key, quantity: 1 });
       })
-
       .addCase(removeFromCart.fulfilled, (state, action) => {
         const key = action.payload;
         const item = state.cartItems.find((i) => i.key === key);
-
         if (!item) return;
         if (item.quantity > 1) item.quantity -= 1;
-        else
-          state.cartItems = state.cartItems.filter((i) => i.key !== key);
+        else state.cartItems = state.cartItems.filter((i) => i.key !== key);
       })
       .addCase(deleteFromCart.fulfilled, (state, action) => {
-        state.cartItems = state.cartItems.filter(
-          (i) => i.key !== action.payload
-        );
+        state.cartItems = state.cartItems.filter((i) => i.key !== action.payload);
       });
   },
 });

@@ -27,10 +27,13 @@ router.post("/removeproduct", isAdmin, removeProduct);
 router.post("/updateproduct", isAdmin, updateProduct);
 
 
-router.post("/upload", isAdmin,upload.single('product'), (req, res) => {
+router.post("/upload", isAdmin, upload.single('product'), (req, res) => {
+  // Use a relative path or dynamic host for production
+  const host = req.get('host');
+  const protocol = req.protocol;
   res.json({
     success: 1,
-    image_url: `http://localhost:3000/images/${req.file.filename}`
+    image_url: `${protocol}://${host}/images/${req.file.filename}`
   });
 });
 
