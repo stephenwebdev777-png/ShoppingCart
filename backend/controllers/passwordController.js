@@ -6,44 +6,40 @@ const transporter = require("../config/mail");
 
 // FORGOT PASSWORD
 const forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ success: false, message: "User not found" });
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const resetToken = jwt.sign(
+      { email: user.email },
+      process.env.RESET_JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; 
+    await user.save();
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    // Send the email using the IMPORTED transporter
+    await transporter.sendMail({
+      from: '"Shopper Support" <no-reply@shopper.com>',
+      to: user.email,
+      subject: "Reset Password",
+      html: `<p>You requested a password reset. Click <a href="${resetLink}">here</a> to reset it. This link expires in 1 hour.</p>`,
+    });
+
+    res.json({ success: true, message: "Reset link sent to your email" });
+  } catch (error) {
+    console.error("Email Error:", error);
+    res.status(500).json({ success: false, message: "Failed to send email. Please try again later." });
   }
-
-  const resetToken = jwt.sign(
-    { email: user.email },
-    process.env.RESET_JWT_SECRET,
-    { expiresIn: "1d" }
-  );
-
-  user.resetPasswordToken = resetToken;
-  user.resetPasswordExpires = Date.now() + 24 * 60 * 60 * 1000;
-  await user.save();
-
-  const transporter = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 587,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
-    },
-  });
-
-  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-
-  await transporter.sendMail({
-    from: '"Shopper Support" <no-reply@shopper.com>',
-    to: user.email,
-    subject: "Reset Password",
-    html: `<p>Click <a href="${resetLink}">here</a> to reset password</p>`,
-  });
-
-  res.json({ success: true, message: "Reset link sent" });
 };
-
 // RESET PASSWORD
 const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
