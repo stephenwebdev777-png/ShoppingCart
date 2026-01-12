@@ -18,7 +18,6 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "auth-token", "Accept"]
 }));
-app.options("/*", cors());
 
 // Middleware
 app.use(express.json());
