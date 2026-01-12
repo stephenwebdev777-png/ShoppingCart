@@ -28,14 +28,32 @@ router.post("/updateproduct", isAdmin, updateProduct);
 
 
 router.post("/upload", isAdmin, upload.single('product'), (req, res) => {
-  const host = req.get('host'); 
-  const protocol = req.protocol; 
+  let backendUrl = process.env.BACKEND_URL || "http://localhost:3000";
+  if (backendUrl.includes("onrender.com")) {
+    backendUrl = backendUrl.replace("http://", "https://");
+  }
   res.json({
     success: 1,
-    image_url: `${protocol}://${host}/images/${req.file.filename}`
+    image_url: `${backendUrl}/images/${req.file.filename}`
   });
 });
 
 router.post("/bulk-upload", isAdmin, upload.single('file'), bulkUpload);
 
+router.get("/fix-secure-links", isAdmin, async (req, res) => {
+    try {
+        const products = await Product.find({});
+        let updatedCount = 0;
+        for (let product of products) {
+            if (product.image && product.image.startsWith("http://")) {
+                product.image = product.image.replace("http://", "https://");
+                await product.save();
+                updatedCount++;
+            }
+        }
+        res.json({ success: true, message: `Updated ${updatedCount} products to HTTPS.` });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 module.exports = router;
