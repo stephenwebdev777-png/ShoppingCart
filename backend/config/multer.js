@@ -48,45 +48,41 @@ const bulkUpload = async (req, res) => {
 };
 
 const saveToDatabase = async (products, res, filePath) => {
-    try {
-       const lastProduct = await Product.findOne().sort({ id: -1 });
-        let currentId = lastProduct ? lastProduct.id + 1 : 100;
-        //format needs because datas are in string format
-        const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
-        if (BACKEND_URL.endsWith("/")) {
-      BACKEND_URL = BACKEND_URL.slice(0, -1);
-    }
-        const formattedProducts = [];
-        const skippedItems = [];
+  try {
+    const lastProduct = await Product.findOne().sort({ id: -1 });
+    let currentId = lastProduct ? lastProduct.id + 1 : 100;
 
-       for (let item of products) {
-      // null values check
-      if (!item.name || !item.category || item.new_price === undefined) {
-        skippedItems.push(`${item.name || "Unknown"}: Missing Fields`);
-        continue;
-      }
+    // Get the live URL from Render environment variables
+    let BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+    if (BACKEND_URL.endsWith("/")) BACKEND_URL = BACKEND_URL.slice(0, -1);
 
-      // duplicates check by name
-      const exists = await Product.findOne({ name: item.name.trim() });
-      if (exists) {
-        skippedItems.push(`${item.name}: Already exists in Database`);
-        continue;
-      }
-      let finalImageUrl = item.image ? String(item.image).trim() : "";
-           if (finalImageUrl) {
-        if (!finalImageUrl.startsWith("http")) {
-        const fileName = finalImageUrl.replace(/^\/+/, "");
+    const formattedProducts = [];
+
+    for (let item of products) {
+      if (!item.name || !item.category || item.new_price === undefined) continue;
+
+      let imageField = item.image ? String(item.image).trim() : "";
+      let finalImageUrl = "";
+
+      if (imageField) {
+        if (imageField.includes("localhost:3000")) {
+          // Fix: If Excel still has localhost, swap it for the live Render URL
+          finalImageUrl = imageField.replace("http://localhost:3000", BACKEND_URL);
+        } else if (imageField.startsWith("http")) {
+          // Keep existing external HTTPS links as they are
+          finalImageUrl = imageField;
+        } else {
+          // Standard: Combine Render URL + /images/ + filename from Excel
+          const fileName = imageField.replace(/^\/+/, "");
           finalImageUrl = `${BACKEND_URL}/images/${fileName}`;
         }
-      } else {
-        finalImageUrl = `${BACKEND_URL}/images/default_placeholder.png`;
       }
 
       formattedProducts.push({
         id: currentId++,
         name: item.name.trim(),
         image: finalImageUrl,
-        category: item.category,
+        category: item.category.toLowerCase().trim(),
         new_price: Number(item.new_price),
         old_price: Number(item.old_price) || 0,
         date: Date.now(),
@@ -94,32 +90,13 @@ const saveToDatabase = async (products, res, filePath) => {
       });
     }
 
-    if (formattedProducts.length === 0) {
-      if (fs.existsSync(filePath)) 
-        fs.unlinkSync(filePath);
-      return res.status(400).json({ 
-        success: false, 
-        message: "Valid products were not found. ",
-        skippeddetails: skippedItems,
-      });
-    }
-
     await Product.insertMany(formattedProducts);
-    
-    if (fs.existsSync(filePath)) 
-        fs.unlinkSync(filePath);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-    res.json({
-      success: true,
-      message: `${formattedProducts.length} added (${skippedItems.length} skipped)`,
-      skippeddetails: skippedItems
-    });
-
+    res.json({ success: true, message: `Successfully added ${formattedProducts.length} items.` });
   } catch (err) {
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    res.status(400).json({ 
-      success: false,
-      message: "Internal Validation Error" });
+    res.status(500).json({ success: false, message: "Error saving to database: " + err.message });
   }
 };
 module.exports = { bulkUpload, upload };

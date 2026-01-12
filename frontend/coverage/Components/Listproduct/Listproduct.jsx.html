@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.93% </span>
+                <span class="strong">94.11% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>31/33</span>
+                <span class='fraction'>32/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>7/10</span>
+                <span class='fraction'>9/12</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.77% </span>
+                <span class="strong">96.87% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>30/31</span>
+                <span class='fraction'>31/32</span>
             </div>
         
             
@@ -241,6 +241,9 @@
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -269,10 +272,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -292,33 +293,33 @@
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -377,7 +378,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -408,7 +408,10 @@ const Listproduct = () =&gt; {
   const dispatch = useDispatch();
   const { all_product, loading } = useSelector((state) =&gt; state.shop);
 &nbsp;
-  // State for inline editing
+  // FIX: Dynamic API URL
+  const API_BASE_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+&nbsp;
   const [editId, setEditId] = useState(null);
   const [editFormData, setEditFormData] = useState({
     name: "",
@@ -437,21 +440,19 @@ const Listproduct = () =&gt; {
 &nbsp;
   const save_product = async (id) =&gt; {
     const token = localStorage.getItem("auth-token");
-    const response = await fetch(
-      "http://localhost:3000/products/updateproduct",
-      {
-        method: "POST",
-        headers: {
-          "auth-token": token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...editFormData, id: id }),
-      }
-    );
+    // FIX: Replaced localhost with API_BASE_URL
+    const response = await fetch(`${API_BASE_URL}/products/updateproduct`, {
+      method: "POST",
+      headers: {
+        "auth-token": token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...editFormData, id: id }),
+    });
     const data = await response.json();
     if (data.success) {
       setEditId(null);
-      dispatch(fetchAllProducts()); // Refresh list
+      dispatch(fetchAllProducts());
     } else <span class="missing-if-branch" title="else path not taken" >E</span>{
 <span class="cstat-no" title="statement not covered" >      alert("Update failed");</span>
     }
@@ -460,7 +461,8 @@ const Listproduct = () =&gt; {
   const remove_product = async (id) =&gt; {
     const token = localStorage.getItem("auth-token");
     <span class="missing-if-branch" title="else path not taken" >E</span>if (window.confirm("Remove this product?")) {
-      await fetch("http://localhost:3000/products/removeproduct", {
+      // FIX: Replaced localhost with API_BASE_URL
+      await fetch(`${API_BASE_URL}/products/removeproduct`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "auth-token": token },
         body: JSON.stringify({ id }),
@@ -496,7 +498,6 @@ const Listproduct = () =&gt; {
                 alt=""
                 className="listproduct-product-icon"
               /&gt;
-&nbsp;
               {editId === product.id ? (
                 &lt;&gt;
                   &lt;input
@@ -550,7 +551,6 @@ const Listproduct = () =&gt; {
                   &lt;/button&gt;
                 &lt;/&gt;
               )}
-&nbsp;
               &lt;img
                 onClick={() =&gt; remove_product(product.id)}
                 src="/cross_icon.png"
@@ -574,7 +574,7 @@ export default Listproduct;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-09T08:37:21.971Z
+                at 2026-01-12T06:38:17.963Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
