@@ -7,6 +7,10 @@ const xlsx = require("xlsx");
 const Product = require("../model/Product");
 
 // Storage configuration for images
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: uploadDir,
   filename: (req, file, cb) => {
@@ -52,35 +56,41 @@ const saveToDatabase = async (products, res, filePath) => {
     const lastProduct = await Product.findOne().sort({ id: -1 });
     let currentId = lastProduct ? lastProduct.id + 1 : 100;
 
-    // Get the live URL from Render environment variables
     let BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
     if (BACKEND_URL.endsWith("/")) BACKEND_URL = BACKEND_URL.slice(0, -1);
 
     const formattedProducts = [];
+    const skippedItems = [];
 
     for (let item of products) {
-      if (!item.name || !item.category || item.new_price === undefined) continue;
+  
+      if (!item.name || !item.category || item.new_price === undefined) {
+        skippedItems.push(`${item.name || "Unknown"}: Missing Fields`);
+        continue;
+      }
 
+      const trimmedName = item.name.trim();
+      const exists = await Product.findOne({ name: trimmedName });
+      if (exists) {
+        skippedItems.push(`${trimmedName}: Already exists in Database`);
+        continue;
+      }
       let imageField = item.image ? String(item.image).trim() : "";
       let finalImageUrl = "";
 
       if (imageField) {
         if (imageField.includes("localhost:3000")) {
-          // Fix: If Excel still has localhost, swap it for the live Render URL
           finalImageUrl = imageField.replace("http://localhost:3000", BACKEND_URL);
         } else if (imageField.startsWith("http")) {
-          // Keep existing external HTTPS links as they are
           finalImageUrl = imageField;
         } else {
-          // Standard: Combine Render URL + /images/ + filename from Excel
           const fileName = imageField.replace(/^\/+/, "");
           finalImageUrl = `${BACKEND_URL}/images/${fileName}`;
         }
       }
-
       formattedProducts.push({
         id: currentId++,
-        name: item.name.trim(),
+        name: trimmedName,
         image: finalImageUrl,
         category: item.category.toLowerCase().trim(),
         new_price: Number(item.new_price),
@@ -90,10 +100,17 @@ const saveToDatabase = async (products, res, filePath) => {
       });
     }
 
-    await Product.insertMany(formattedProducts);
+    if (formattedProducts.length > 0) {
+      await Product.insertMany(formattedProducts);
+    }
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
 
-    res.json({ success: true, message: `Successfully added ${formattedProducts.length} items.` });
+    res.json({ 
+      success: true, 
+      message: `${formattedProducts.length} items added. ${skippedItems.length} items skipped.`,
+      skippedDetails: skippedItems 
+    });
+
   } catch (err) {
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
     res.status(500).json({ success: false, message: "Error saving to database: " + err.message });
