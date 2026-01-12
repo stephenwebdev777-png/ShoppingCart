@@ -52,6 +52,10 @@ const saveToDatabase = async (products, res, filePath) => {
        const lastProduct = await Product.findOne().sort({ id: -1 });
         let currentId = lastProduct ? lastProduct.id + 1 : 100;
         //format needs because datas are in string format
+        const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:3000";
+        if (BACKEND_URL.endsWith("/")) {
+      BACKEND_URL = BACKEND_URL.slice(0, -1);
+    }
         const formattedProducts = [];
         const skippedItems = [];
 
@@ -68,11 +72,20 @@ const saveToDatabase = async (products, res, filePath) => {
         skippedItems.push(`${item.name}: Already exists in Database`);
         continue;
       }
+      let finalImageUrl = item.image ? String(item.image).trim() : "";
+           if (finalImageUrl) {
+        if (!finalImageUrl.startsWith("http")) {
+        const fileName = finalImageUrl.replace(/^\/+/, "");
+          finalImageUrl = `${BACKEND_URL}/images/${fileName}`;
+        }
+      } else {
+        finalImageUrl = `${BACKEND_URL}/images/default_placeholder.png`;
+      }
 
       formattedProducts.push({
         id: currentId++,
         name: item.name.trim(),
-        image: item.image || "",
+        image: finalImageUrl,
         category: item.category,
         new_price: Number(item.new_price),
         old_price: Number(item.old_price) || 0,
@@ -86,7 +99,8 @@ const saveToDatabase = async (products, res, filePath) => {
         fs.unlinkSync(filePath);
       return res.status(400).json({ 
         success: false, 
-        message: "Valid products were not found. "
+        message: "Valid products were not found. ",
+        skippeddetails: skippedItems,
       });
     }
 
@@ -103,7 +117,9 @@ const saveToDatabase = async (products, res, filePath) => {
 
   } catch (err) {
     if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    res.status(400).json({ success: false, message: "Internal Validation Error" });
+    res.status(400).json({ 
+      success: false,
+      message: "Internal Validation Error" });
   }
 };
 module.exports = { bulkUpload, upload };
