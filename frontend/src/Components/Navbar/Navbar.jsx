@@ -11,7 +11,8 @@ const Navbar = () => {
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem("auth-token"));
 
   // Dynamic API Base URL
-  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const API_BASE_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   const forceLogoutCleanup = useCallback(() => {
     localStorage.removeItem("auth-token");
@@ -99,17 +100,33 @@ const Navbar = () => {
         </div>
       </Link>
       <ul className="nav-menu">
-        <li onClick={() => setMenu("shop")}><Link to="/">Shop</Link>{menu === "shop" ? <hr /> : null}</li>
-        <li onClick={() => setMenu("mens")}><Link to="/mens">Men</Link>{menu === "mens" ? <hr /> : null}</li>
-        <li onClick={() => setMenu("womens")}><Link to="/womens">Women</Link>{menu === "womens" ? <hr /> : null}</li>
+        <li style={{ textDecoration: "none" }} onClick={() => setMenu("shop")}>
+          <Link to="/">Shop</Link>
+          {menu === "shop" ? <hr /> : null}
+        </li>
+        <li style={{ textDecoration: "none" }} onClick={() => setMenu("mens")}>
+          <Link to="/mens">Men</Link>
+          {menu === "mens" ? <hr /> : null}
+        </li>
+        <li
+          style={{ textDecoration: "none" }}
+          onClick={() => setMenu("womens")}
+        >
+          <Link to="/womens">Women</Link>
+          {menu === "womens" ? <hr /> : null}
+        </li>
       </ul>
       <div className="nav-login-cart">
         {isAuth ? (
           <button onClick={handleLogout}>Logout</button>
         ) : (
-          <Link to="/login"><button>Login</button></Link>
+          <Link to="/login">
+            <button>Login</button>
+          </Link>
         )}
-        <Link to="/cart"><img src="/cart_icon.png" alt="cart" /></Link>
+        <Link to="/cart">
+          <img src="/cart_icon.png" alt="cart" />
+        </Link>
         <div className="nav-cart-count">{getTotalCartItems()}</div>
       </div>
     </div>
