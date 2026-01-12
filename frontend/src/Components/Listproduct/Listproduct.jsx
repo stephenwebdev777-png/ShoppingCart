@@ -7,7 +7,10 @@ const Listproduct = () => {
   const dispatch = useDispatch();
   const { all_product, loading } = useSelector((state) => state.shop);
 
-  // State for inline editing
+  // FIX: Dynamic API URL
+  const API_BASE_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const [editId, setEditId] = useState(null);
   const [editFormData, setEditFormData] = useState({
     name: "",
@@ -36,21 +39,19 @@ const Listproduct = () => {
 
   const save_product = async (id) => {
     const token = localStorage.getItem("auth-token");
-    const response = await fetch(
-      "http://localhost:3000/products/updateproduct",
-      {
-        method: "POST",
-        headers: {
-          "auth-token": token,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...editFormData, id: id }),
-      }
-    );
+    // FIX: Replaced localhost with API_BASE_URL
+    const response = await fetch(`${API_BASE_URL}/products/updateproduct`, {
+      method: "POST",
+      headers: {
+        "auth-token": token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...editFormData, id: id }),
+    });
     const data = await response.json();
     if (data.success) {
       setEditId(null);
-      dispatch(fetchAllProducts()); // Refresh list
+      dispatch(fetchAllProducts());
     } else {
       alert("Update failed");
     }
@@ -59,7 +60,8 @@ const Listproduct = () => {
   const remove_product = async (id) => {
     const token = localStorage.getItem("auth-token");
     if (window.confirm("Remove this product?")) {
-      await fetch("http://localhost:3000/products/removeproduct", {
+      // FIX: Replaced localhost with API_BASE_URL
+      await fetch(`${API_BASE_URL}/products/removeproduct`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "auth-token": token },
         body: JSON.stringify({ id }),
@@ -95,7 +97,6 @@ const Listproduct = () => {
                 alt=""
                 className="listproduct-product-icon"
               />
-
               {editId === product.id ? (
                 <>
                   <input
@@ -149,7 +150,6 @@ const Listproduct = () => {
                   </button>
                 </>
               )}
-
               <img
                 onClick={() => remove_product(product.id)}
                 src="/cross_icon.png"

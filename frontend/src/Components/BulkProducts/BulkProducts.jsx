@@ -43,13 +43,12 @@ const BulkProducts = () => {
   const uploadToDatabase = async () => {
     if (!file) return;
     setLoading(true);
+    const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-      const response = await fetch(
-        "http://localhost:3000/products/bulk-upload",
+    try {const response = await fetch(`${API_BASE_URL}/products/bulk-upload`, 
         {
           method: "POST",
           headers: { "auth-token": localStorage.getItem("auth-token") },

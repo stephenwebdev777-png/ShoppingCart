@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+
 import React, { useState, useEffect } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Breadcrum from "../Components/Breadcrums/Breadcrum";
@@ -12,12 +12,16 @@ const Product = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Use the Environment Variable for the API
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
       try {
+        // FIX: Replaced localhost with dynamic API_BASE_URL
         const response = await fetch(
-          `http://localhost:3000/products/product/${productId}`
+          `${API_BASE_URL}/products/product/${productId}`
         );
 
         if (response.ok) {
@@ -37,6 +41,7 @@ const Product = () => {
             setLoading(false);
             return;
           }
+          
           const token = localStorage.getItem("auth-token");
           if (!token) {
             navigate(
@@ -51,18 +56,19 @@ const Product = () => {
           setError("page_not_found");
         }
       } catch (err) {
+        console.error("Fetch error:", err);
         setError("network_error");
       } finally {
         setTimeout(() => setLoading(false), 150);
       }
     };
     fetchProduct();
-  }, [productId, location.pathname, navigate]);
+  }, [productId, location.pathname, navigate, API_BASE_URL]); // Added API_BASE_URL to dependency array
 
   if (loading)
     return <div style={{ height: "100vh", backgroundColor: "white" }}></div>;
 
-  if (error === "page_not_found") {
+  if (error === "page_not_found" || error === "network_error") {
     return (
       <div
         style={{
@@ -81,13 +87,18 @@ const Product = () => {
         }}
       >
         <h1 style={{ fontSize: "40px", color: "#ff4141", margin: "0" }}>
-          {" "}
-          This Shopper page can't be found
+          {error === "network_error" 
+            ? "Server Connection Error" 
+            : "This Shopper page can't be found"}
         </h1>
 
         <div style={{ fontSize: "20px", color: "#5f6368", marginTop: "10px" }}>
-          No webpage found for: <b>{location.pathname}</b>
-          <p style={{ marginTop: "20px" }}> HTTP ERROR 404</p>
+          {error === "network_error" 
+            ? "Could not connect to the backend server." 
+            : `No webpage found for: ${location.pathname}`}
+          <p style={{ marginTop: "20px" }}> 
+            {error === "network_error" ? "Check your internet or server status" : "HTTP ERROR 404"}
+          </p>
         </div>
       </div>
     );

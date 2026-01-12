@@ -12,8 +12,7 @@ const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000"
       .then((response) => response.json())
       .then((data) => setPopularProducts(data))
       .catch((err) => console.error("Error fetching popular products:", err));
-  }, []);
-
+  },[API_BASE_URL]);
   return (
     <div className="popular">
       <h1>POPULAR IN WOMEN</h1>

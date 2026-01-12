@@ -22,7 +22,8 @@ const Proceed = () => {
     setShowNotification(true);
     setTimeout(() => setShowNotification(false), 3000);
   };
-
+  const API_BASE_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
   useEffect(() => {
     const token = localStorage.getItem("auth-token");
     if (!token) {
@@ -31,7 +32,7 @@ const Proceed = () => {
     }
     const fetchUserData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/user/getuserinfo", {
+        const response = await fetch(`${API_BASE_URL}/user/getuserinfo`, {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -52,7 +53,7 @@ const Proceed = () => {
       }
     };
     fetchUserData();
-  }, []);
+  }, [API_BASE_URL]);
   const handlePlaceOrder = async () => {
     if (!paymentMethod) {
       displayNotification("Please select a payment method.");

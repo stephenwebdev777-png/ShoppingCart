@@ -14,8 +14,8 @@ const Item = (props) => {
   const handleProductClick = (e) => {
     const token = localStorage.getItem("auth-token");
     if (!token) {
-      e.preventDefault(); // Stop navigation
-      props.onItemClick(productPath); // Trigger the login modal
+      e.preventDefault();
+      if (props.onItemClick) props.onItemClick(productPath);
     } else {
       window.scrollTo(0, 0);
     }

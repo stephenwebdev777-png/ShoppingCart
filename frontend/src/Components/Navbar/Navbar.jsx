@@ -10,7 +10,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [isAuth, setIsAuth] = useState(!!localStorage.getItem("auth-token"));
 
-  // Function to wipe local data and redirect
+  // Dynamic API Base URL
+  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const forceLogoutCleanup = useCallback(() => {
     localStorage.removeItem("auth-token");
     localStorage.removeItem("user-role");
@@ -19,13 +21,13 @@ const Navbar = () => {
     navigate("/");
   }, [clearCart, navigate]);
 
-  // Validate the token with the server
   const validateToken = useCallback(async () => {
     const token = localStorage.getItem("auth-token");
     if (!token) return;
 
     try {
-      const response = await fetch("http://localhost:3000/user/getuserinfo", {
+      // FIX: Use API_BASE_URL instead of "assets"
+      const response = await fetch(`${API_BASE_URL}/user/getuserinfo`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +43,7 @@ const Navbar = () => {
     } catch (error) {
       forceLogoutCleanup();
     }
-  }, [forceLogoutCleanup]);
+  }, [forceLogoutCleanup, API_BASE_URL]);
 
   useEffect(() => {
     window.addEventListener("storage", (e) => {
@@ -72,7 +74,8 @@ const Navbar = () => {
     const token = localStorage.getItem("auth-token");
     if (token) {
       try {
-        await fetch("http://localhost:3000/auth/logout", {
+        // FIX: Use API_BASE_URL instead of "assets"
+        await fetch(`${API_BASE_URL}/auth/logout`, {
           method: "POST",
           headers: {
             "auth-token": token,
@@ -96,36 +99,17 @@ const Navbar = () => {
         </div>
       </Link>
       <ul className="nav-menu">
-        <li onClick={() => setMenu("shop")}>
-          <Link style={{ textDecoration: "none" }} to="/">
-            Shop
-          </Link>
-          {menu === "shop" ? <hr /> : null}
-        </li>
-        <li onClick={() => setMenu("mens")}>
-          <Link style={{ textDecoration: "none" }} to="/mens">
-            Men
-          </Link>
-          {menu === "mens" ? <hr /> : null}
-        </li>
-        <li onClick={() => setMenu("womens")}>
-          <Link style={{ textDecoration: "none" }} to="/womens">
-            Women
-          </Link>
-          {menu === "womens" ? <hr /> : null}
-        </li>
+        <li onClick={() => setMenu("shop")}><Link to="/">Shop</Link>{menu === "shop" ? <hr /> : null}</li>
+        <li onClick={() => setMenu("mens")}><Link to="/mens">Men</Link>{menu === "mens" ? <hr /> : null}</li>
+        <li onClick={() => setMenu("womens")}><Link to="/womens">Women</Link>{menu === "womens" ? <hr /> : null}</li>
       </ul>
       <div className="nav-login-cart">
         {isAuth ? (
           <button onClick={handleLogout}>Logout</button>
         ) : (
-          <Link to="/login">
-            <button>Login</button>
-          </Link>
+          <Link to="/login"><button>Login</button></Link>
         )}
-        <Link to="/cart">
-          <img src="/cart_icon.png" alt="cart" />
-        </Link>
+        <Link to="/cart"><img src="/cart_icon.png" alt="cart" /></Link>
         <div className="nav-cart-count">{getTotalCartItems()}</div>
       </div>
     </div>

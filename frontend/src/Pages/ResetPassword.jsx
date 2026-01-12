@@ -6,6 +6,10 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
 
+  // FIX: Dynamic API URL
+  const API_BASE_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const handleSubmit = async () => {
     if (!newPassword) {
       alert("Please enter a new password");
@@ -16,7 +20,8 @@ const ResetPassword = () => {
       return;
     }
 
-    const res = await fetch("http://localhost:3000/auth/resetpassword", {
+    // FIX: Replaced localhost with API_BASE_URL
+    const res = await fetch(`${API_BASE_URL}/auth/resetpassword`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, newPassword }),
@@ -37,7 +42,7 @@ const ResetPassword = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        backgroundColor: "#f9f9f9ff",
+        backgroundColor: "#f9f9f9",
         padding: "10px",
       }}
     >
@@ -52,16 +57,9 @@ const ResetPassword = () => {
           textAlign: "center",
         }}
       >
-        <h2
-          style={{
-            marginBottom: "30px",
-            color: "#333",
-            fontSize: "34px",
-          }}
-        >
+        <h2 style={{ marginBottom: "30px", color: "#333", fontSize: "34px" }}>
           Reset Password
         </h2>
-
         <input
           type="password"
           placeholder="New Password"
