@@ -7,13 +7,27 @@ const getAllProducts = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
+    if (!req.body.name) {
+      return res.status(400).json({ success: false, message: "Product name is required" });
+    }
+    const trimmedName = req.body.name.trim();
+    const existingProduct = await Product.findOne({ 
+      name: { $regex: new RegExp(`^${trimmedName}$`, 'i') } 
+    });
+
+    if (existingProduct) {
+      return res.json({ 
+        success: false, 
+        message: "Product already exists. Duplicate items are not allowed." 
+      });
+    }
     const lastProduct = await Product.findOne().sort({ id: -1 });
     const newId = lastProduct ? lastProduct.id + 1 : 100;
 
     const product = new Product({
       id: newId,
-      name: req.body.name,
-      image: req.body.image,
+      name: trimmedName,
+      image: req.body.image, 
       category: req.body.category,
       new_price: Number(req.body.new_price),
       old_price: Number(req.body.old_price),
@@ -21,9 +35,10 @@ const addProduct = async (req, res) => {
 
     await product.save();
     res.json({ success: true, name: req.body.name });
+    
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ success: false, message: "Validation Failed" });
+    console.error("Error in addProduct:", error);
+    res.status(400).json({ success: false, message: "Failed to add product" });
   }
 };
 

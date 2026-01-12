@@ -5,8 +5,11 @@ import { fetchAllProducts } from "../../Redux/shopSlice";
 
 const Addproduct = () => {
   const dispatch = useDispatch();
-  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const API_BASE_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+
   const [image, setImage] = useState(false);
+  const [useUrl, setUseUrl] = useState(false); // Toggle for URL vs File
   const [productDetails, setProductDetails] = useState({
     name: "",
     image: "",
@@ -30,55 +33,72 @@ const Addproduct = () => {
       return;
     }
 
-    if (!image) {
-      alert("Please upload a product image.");
-      return;
+    let finalImageUrl = productDetails.image;
+
+    // 1. Handle Image Upload if using File mode
+    if (!useUrl) {
+      if (!image) {
+        alert("Please upload a product image.");
+        return;
+      }
+      let formData = new FormData();
+      formData.append("product", image);
+
+      try {
+        const uploadResp = await fetch(`${API_BASE_URL}/products/upload`, {
+          method: "POST",
+          headers: { Accept: "application/json", "auth-token": token },
+          body: formData,
+        });
+        const responseData = await uploadResp.json();
+        if (responseData.success) {
+          finalImageUrl = responseData.image_url;
+        } else {
+          alert("Image upload failed");
+          return;
+        }
+      } catch (err) {
+        console.error("Upload error:", err);
+        return;
+      }
     }
 
-    let formData = new FormData();
-    formData.append("product", image);
+    // 2. Add Product to Database
+    const product = { ...productDetails, image: finalImageUrl };
 
     try {
-      const uploadResp = await fetch(`${API_BASE_URL}/products/upload`, {
+      const addResp = await fetch(`${API_BASE_URL}/products/addproduct`, {
         method: "POST",
-        headers: { Accept: "application/json", "auth-token": token },
-        body: formData,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          "auth-token": token,
+        },
+        body: JSON.stringify(product),
       });
-      const responseData = await uploadResp.json();
 
-      if (responseData.success) {
-        const product = { ...productDetails, image: responseData.image_url };
-const addResp = await fetch(
-          `${API_BASE_URL}/products/addproduct`,
-          {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-              "auth-token": token,
-            },
-            body: JSON.stringify(product),
-          }
-        );
-        const addData = await addResp.json();
+      const addData = await addResp.json();
 
-        if (addData.success) {
-          alert("Product Added Successfully");
+      if (addData.success) {
+        alert("Product Added Successfully");
+        dispatch(fetchAllProducts()); // Refresh Redux Store
 
-          dispatch(fetchAllProducts()); //redux
-
-          setProductDetails({
-            name: "",
-            image: "",
-            category: "men",
-            new_price: "",
-            old_price: "",
-          });
-          setImage(false);
-        }
+        // Reset Form
+        setProductDetails({
+          name: "",
+          image: "",
+          category: "men",
+          new_price: "",
+          old_price: "",
+        });
+        setImage(false);
+      } else {
+        // This catches the "Product already exists" error from your backend
+        alert(addData.message || "Failed to add product");
       }
     } catch (error) {
       console.error("Error adding product:", error);
+      alert("Server connection error.");
     }
   };
 
@@ -94,6 +114,7 @@ const addResp = await fetch(
           placeholder="Type Here"
         />
       </div>
+
       <div className="addproduct-price">
         <div className="addproduct-itemfield">
           <p>Old Price</p>
@@ -116,6 +137,7 @@ const addResp = await fetch(
           />
         </div>
       </div>
+
       <div className="addproduct-itemfield">
         <p>Product Category</p>
         <select
@@ -128,22 +150,44 @@ const addResp = await fetch(
           <option value="women">Women</option>
         </select>
       </div>
+
       <div className="addproduct-itemfield">
-        <label htmlFor="file-input">
-          <img
-            src={image ? URL.createObjectURL(image) : "/upload_area.svg"}
-            className="addproduct-thumnail-img"
-            alt=""
+        <p>
+          Image Source:{" "}
+          <button onClick={() => setUseUrl(!useUrl)} className="toggle-btn">
+            {useUrl ? "Switch to File Upload" : "Switch to Image URL"}
+          </button>
+        </p>
+
+        {useUrl ? (
+          <input
+            type="text"
+            name="image"
+            value={productDetails.image}
+            onChange={changeHandler}
+            placeholder="Paste permanent Image URL (e.g. ImgBB link)"
+            className="url-input"
           />
-        </label>
-        <input
-          onChange={imagehandler}
-          type="file"
-          name="image"
-          id="file-input"
-          hidden
-        />
+        ) : (
+          <>
+            <label htmlFor="file-input">
+              <img
+                src={image ? URL.createObjectURL(image) : "/upload_area.svg"}
+                className="addproduct-thumnail-img"
+                alt=""
+              />
+            </label>
+            <input
+              onChange={imagehandler}
+              type="file"
+              name="image"
+              id="file-input"
+              hidden
+            />
+          </>
+        )}
       </div>
+
       <button onClick={Add_Product} className="addproduct-btn">
         ADD
       </button>
