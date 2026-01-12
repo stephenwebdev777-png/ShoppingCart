@@ -5,7 +5,8 @@ import "./CSS/LoginSignup.css";
 
 const LoginSignup = ({ mode }) => {
   // Use Environment Variable for the API URL
-  const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
+  const API_BASE_URL =
+    import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
 
   const [state, setState] = useState(mode || "login");
   const [formData, setFormData] = useState({
@@ -30,21 +31,29 @@ const LoginSignup = ({ mode }) => {
     try {
       const response = await fetch(`${API_BASE_URL}/auth/forgotpassword`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({ email: formData.email }),
       });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+          errorData.message || `Server Error: ${response.status}`
+        );
+      }
+
       const data = await response.json();
       if (data.success) {
         alert("Reset link sent! Please check your Mailtrap inbox.");
         setState("login");
-      } else {
-        alert(data.message || "User not found");
       }
     } catch (error) {
-      alert("Error connecting to the server.");
+      console.error("Forgot Password Error:", error);
+      alert(`Error: ${error.message}`);
     }
   };
-
   const login = async () => {
     if (!formData.email || !formData.password) {
       alert("Please fill in both Email and Password fields.");

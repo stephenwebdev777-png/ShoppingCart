@@ -6,8 +6,7 @@ const connectDB = require("./config/db");
 
 const app = express();
 
-// Middleware
-app.use(express.json());
+
 
 // Dynamic CORS configuration
 app.use(cors({
@@ -20,6 +19,10 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "auth-token", "Accept"]
 }));
 
+app.options("*", cors());
+
+// Middleware
+app.use(express.json());
 // Database Connection 
 connectDB();
 
