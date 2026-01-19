@@ -66,28 +66,45 @@
 .cartitems-quantity-box {
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between buttons */
+    gap: 10px;
 }
 
 .cartitems-quantity {
-    width: 40px; /* Force fixed width so it doesn't jump */
+    width: 40px; 
     height: 40px;
     border: 2px solid #ebebeb;
     background: #fff;
-    cursor: default; /* Not clickable itself */
+    cursor: default; 
 }
 
 .quantity-btn {
     font-size: 20px;
     font-weight: 600;
     cursor: pointer;
-    user-select: none; /* Prevents highlighting text when clicking fast */
+    user-select: none;
     padding: 0 5px;
     color: #444;
 }
 
 .quantity-btn:hover {
-    color: #ff4141; /* Red hover effect */
+    color: #ff4141;
     background-color: #f0f0f0;
     border-radius: 50%;
+}
+.cartitems-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 100px 170px;
+  gap: 20px;
+}
+
+.continue-shopping-link {
+  padding: 15px 30px;
+  background: #ff4141;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 4px;
 }

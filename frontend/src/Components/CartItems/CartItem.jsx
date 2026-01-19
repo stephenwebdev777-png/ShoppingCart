@@ -31,6 +31,17 @@ const CartItem = () => {
     }
     navigate("/checkout");
   };
+  if (!hasItems) {
+    return (
+      <div className="cartitems-empty">
+        <h1>Your Cart is Empty</h1>
+        <p>Looks like you haven't added anything to your cart yet.</p>
+        <Link to="/" className="continue-shopping-link">
+          Click here to browse our Products
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="cartitems">
