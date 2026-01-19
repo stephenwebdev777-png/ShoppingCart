@@ -14,15 +14,11 @@ const CartItem = () => {
   } = useContext(ShopContext);
 
   const navigate = useNavigate();
+
   const hasItems = cartItems.some((item) => item.quantity > 0);
 
   const handleCheckout = () => {
     const token = localStorage.getItem("auth-token");
-
-    if (!hasItems) {
-      alert("Nothing added in cart! Please add items before proceeding.");
-      return;
-    }
     if (!token) {
       alert("Please login to proceed to checkout.");
       navigate("/login");
@@ -30,13 +26,14 @@ const CartItem = () => {
     }
     navigate("/checkout");
   };
+
   if (!hasItems) {
     return (
       <div className="cartitems-empty">
         <h1>Your Cart is Empty</h1>
-        <p>Looks like you haven't added anything to your cart yet.</p>
-        <Link to="/" className="continue-shopping-link">
-          Click here to browse our Products
+        <p>You haven't added any products to your shopping bag yet.</p>
+        <Link to="/" className="return-shop-btn">
+          RETURN TO SHOP
         </Link>
       </div>
     );
@@ -58,8 +55,10 @@ const CartItem = () => {
         const matchedItems = cartItems.filter(
           (item) => item.key.startsWith(e.id + "_") && item.quantity > 0,
         );
+
         return matchedItems.map((item) => {
           const size = item.key.split("_")[1];
+
           return (
             <div
               className="cartitems-format cartitems-format-main"
@@ -76,16 +75,16 @@ const CartItem = () => {
                   className="quantity-btn"
                   onClick={() => removeFromCart(item.key)}
                 >
-                  {" "}
-                  -{" "}
+                  -
                 </span>
+
                 <button className="cartitems-quantity">{item.quantity}</button>
+
                 <span
                   className="quantity-btn"
                   onClick={() => addToCart(e.id, size)}
                 >
-                  {" "}
-                  +{" "}
+                  +
                 </span>
               </div>
 
@@ -105,22 +104,28 @@ const CartItem = () => {
       <div className="cart_items-down">
         <div className="cart_items-total">
           <h1>Cart Total</h1>
+
           <div>
             <div className="cart_items-total_items">
               <p>Subtotal</p>
               <p>Rs.{getTotalCartAmount()}</p>
             </div>
+
             <hr />
+
             <div className="cart_items-total_items">
               <p>Shipping Fee</p>
               <p>Free</p>
             </div>
+
             <hr />
+
             <div className="cart_items-total_items">
               <h3>Total</h3>
               <h3>Rs.{getTotalCartAmount()}</h3>
             </div>
           </div>
+
           <button onClick={handleCheckout}>PROCEED TO CHECKOUT</button>
         </div>
       </div>
