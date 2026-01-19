@@ -14,10 +14,11 @@ const CartItem = () => {
   } = useContext(ShopContext);
 
   const navigate = useNavigate();
+  const hasItems = cartItems.some((item) => item.quantity > 0);
+
 
   const handleCheckout = () => {
     const token = localStorage.getItem("auth-token");
-    const hasItems = cartItems.some((item) => item.quantity > 0);
 
     if (!hasItems) {
       alert("Nothing added in cart! Please add items before proceeding.");
