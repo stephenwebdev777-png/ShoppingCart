@@ -1,7 +1,14 @@
-import React from "react";
+import React , { useContext }from "react";
 import "./Footer.css";
+import { ShopContext } from "../../Context/ShopContext";
 
 const Footer = () => {
+  const { cartItems } = useContext(ShopContext);
+  const hasItems = cartItems.some((item) => item.quantity > 0);
+
+  if (!hasItems) {
+    return null;
+  }
   return (
     <div className="footer">
       <div className="footer-logo">
