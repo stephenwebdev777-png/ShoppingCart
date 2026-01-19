@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import "./CartItem.css";
 import { ShopContext } from "../../Context/ShopContext";
-// Ensure 'Link' is included in this import line
 import { useNavigate, Link } from "react-router-dom";
 
 const CartItem = () => {
@@ -15,12 +14,15 @@ const CartItem = () => {
   } = useContext(ShopContext);
 
   const navigate = useNavigate();
-
-  // 1. Check if there are any items with quantity > 0
   const hasItems = cartItems.some((item) => item.quantity > 0);
 
   const handleCheckout = () => {
     const token = localStorage.getItem("auth-token");
+
+    if (!hasItems) {
+      alert("Nothing added in cart! Please add items before proceeding.");
+      return;
+    }
     if (!token) {
       alert("Please login to proceed to checkout.");
       navigate("/login");
@@ -28,21 +30,18 @@ const CartItem = () => {
     }
     navigate("/checkout");
   };
-
-  // 2. Early Return: If cart is empty, show this instead of the cart table
   if (!hasItems) {
     return (
       <div className="cartitems-empty">
         <h1>Your Cart is Empty</h1>
-        <p>You haven't added any products to your shopping bag yet.</p>
-        <Link to="/" className="return-shop-btn">
-          RETURN TO SHOP
+        <p>Looks like you haven't added anything to your cart yet.</p>
+        <Link to="/" className="continue-shopping-link">
+          Click here to browse our Products
         </Link>
       </div>
     );
   }
 
-  // 3. Normal Return: This only runs if hasItems is true
   return (
     <div className="cartitems">
       <div className="cartitems-format-main">
@@ -71,22 +70,27 @@ const CartItem = () => {
                 {e.name} ({size})
               </p>
               <p>Rs.{e.new_price}</p>
+
               <div className="cartitems-quantity-box">
                 <span
                   className="quantity-btn"
                   onClick={() => removeFromCart(item.key)}
                 >
-                  -
+                  {" "}
+                  -{" "}
                 </span>
                 <button className="cartitems-quantity">{item.quantity}</button>
                 <span
                   className="quantity-btn"
                   onClick={() => addToCart(e.id, size)}
                 >
-                  +
+                  {" "}
+                  +{" "}
                 </span>
               </div>
+
               <p>Rs.{e.new_price * item.quantity}</p>
+
               <img
                 className="cartitems-remove-icon"
                 src="/cart_cross_icon.png"
