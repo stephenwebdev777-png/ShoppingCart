@@ -39,7 +39,7 @@ const ScrollToTop = () => {
       (path) =>
         pathname === path ||
         pathname.includes("/product/") ||
-        pathname.includes("/admin/")
+        pathname.includes("/admin/"),
     );
 
     if (currentPathValid) {
@@ -131,15 +131,23 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        <Route path="/" element={<NavbarWrapper />}>
+        <Route
+          style={{ textDecoration: "none" }}
+          path="/"
+          element={<NavbarWrapper />}
+        >
           <Route index element={<Shop />} />
           <Route
             path="mens"
+            style={{ textDecoration: "none" }}
             element={<ShopCategory category="men" banner="/banner_mens.png" />}
           />
           <Route
             path="womens"
-            element={<ShopCategory category="women" banner="/banner_women.png"/>}
+            style={{ textDecoration: "none" }}
+            element={
+              <ShopCategory category="women" banner="/banner_women.png" />
+            }
           />
 
           <Route path="login" element={<LoginSignup mode="login" />} />
@@ -189,7 +197,7 @@ const NavbarWrapper = () => {
   const location = useLocation();
   const hideLayout =
     ["/login", "/signup", "/forgotpassword", "/checkout"].includes(
-      location.pathname
+      location.pathname,
     ) || location.pathname.startsWith("/reset-password/");
   return (
     <>
