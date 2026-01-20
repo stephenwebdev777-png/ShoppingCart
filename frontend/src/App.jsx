@@ -131,20 +131,14 @@ function App() {
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        <Route
-          style={{ textDecoration: "none" }}
-          path="/"
-          element={<NavbarWrapper />}
-        >
+        <Route path="/" element={<NavbarWrapper />}>
           <Route index element={<Shop />} />
           <Route
             path="mens"
-            style={{ textDecoration: "none" }}
             element={<ShopCategory category="men" banner="/banner_mens.png" />}
           />
           <Route
             path="womens"
-            style={{ textDecoration: "none" }}
             element={
               <ShopCategory category="women" banner="/banner_women.png" />
             }

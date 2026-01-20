@@ -4,6 +4,10 @@
     box-shadow: 0 1px 3px;
     padding:10px;    
 }
+.navbar a {
+    text-decoration: none;
+    color: inherit; 
+}
 .nav-logo{
     display: flex;
 align-items: center;
@@ -39,6 +43,7 @@ width: 80%;
 height: 3px;
 border-radius: 10px;
 background: #FF4141;
+margin-top: 3px;
 }
 .nav-login-cart{
     display: flex;
