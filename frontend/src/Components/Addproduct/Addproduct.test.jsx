@@ -12,8 +12,7 @@ const mockStore = configureStore({
 });
 
 describe('Addproduct Admin Logic', () => {
-  beforeEach(() => {
-  
+  beforeEach(() => {  
     vi.stubGlobal('localStorage', {
       getItem: vi.fn(),
       setItem: vi.fn(),

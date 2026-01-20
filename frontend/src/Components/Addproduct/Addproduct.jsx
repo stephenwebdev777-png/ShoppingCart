@@ -187,7 +187,6 @@ const Addproduct = () => {
           </>
         )}
       </div>
-
       <button onClick={Add_Product} className="addproduct-btn">
         ADD
       </button>
