@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 
 const Item = (props) => {
   const getCategoryPath = (cat) => {
-    const mapping = { men: "mens", women: "womens", "women new": "womens" };
-    return mapping[cat] || "womens";
+    const category = cat ? cat.toLowerCase() : "";
+    const mapping = { men: "mens", mens: "mens", women: "womens", womens: "womens","women new": "womens" };
+   return mapping[category] || "womens";
   };
 
   const categoryPath = getCategoryPath(props.category);
