@@ -1,4 +1,4 @@
-name: Snyk Scan
+name: Snyk Container Scan
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
       run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
     - name: Build Docker Image
-      run: docker build -t app .
+      run: docker build -t shoppingcart-backend ./backend
 
     - name: Run Snyk Scan
-      run: snyk container test app
+      run: snyk container test shoppingcart-backend
