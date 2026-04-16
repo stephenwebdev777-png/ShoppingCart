@@ -32,5 +32,9 @@ app.use("/auth", require("./routes/authRoutes"));
 app.use("/products", require("./routes/productRoutes"));
 app.use("/user", require("./routes/userRoutes"));
 
+app.get('/test', (req, res) => {
+  res.send('Backend working');
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
