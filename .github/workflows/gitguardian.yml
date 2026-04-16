@@ -11,7 +11,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Run GitGuardian scan
+    - name: GitGuardian scan
       uses: GitGuardian/ggshield-action@v1
+      env:
+        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
       with:
-        args: secret scan repo .
+        args: scan repo .
