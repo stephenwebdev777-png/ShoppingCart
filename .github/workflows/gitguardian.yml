@@ -9,11 +9,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-    - name: GitGuardian scan
+    - name: Scan for secrets
       uses: GitGuardian/ggshield-action@v1
       env:
         GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
       with:
-        args: scan repo .
+        args: secret scan repo .
